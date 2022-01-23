@@ -75,7 +75,7 @@ class AuthHelper {
             return "invalid_signature";
         }
 
-        return json_encode($payload);
+        return $payload;
     }
 }
 
