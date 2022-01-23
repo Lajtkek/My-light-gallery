@@ -1,24 +1,27 @@
 <template>
-  <div>
-    <h1>Login</h1>
-    <div class="login-wrapper">
-    <v-form ref="form" v-model="valid" lazy-validation>
-      <v-text-field
-        v-model="name"
-        :counter="10"
-        label="Username"
-        required
-      ></v-text-field>
-      <v-text-field
-        type="password"
-        v-model="password"
-        label="Password"
-        required
-      ></v-text-field>
-      <v-btn color="success" class="mr-4" @click="validate">
-        Validate
-      </v-btn>
-    </v-form>
+  <div class="login-wrapper">
+    <div>
+      <h1>Login</h1>
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-text-field
+          v-model="username"
+          label="Username"
+          :rules="usernameRules"
+          required
+        ></v-text-field>
+        <v-text-field
+          type="password"
+          v-model="password"
+          label="Password"
+          :rules="passwordRules"
+          required
+        ></v-text-field>
+        <v-col class="text-right">
+          <v-btn color="blue" @click="login" right>
+          Login
+          </v-btn>
+        </v-col>
+      </v-form>
     </div>
   </div>
 </template>
@@ -32,14 +35,23 @@ export default Vue.extend({
     return {
       username: "",
       password: "",
+      //validation
+      usernameRules: [
+        (v: string) => !!v || 'Name is required',
+      ],
+      passwordRules: [
+        (v: string) => !!v || 'Password is required',
+      ],
     };
   },
   components: {},
   methods: {
-    validate () {
+    login () {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      this.$refs.form.validate()
+      if(this.$refs.form.validate()){
+        console.log(true)
+      }
     },
     reset () {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -49,7 +61,9 @@ export default Vue.extend({
     resetValidation () {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      this.$refs.form.resetValidation()
+      this.$refs.form.resetValidation();
+
+
     }
   },
 });
@@ -57,7 +71,15 @@ export default Vue.extend({
 
 <style lang="less" scoped>
   .login-wrapper{
-    margin: auto;
-    width: 60%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    >div{
+      margin: 80px auto;
+      width: 30%;
+      min-width: 300px;
+    }
   }
 </style>
