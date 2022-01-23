@@ -19,7 +19,7 @@ class Database {
 
     function assocQuery($sql, $parameters = []){
         foreach($parameters as $key=>$param){
-            $escapedParam = "'" . mysqli_real_escape_string($this->conn, $param) . "'";
+            $escapedParam = mysqli_real_escape_string($this->conn, $param);
             $sql = str_replace("{".$key."}", $escapedParam, $sql);
         }
 
@@ -32,6 +32,10 @@ class Database {
             }
         }
         return $resultArray;
+    }
+
+    public function hashPassword($password){
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     public function __destruct(){

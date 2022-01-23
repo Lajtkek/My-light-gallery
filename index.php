@@ -1,4 +1,5 @@
 <?php
+    //header('Content-type:application/json;charset=utf-8');
     // require("php/database.php");
     
     // $database = new Database;
