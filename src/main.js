@@ -7,8 +7,8 @@ import vuetify from './plugins/vuetify'
 Vue.config.productionTip = false
 
 const MyPlugin = {
-  install(Vue:any) {
-    Vue.prototype.parseJwt = (token:string) => {
+  install(Vue) {
+    Vue.prototype.parseJwt = (token) => {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
@@ -18,7 +18,7 @@ const MyPlugin = {
       return JSON.parse(jsonPayload);
     }
 
-    Vue.prototype.saveToken = (token: string) => {
+    Vue.prototype.saveToken = (token) => {
       let parsedToken = null;
       try{
         parsedToken = Vue.prototype.parseJwt(token)
@@ -27,16 +27,16 @@ const MyPlugin = {
       }
 
       //TODO: find better way to store user data
-      (<any>window).UserData = parsedToken;
+      window.UserData = parsedToken;
 
       localStorage.token = token;
     }
     
-    Vue.prototype.post = async (url:string, data = {}, options:any = {}) => {
+    Vue.prototype.post = async (url, data = {}, options = {}) => {
       return Vue.prototype.wm(url, data, options = {}, 'POST')
     }
 
-    Vue.prototype.wm = async (url:string, data = {}, options:any = {}, method:string) => {
+    Vue.prototype.wm = async (url, data = {}, options = {}, method) => {
       let response;
       let success = false;
 

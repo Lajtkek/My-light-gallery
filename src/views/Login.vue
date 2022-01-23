@@ -38,10 +38,10 @@ export default Vue.extend({
       password: "",
       //validation
       usernameRules: [
-        (v: string) => !!v || 'Name is required',
+        (v) => !!v || 'Name is required',
       ],
       passwordRules: [
-        (v: string) => !!v || 'Password is required',
+        (v) => !!v || 'Password is required',
       ],
     };
   },
