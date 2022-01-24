@@ -39,7 +39,7 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
-                          label="Název"
+                          label="Name"
                           v-model="file.newName"
                         ></v-text-field>
                       </v-col>
@@ -58,7 +58,7 @@
                       <v-col cols="12" sm="6" md="6">
                         <v-textarea
                           v-model="file.description"
-                          placeholder="Popis"
+                          placeholder="Description"
                           background-color="grey lighten-2"
                           solo
                         ></v-textarea>
