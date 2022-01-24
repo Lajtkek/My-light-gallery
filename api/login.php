@@ -48,6 +48,7 @@
 
     $token = $authHelper->generateToken([
         'idUser' => $user["idUser"],
+        'username' => $user["username"],
         'roles' => 'tbd',
         'exp' => $exp
     ]);

@@ -48,29 +48,22 @@ export default Vue.extend({
   components: {},
   methods: {
     async login () {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       if(this.$refs.form.validate()){
         let result = await Vue.prototype.post("api/login", { username: this.username, password: this.password }, {});
         if(result.data == "USERNAME_PARAM_REQUIRED" || result.data == "IVALID_PASSWORD"){
           //todo add toaster
           console.log("invalid username or password")
         }else{
-          Vue.prototype.saveToken(result.data.token);
+          localStorage.token = result.data.token;
+          location.reload();
         }
       }
     },
     reset () {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       this.$refs.form.reset()
     },
     resetValidation () {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       this.$refs.form.resetValidation();
-
-
     }
   },
 });

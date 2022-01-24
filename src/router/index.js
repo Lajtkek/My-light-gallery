@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import store from '../store/index.js'
 
 Vue.use(VueRouter)
 
@@ -9,7 +10,7 @@ const routes = [
     path: '/',
     name: 'Home',
     meta: {
-      requiresAuth: true
+      //requiresAuth: true
     },
     component: Home
   },
@@ -35,14 +36,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
   const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
-  const hasToken = !!localStorage.getItem("token");
-
+  const hasToken = !!localStorage.token;
+  
   //TODO check if token is not expired
-  console.log({
-    requiresAuth,
-    requiresGuest,
-    hasToken
-  })
   if (requiresAuth && !hasToken) {
     next("/login");
   } else if (requiresGuest && hasToken) {
@@ -51,5 +47,9 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+router.afterEach(() => {
+  store.commit('setToken', localStorage.token);
+})
 
 export default router

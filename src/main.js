@@ -17,23 +17,9 @@ const MyPlugin = {
   
       return JSON.parse(jsonPayload);
     }
-
-    Vue.prototype.saveToken = (token) => {
-      let parsedToken = null;
-      try{
-        parsedToken = Vue.prototype.parseJwt(token)
-      }catch(e){
-        console.log(`Cant parse token:${token}`)
-      }
-
-      //TODO: find better way to store user data
-      window.UserData = parsedToken;
-
-      localStorage.token = token;
-    }
     
     Vue.prototype.post = async (url, data = {}, options = {}) => {
-      return Vue.prototype.wm(url, data, options = {}, 'POST')
+      return Vue.prototype.wm(url, data, options, 'POST')
     }
 
     Vue.prototype.wm = async (url, data = {}, options = {}, method) => {
