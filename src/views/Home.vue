@@ -25,13 +25,12 @@
 </script>
 
 <style lang="less" scoped>
+  @import '../assets/styles/main.less';
   .gallery{
+    .super-flex;
+
     width: 100%;
     height: 60vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     font-size: 3rem;
   }
 </style>
