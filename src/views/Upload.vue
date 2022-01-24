@@ -13,7 +13,9 @@
           truncate-length="20"
         ></v-file-input>
         <v-card-actions class="justify-center">
-          <v-btn color="blue" @click="upload" :disabled="files.length == 0"> Review and upload </v-btn>
+          <v-btn color="blue" @click="upload" :disabled="files.length == 0">
+            Review and upload
+          </v-btn>
         </v-card-actions>
       </div>
     </div>
@@ -25,12 +27,55 @@
             {{ trimString(file.name, 20) }}
           </v-tab>
         </v-tabs>
-        <v-tabs-items v-model="editData.tab">
+        <v-tabs-items v-model="editData.tab" class="edit-wrapper">
           <v-tab-item v-for="file in editData.files" :key="file.name">
             <v-card flat>
-              <v-card-text class="edit-image-card">
-                <img :src="file.base64" class="edit-image">
-              </v-card-text>
+              <div class="edit-image-card">
+                <img :src="file.base64" class="edit-image" />
+              </div>
+              <div class="edit-image-info-card">
+                <v-form>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
+                          label="Název"
+                          v-model="file.newName"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <!-- TODO: try to do this without v-model -->
+                        <v-autocomplete 
+                          v-if="editData.hackBool"
+                          clearable
+                          v-model="editData.tagToAdd"
+                          :items="editData.tags.filter(tag => !file.tags.some(x => x.id == tag.id)).map(x => ({ text: x.title,  value: x.id}))"
+                          @change="addTag(file)" 
+                        ></v-autocomplete>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-textarea
+                          v-model="file.description"
+                          placeholder="Popis"
+                          background-color="grey lighten-2"
+                          solo
+                        ></v-textarea>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-chip
+                          v-for="tag in file.tags" :key="tag.id"
+                          close
+                          close-icon="mdi-delete"
+                          color="orange"
+                          @click:close="removeTag(file,tag)"
+                        >{{tag.title}}</v-chip>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </div>
             </v-card>
           </v-tab-item>
         </v-tabs-items>
@@ -48,39 +93,60 @@ export default Vue.extend({
   components: {
     Navbar,
   },
+  watch: {
+  },
   data: function () {
     return {
       action: "upload",
       files: [],
       editData: {
+        hackBool: true,
+        tagToAdd: null,
         tab: null,
-        files: [
-        ],
-      }
+        files: [],
+        tags: [{
+          id: 1,
+          title: "Anime",
+        },{
+          id: 2,
+          title: "/pol/",
+        },{
+          id: 3,
+          title: "/b/",
+        }]
+      },
     };
   },
   methods: {
     async upload() {
       for (const file of this.files) {
-        let splitName = file.name.split(".")
+        let splitName = file.name.split(".");
         let extension = splitName[splitName.length - 1];
 
-        if(extension != "gif" && extension != "jpg" && extension != "png"){
-          console.warn(`${file.name} is not image. Support for other filetypes will be soon™`)
+        if (extension != "gif" && extension != "jpg" && extension != "png") {
+          console.warn(
+            `${file.name} is not image. Support for other filetypes will be soon™`
+          );
           continue;
         }
 
         let base64 = await this.getBase64(file);
         this.editData.files.push({
           name: file.name,
-          base64
-        })
+          newName: file.name.replace(`.${extension}`, ""),
+          description: "",
+          tags: [],
+          file,
+          base64,
+        });
       }
       this.action = "edit";
     },
     //TODO: try to do it in css? propably not it will fuck up the compoennt
     trimString(string, length) {
-      return string.length > length ? string.substring(0, length) + '...' : string;
+      return string.length > length
+        ? string.substring(0, length) + "..."
+        : string;
     },
     getBase64(file) {
       return new Promise((resolve, reject) => {
@@ -90,19 +156,29 @@ export default Vue.extend({
           resolve(reader.result);
         };
         reader.onerror = function (error) {
-          reject('Error: ' + error);
+          reject("Error: " + error);
         };
+      });
+    },
+    addTag(file){
+      file.tags.push({...this.editData.tags.find(x => x.id == this.editData.tagToAdd)})
+      this.editData.tagToAdd = null;
+      // TODO: fix? mby not nessesary https://github.com/vuetifyjs/vuetify/issues/10765
+      this.editData.hackBool = false;
+      this.$nextTick(() => {
+        this.editData.hackBool = true;
       })
+    },
+    removeTag(file,tag){
+      file.tags = file.tags.filter(x => x.id != tag.id);
     }
   },
-  mounted() {
-    
-  },
+  mounted() {},
 });
 </script>
 
 <style lang="less" scoped>
- @import '../assets/styles/main.less';
+@import "../assets/styles/main.less";
 
 .upload-text {
   width: 100%;
@@ -127,16 +203,25 @@ export default Vue.extend({
   margin: auto;
 }
 
-.edit-image-wrapper{
+.edit-wrapper {
+  margin-bottom: 20px;
+}
+
+.edit-image-wrapper {
   width: 60%;
   min-width: 600px;
   margin: auto;
 
-  .edit-image-card{
+  .edit-image-card {
     .super-flex;
+    padding: 10px;
   }
 
-  .edit-image{
+  .edit-image-info-card {
+    min-height: 100px;
+  }
+
+  .edit-image {
     max-width: 100%;
     max-height: 600px;
     height: auto;
