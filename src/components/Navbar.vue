@@ -1,6 +1,14 @@
 <template>
   <div class="nav">
-    
+    <div class="left">
+      <router-link
+      to="/"
+      >Home</router-link>
+      <router-link
+      to="/upload"
+      v-if="$store.state.token"
+      >Upload</router-link>
+    </div>
     <div class="right">
       <div v-if="$store.state.token">
       Welcome {{$store.state.userData.username}}!&nbsp;
@@ -36,6 +44,14 @@
 <style lang="less" scoped>
   .nav{
     padding: 10px;
+
+    .left{
+      float:left;
+      a{
+        margin-right: 10px;
+        margin-left: 10px;
+      } 
+    }
 
     .right{
       float: right;

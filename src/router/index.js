@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Upload from '../views/Upload.vue'
 import store from '../store/index.js'
 
 Vue.use(VueRouter)
@@ -15,14 +16,19 @@ const routes = [
     component: Home
   },
   {
+    path: '/upload',
+    name: 'Upload',
+    meta: {
+      requiresAuth: true
+    },
+    component: Upload
+  },
+  {
     path: '/login',
     name: 'Login',
     meta: {
       requiresGuest: true
     },
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
   }
 ]
