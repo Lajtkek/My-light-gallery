@@ -12,7 +12,9 @@
     RequestHelper::getInstance()->checkMethod("POST");
     $userData = AuthHelper::getInstance()->auth();
 
-    $tags = Database::getInstance()->assocQuery("SELECT idTag, name, code, concat('#',color) as color FROM Tags");
+    //TODO: check role :RtzW:
+    //$tags = Database::getInstance()->assocQuery("SELECT idTag, name, code, concat('#',color) as color FROM Tags");
 
-    echo json_encode($tags);
-?>
+    //TODO: upload
+    //echo json_encode($tags);
+ ?>

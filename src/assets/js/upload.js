@@ -25,6 +25,9 @@ export default Vue.extend({
     };
   },
   methods: {
+    async upload(){
+        this.action = "upload-progress";
+    },
     async edit() {
       for (const file of this.files) {
         let splitName = file.name.split(".");

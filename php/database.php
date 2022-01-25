@@ -1,5 +1,4 @@
 <?php 
-
 class Database {
     private $servername = "localhost";
     private $username = "root";
@@ -27,11 +26,16 @@ class Database {
         //echo "Connected successfully";
     }
 
-    function assocQuery($sql, $parameters = []){
+    function renderSQL($sql, $parameters = []){
         foreach($parameters as $key=>$param){
             $escapedParam = mysqli_real_escape_string($this->conn, $param);
             $sql = str_replace("{".$key."}", $escapedParam, $sql);
         }
+        return $sql;
+    }
+
+    function assocQuery($sql, $parameters = []){
+        $sql = renderSQL($sql, $parameters);
 
         $result = $this->conn->query($sql);
 
@@ -42,6 +46,16 @@ class Database {
             }
         }
         return $resultArray;
+    }
+
+    function insertQuery($sql, $parameters = []){
+        $sql = renderSQL($sql, $parameters);
+
+        if ($this->conn->query($sql) === TRUE) {
+            return $this->conn->insert_id;
+        } else {
+            return FALSE;
+        }
     }
 
     public function hashPassword($password){

@@ -44,7 +44,7 @@
 <style lang="less" scoped>
   .nav{
     padding: 10px;
-
+    height: 50px;
     .left{
       float:left;
       a{

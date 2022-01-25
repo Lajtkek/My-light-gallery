@@ -13,7 +13,7 @@
         ></v-file-input>
         <v-card-actions class="justify-center">
           <v-btn color="blue" @click="edit" :disabled="files.length == 0">
-            Review and upload 
+            Review and upload
           </v-btn>
         </v-card-actions>
       </div>
@@ -52,12 +52,12 @@
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
-                          <v-autocomplete 
+                          <v-autocomplete
                             v-if="editData.hackBool"
                             clearable
                             v-model="editData.tagToAdd"
                             :items="selectableTags(file)"
-                            @change="addTag(file)" 
+                            @change="addTag(file)"
                           ></v-autocomplete>
                         </v-col>
                       </v-row>
@@ -72,12 +72,14 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="6">
                           <v-chip
-                            v-for="tag in file.tags" :key="tag.idTag"
+                            v-for="tag in file.tags"
+                            :key="tag.idTag"
                             close
                             close-icon="mdi-delete"
                             :color="tag.color"
-                            @click:close="removeTag(file,tag)"
-                          >{{tag.name}}</v-chip>
+                            @click:close="removeTag(file, tag)"
+                            >{{ tag.name }}</v-chip
+                          >
                         </v-col>
                       </v-row>
                     </v-container>
@@ -91,6 +93,9 @@
           <v-icon>mdi-arrow-right</v-icon>
         </div>
       </div>
+    </div>
+    <div v-if="action == 'upload-progress'">
+      <v-progress-linear :value="30"></v-progress-linear>
     </div>
   </div>
 </template>
