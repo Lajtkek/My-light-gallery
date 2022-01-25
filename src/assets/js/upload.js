@@ -25,7 +25,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    async upload() {
+    async edit() {
       for (const file of this.files) {
         let splitName = file.name.split(".");
         let extension = splitName[splitName.length - 1];

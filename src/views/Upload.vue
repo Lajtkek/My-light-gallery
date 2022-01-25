@@ -12,14 +12,19 @@
           truncate-length="20"
         ></v-file-input>
         <v-card-actions class="justify-center">
-          <v-btn color="blue" @click="upload" :disabled="files.length == 0">
-            Review and upload
+          <v-btn color="blue" @click="edit" :disabled="files.length == 0">
+            Review and upload 
           </v-btn>
         </v-card-actions>
       </div>
     </div>
     <div v-if="action == 'edit'">
-      <div class="edit-text">File options</div>
+      <div class="edit-text">
+        File options&nbsp;
+        <v-btn color="green" @click="upload" right class="pull-right">
+          Upload
+        </v-btn>
+      </div>
       <div class="edit-block">
         <div class="arrow" @click="move(-1)">
           <v-icon>mdi-arrow-left</v-icon>
