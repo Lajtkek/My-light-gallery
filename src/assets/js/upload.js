@@ -83,6 +83,13 @@ export default Vue.extend({
     },
     selectableTags(file){
       return this.editData.tags.filter(tag => !file.tags.some(x => x.idTag == tag.idTag)).map(x => ({ text: x.name,  value: x.idTag}))
+    },
+    move(dir){
+        this.editData.tab += dir;
+        if(dir < 0)
+            this.editData.tab = this.editData.tab < 0 ? this.editData.files.length-1 : this.editData.tab;
+        else
+            this.editData.tab %= this.files.length;
     }
   },
   async mounted() {
