@@ -67,7 +67,7 @@
                           v-for="tag in file.tags" :key="tag.idTag"
                           close
                           close-icon="mdi-delete"
-                          color="orange"
+                          :color="tag.color"
                           @click:close="removeTag(file,tag)"
                         >{{tag.name}}</v-chip>
                       </v-col>
@@ -94,6 +94,9 @@ export default Vue.extend({
     Navbar,
   },
   watch: {
+    '$store.state.fileTags': function(){
+      this.editData.tags = this.$store.state.fileTags
+    }
   },
   data: function () {
     return {
@@ -104,7 +107,7 @@ export default Vue.extend({
         tagToAdd: null,
         tab: null,
         files: [],
-        tags: []
+        tags: this.$store.state.fileTags
       },
     };
   },
@@ -170,10 +173,10 @@ export default Vue.extend({
     }
   },
   async mounted() {
-    let result = await Vue.prototype.get("tags/getAllTags");
-    if(result.success){
-      this.editData.tags = result.data;
-    }
+    // let result = await Vue.prototype.get("tags/getAllTags");
+    // if(result.success){
+    //   this.editData.tags = result.data;
+    // }
   },
 });
 </script>

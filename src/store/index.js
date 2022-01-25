@@ -15,7 +15,6 @@ export default new Vuex.Store({
       if(result.success){
         state.fileTags = result.data;
       }
-      console.log(state.fileTags);
     },
     setToken(state, token){
       if(token){
