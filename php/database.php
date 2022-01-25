@@ -7,6 +7,16 @@ class Database {
     private $database = "light_gallery";
     private $conn;
     
+    private static $instance;
+
+	public static function getInstance()
+	{
+		if (self::$instance === null) {
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
+
     function __construct() {
         $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->database);
 

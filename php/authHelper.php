@@ -3,8 +3,18 @@ class AuthHelper {
     //https://developer.okta.com/blog/2019/02/04/create-and-verify-jwts-in-php
     private $secret = "7c32d31dbdd39f2111da0b1dea59e94f3ed715fd8cdf0ca3ecf354ca1a2e3e30";
 
-    public function __construct() {
-    }
+    private static $instance;
+
+	private function __construct()
+	{}
+
+	public static function getInstance()
+	{
+		if (self::$instance === null) {
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
 
     public function __destruct(){
     }
@@ -45,8 +55,19 @@ class AuthHelper {
 
         return $jwt;
     }
+    
+    public function auth(){
+        if(!array_key_exists("Authorization",apache_request_headers()))
+            die("token_is_null");
+
+        $token = str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
+
+        return $this->validateToken($token);
+    }
 
     public function validateToken($token){
+        if($token == null)
+            die("token_is_null");
         // split the token
         $tokenParts = explode('.', $token);
         $header = base64_decode($tokenParts[0]);
@@ -68,11 +89,15 @@ class AuthHelper {
         $signatureInvalid = !($base64UrlSignature === $signatureProvided);
 
         if ($tokenExpired) {
-            return "expired";
+            die(json_encode([
+                "error" => "token_expired"
+            ]));
         }
 
         if ($signatureInvalid) {
-            return "invalid_signature";
+            die(json_encode([
+                "error" => "invalid_signature"
+            ]));
         }
 
         return $payload;
