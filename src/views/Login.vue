@@ -49,7 +49,7 @@ export default Vue.extend({
   methods: {
     async login () {
       if(this.$refs.form.validate()){
-        let result = await Vue.prototype.post("api/login", { username: this.username, password: this.password }, {});
+        let result = await Vue.prototype.post("login", { username: this.username, password: this.password }, {});
         if(result.data == "USERNAME_PARAM_REQUIRED" || result.data == "IVALID_PASSWORD"){
           //todo add toaster
           console.log("invalid username or password")

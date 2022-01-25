@@ -7,8 +7,16 @@ export default new Vuex.Store({
   state: {
     token: null,
     userData: null,
+    fileTags: [],
   },
   mutations: {
+    async getFileTags(state){
+      let result = await Vue.prototype.get("tags/getAllTags");
+      if(result.success){
+        state.fileTags = result.data;
+      }
+      console.log(state.fileTags);
+    },
     setToken(state, token){
       if(token){
         try{

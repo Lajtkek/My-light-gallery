@@ -17,7 +17,11 @@ const MyPlugin = {
   
       return JSON.parse(jsonPayload);
     }
-    
+
+    Vue.prototype.get = async (url, data = {}, options = {}) => {
+      return Vue.prototype.wm(url, data, options, 'GET')
+    }
+
     Vue.prototype.post = async (url, data = {}, options = {}) => {
       return Vue.prototype.wm(url, data, options, 'POST')
     }
@@ -25,7 +29,11 @@ const MyPlugin = {
     Vue.prototype.wm = async (url, data = {}, options = {}, method) => {
       let response;
       let success = false;
+      let body = null;
 
+      if(method != "GET")
+        body = JSON.stringify(data)
+        
       try{
         response = await fetch(`${process.env.VUE_APP_API_URL}/${url}${process.env.VUE_APP_API_END}`, {
           method: method,
@@ -33,7 +41,7 @@ const MyPlugin = {
             'Content-Type': 'application/json',
             'Authorization' : `Bearer ${localStorage.token}`
           },
-          body: JSON.stringify(data),
+          body
         })
       }catch(e){
         if(options.onFail)
@@ -59,7 +67,7 @@ const MyPlugin = {
       .catch((e) => { console.log(e); })
 
       return {
-        success,
+        success: success && !responseJson.error,
         data: responseJson
       };
     }

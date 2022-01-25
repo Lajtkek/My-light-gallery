@@ -44,12 +44,11 @@
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
-                        <!-- TODO: try to do this without v-model -->
                         <v-autocomplete 
                           v-if="editData.hackBool"
                           clearable
                           v-model="editData.tagToAdd"
-                          :items="editData.tags.filter(tag => !file.tags.some(x => x.id == tag.id)).map(x => ({ text: x.title,  value: x.id}))"
+                          :items="selectableTags(file)"
                           @change="addTag(file)" 
                         ></v-autocomplete>
                       </v-col>
@@ -65,12 +64,12 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-chip
-                          v-for="tag in file.tags" :key="tag.id"
+                          v-for="tag in file.tags" :key="tag.idTag"
                           close
                           close-icon="mdi-delete"
                           color="orange"
                           @click:close="removeTag(file,tag)"
-                        >{{tag.title}}</v-chip>
+                        >{{tag.name}}</v-chip>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -87,6 +86,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
+//import {clone} from "../assets/js/common";
 
 export default Vue.extend({
   name: "Upload",
@@ -104,16 +104,7 @@ export default Vue.extend({
         tagToAdd: null,
         tab: null,
         files: [],
-        tags: [{
-          id: 1,
-          title: "Anime",
-        },{
-          id: 2,
-          title: "/pol/",
-        },{
-          id: 3,
-          title: "/b/",
-        }]
+        tags: []
       },
     };
   },
@@ -140,6 +131,7 @@ export default Vue.extend({
           base64,
         });
       }
+      this.$store.commit('getFileTags');
       this.action = "edit";
     },
     //TODO: try to do it in css? propably not it will fuck up the compoennt
@@ -161,7 +153,8 @@ export default Vue.extend({
       });
     },
     addTag(file){
-      file.tags.push({...this.editData.tags.find(x => x.id == this.editData.tagToAdd)})
+      //Projistotu kopíruju, asi nebude potřeba idk
+      file.tags.push({...this.editData.tags.find(x => x.idTag == this.editData.tagToAdd)});
       this.editData.tagToAdd = null;
       // TODO: fix? mby not nessesary https://github.com/vuetifyjs/vuetify/issues/10765
       this.editData.hackBool = false;
@@ -170,10 +163,18 @@ export default Vue.extend({
       })
     },
     removeTag(file,tag){
-      file.tags = file.tags.filter(x => x.id != tag.id);
+      file.tags = file.tags.filter(x => x.idTag != tag.idTag);
+    },
+    selectableTags(file){
+      return this.editData.tags.filter(tag => !file.tags.some(x => x.idTag == tag.idTag)).map(x => ({ text: x.name,  value: x.idTag}))
     }
   },
-  mounted() {},
+  async mounted() {
+    let result = await Vue.prototype.get("tags/getAllTags");
+    if(result.success){
+      this.editData.tags = result.data;
+    }
+  },
 });
 </script>
 
