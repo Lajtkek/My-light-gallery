@@ -5,6 +5,7 @@
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     header('Content-Type: application/json; charset=utf-8');
     //=====================
+    require("../../php/phpHelper.php");
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
@@ -23,19 +24,28 @@
     $tags = RequestHelper::getInstance()->getParam("tags");
 
     $timestamp = (new DateTime())->getTimestamp();
+    
+    $permalink;
 
-    //$dirPath = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".$userData->username
+    do {
+        $permalink = PHPHelper::getInstance()->randomHash();
+        $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
+    } while (count($result) !== 0);
+
+    //CREATE DB RECORD
+    $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType) VALUES ({0}, '{1}', '{2}', '{3}')", [$userData->idUser, $filename.".".$extension, $permalink, $filetype]);
+
+    //UPLOAD FILE
     $userDirPath = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".$userData->username;
-    //$userDirPathWithTimestamp = $userDirPath."\\".$timestamp."\\";
     @mkdir($userDirPath);
-    //mkdir($userDirPathWithTimestamp);
-    $createdFile = $userDirPath."\\".str_replace('/', '_', $filename.".".$extension);
+
+    $createdFile = $userDirPath."\\".$idFile.".".$extension;
 
     //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
     $myfile = fopen($createdFile, 'wb'); 
     $data = explode(',', $base64);
 
-    fwrite($myfile, base64_decode($data[ 1 ]));
+    fwrite($myfile, base64_decode($data[1]));
 
     $file_metadata = stream_get_meta_data($myfile);
 
@@ -46,9 +56,4 @@
     echo json_encode([
         "result" => $file_metadata["uri"]
     ]);
-
-    //$tags = Database::getInstance()->assocQuery("SELECT idTag, name, code, concat('#',color) as color FROM Tags");
-
-    //TODO: upload
-    //echo json_encode($tags);
  ?>

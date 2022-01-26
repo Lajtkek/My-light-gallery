@@ -49,7 +49,7 @@ class Database {
     }
 
     function insertQuery($sql, $parameters = []){
-        $sql = renderSQL($sql, $parameters);
+        $sql = $this->renderSQL($sql, $parameters);
 
         if ($this->conn->query($sql) === TRUE) {
             return $this->conn->insert_id;
