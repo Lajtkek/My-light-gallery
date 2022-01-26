@@ -47,6 +47,9 @@ export default Vue.extend({
         this.uploadData.uploadedFiles++;
       }
     },
+    reload(){
+      window.location.reload();
+    },
     async edit() {
       for (const file of this.files) {
         let splitName = file.name.split(".");

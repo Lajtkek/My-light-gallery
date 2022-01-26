@@ -94,8 +94,23 @@
         </div>
       </div>
     </div>
-    <div v-if="action == 'upload-progress'">
-      <v-progress-linear :value="uploadData.uploadedFiles/editData.files.length*100"></v-progress-linear>
+    <div class="upload-progress-container" v-if="action == 'upload-progress'">
+      <div v-if="uploadData.uploadedFiles<editData.files.length">
+        Upload progress
+        <v-progress-linear :value="uploadData.uploadedFiles/editData.files.length*100"></v-progress-linear>
+        <div class="text-progress">
+          <!-- Todo: put in some methods? -->
+          ({{(editData.files[this.uploadData.uploadedFiles-1] || {}).name}}) Uploaded {{uploadData.uploadedFiles}} out of {{editData.files.length}} files.
+        </div>
+      </div>
+      <div v-else>
+        <h1 class="center-text">Upload complete</h1>
+        <br>
+        <!-- Lazy, but it wont cause any bugs and it is cost efficient -->
+        <v-btn color="green" @click="reload" right class="upload-more-btn">
+          Upload more
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>

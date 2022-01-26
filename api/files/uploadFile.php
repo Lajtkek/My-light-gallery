@@ -27,20 +27,21 @@
     //$dirPath = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".$userData->username
     $userDirPath = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".$userData->username;
     //$userDirPathWithTimestamp = $userDirPath."\\".$timestamp."\\";
-    mkdir($userDirPath);
+    @mkdir($userDirPath);
     //mkdir($userDirPathWithTimestamp);
     $createdFile = $userDirPath."\\".str_replace('/', '_', $filename.".".$extension);
 
-    $myfile = fopen( $createdFile, 'wb' ); 
-    $data = explode( ',', $base64 );
+    //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
+    $myfile = fopen($createdFile, 'wb'); 
+    $data = explode(',', $base64);
 
-    fwrite( $myfile, base64_decode( $data[ 1 ] ) );
+    fwrite($myfile, base64_decode($data[ 1 ]));
 
     $file_metadata = stream_get_meta_data($myfile);
 
-    fclose( $myfile ); 
+    fclose($myfile); 
 
-
+    //unlink($file_metadata["uri"]);
 
     echo json_encode([
         "result" => $file_metadata["uri"]
