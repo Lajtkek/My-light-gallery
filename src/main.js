@@ -30,15 +30,21 @@ const MyPlugin = {
       let response;
       let success = false;
       let body = null;
+      let isFormData = (data instanceof FormData);
 
-      if(method != "GET")
-        body = JSON.stringify(data)
-        
+      if(method != "GET"){
+        if(isFormData)
+          body = data;
+        else
+          body = JSON.stringify(data);
+      }
+
       try{
-        response = await fetch(`${process.env.VUE_APP_API_URL}/${url}${process.env.VUE_APP_API_END}`, {
-          method: method,
+        response = await fetch(`${process.env.VUE_APP_API_URL}${url}${process.env.VUE_APP_API_END}`, {
+          method,
+          mode: 'cors',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type':  isFormData ? 'application/x-www-form-urlencoded' : 'application/json',
             'Authorization' : `Bearer ${localStorage.token}`
           },
           body

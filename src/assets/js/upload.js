@@ -26,7 +26,22 @@ export default Vue.extend({
   },
   methods: {
     async upload(){
-        this.action = "upload-progress";
+      //foreach file
+      for(const fileData of this.editData.files){
+        let result = await Vue.prototype.post("files/uploadFile", {
+            base64: fileData.base64,
+            extension: fileData.extension,
+            fileType: fileData.file.type,
+            filename: fileData.newName,
+            tags: fileData.tags,
+            description: fileData.description
+        });
+        if(result.success){
+          console.log(result.data);
+        }
+      }
+      
+      this.action = "upload-progress";
     },
     async edit() {
       for (const file of this.files) {
@@ -43,6 +58,7 @@ export default Vue.extend({
         let base64 = await this.getBase64(file);
         this.editData.files.push({
           name: file.name,
+          extension,
           newName: file.name.replace(`.${extension}`, ""),
           description: "",
           tags: [],

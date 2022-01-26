@@ -35,7 +35,7 @@ class Database {
     }
 
     function assocQuery($sql, $parameters = []){
-        $sql = renderSQL($sql, $parameters);
+        $sql = $this->renderSQL($sql, $parameters);
 
         $result = $this->conn->query($sql);
 
