@@ -22,8 +22,14 @@
     $base64 = RequestHelper::getInstance()->getParam("base64");
     $tags = RequestHelper::getInstance()->getParam("tags");
 
+    $timestamp = (new DateTime())->getTimestamp();
 
-    $createdFile = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".str_replace('/', '_', $filename.".".$extension);
+    //$dirPath = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".$userData->username
+    $userDirPath = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".$userData->username;
+    //$userDirPathWithTimestamp = $userDirPath."\\".$timestamp."\\";
+    mkdir($userDirPath);
+    //mkdir($userDirPathWithTimestamp);
+    $createdFile = $userDirPath."\\".str_replace('/', '_', $filename.".".$extension);
 
     $myfile = fopen( $createdFile, 'wb' ); 
     $data = explode( ',', $base64 );

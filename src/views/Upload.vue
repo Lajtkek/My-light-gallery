@@ -95,7 +95,7 @@
       </div>
     </div>
     <div v-if="action == 'upload-progress'">
-      <v-progress-linear :value="30"></v-progress-linear>
+      <v-progress-linear :value="uploadData.uploadedFiles/editData.files.length*100"></v-progress-linear>
     </div>
   </div>
 </template>

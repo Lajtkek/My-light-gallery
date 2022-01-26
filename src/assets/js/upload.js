@@ -22,11 +22,16 @@ export default Vue.extend({
         files: [],
         tags: this.$store.state.fileTags
       },
+      uploadData: {
+        uploadedFiles: 0
+      }
     };
   },
   methods: {
     async upload(){
       //foreach file
+      this.uploadData.uploadedFiles = 0;
+      this.action = "upload-progress";
       for(const fileData of this.editData.files){
         let result = await Vue.prototype.post("files/uploadFile", {
             base64: fileData.base64,
@@ -39,9 +44,8 @@ export default Vue.extend({
         if(result.success){
           console.log(result.data);
         }
+        this.uploadData.uploadedFiles++;
       }
-      
-      this.action = "upload-progress";
     },
     async edit() {
       for (const file of this.files) {
