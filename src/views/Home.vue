@@ -5,6 +5,9 @@
     <div class="gallery">
       Gallery
     </div>
+    <div v-for="file in files" :key="file.idFile">
+      <img :src="`http://localhost/api/files/getFile.php?permalink=${file.permalink}`">
+    </div>
   </div>
 </template>
 
@@ -17,9 +20,16 @@
     components: {
       Navbar,
     },
+    data: function(){
+      return {
+        files: []
+      }
+    },
     methods: {
     },
-    mounted(){
+    async mounted(){
+      this.files = await Vue.prototype.get("files/getFiles");
+      this.files = this.files.data
     }
   })
 </script>
@@ -30,7 +40,7 @@
     .super-flex;
 
     width: 100%;
-    height: 60vh;
+    height: 20vh;
     font-size: 3rem;
   }
 </style>

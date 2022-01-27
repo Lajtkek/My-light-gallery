@@ -1,4 +1,5 @@
 <?php 
+require("phpHelper.php");
 class FTPHelper {
     private $ftp_server = "";
     private $ftp_port = 0;
@@ -6,6 +7,7 @@ class FTPHelper {
     private $ftp_pass = "";
     private $ftp_root = "";
     private $ftp_root_fullpath = "";
+    private $ftp;
 
     private static $instance;
 
@@ -56,6 +58,37 @@ class FTPHelper {
             return $result;
         }
         return false;
+    }
+
+    public function downloadFile($file_id, $extention){
+        $this->connect();
+
+        $path = "";
+        $fileHash = PHPHelper::getInstance()->randomHash();
+
+        do{
+            $path  = $_SERVER['DOCUMENT_ROOT']."/php/serverTempFiles/".$fileHash.".".$extention;
+        }while(file_exists($path));
+
+
+        $server_path = $this->ftp_root."/".$file_id.".".$extention;
+       
+        
+        if (ftp_get($this->ftp, $path, $server_path, FTP_BINARY)) {
+            $this->disconnect();
+            return $path;
+        } else {
+            //todo: return like 404 image
+            echo "There was a problem\n";
+        }
+        
+        $this->disconnect();
+    }
+
+    //TODO: check for security
+    public function deleteFromTemp($path){
+        //check for only cache file folder
+        unlink($path);
     }
 }
 

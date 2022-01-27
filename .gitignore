@@ -23,4 +23,5 @@ pnpm-debug.log*
 
 #custom
 /php/tempFiles/*
+/php/serverTempFiles/*
 php/ftpHelper.php
