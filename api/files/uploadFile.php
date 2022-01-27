@@ -7,6 +7,7 @@
     //=====================
     require("../../php/phpHelper.php");
     require("../../php/requestHelper.php");
+    require("../../php/ftpHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
 
@@ -32,14 +33,17 @@
         $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
     } while (count($result) !== 0);
 
+    $destinationFilename = $filename.".".$extension;
     //CREATE DB RECORD
-    $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType) VALUES ({0}, '{1}', '{2}', '{3}')", [$userData->idUser, $filename.".".$extension, $permalink, $filetype]);
+    $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType) VALUES ({0}, '{1}', '{2}', '{3}')", [$userData->idUser, $destinationFilename, $permalink, $filetype]);
 
     //UPLOAD FILE
-    $userDirPath = $_SERVER['DOCUMENT_ROOT']."\\php\\tempFiles\\".$userData->username;
+    //LOCALHOST ONLY?? 
+    $userDirPath = str_replace("/", "\\",$_SERVER['DOCUMENT_ROOT'])."\\php\\tempFiles\\".$userData->username;
     @mkdir($userDirPath);
 
-    $createdFile = $userDirPath."\\".$idFile.".".$extension;
+    $filename_ = $idFile.".".$extension;;
+    $createdFile = $userDirPath."\\".$filename_;
 
     //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
     $myfile = fopen($createdFile, 'wb'); 
@@ -51,9 +55,11 @@
 
     fclose($myfile); 
 
-    //unlink($file_metadata["uri"]);
+    $result = FTPHelper::getInstance()->uploadFile("../../php/tempFiles/".$userData->username."/".$filename_, $filename_);//.$destinationFilename);
+
+    unlink($file_metadata["uri"]);
 
     echo json_encode([
-        "result" => $file_metadata["uri"]
+        "result" => $result
     ]);
  ?>

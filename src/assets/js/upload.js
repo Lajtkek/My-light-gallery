@@ -34,6 +34,7 @@ export default Vue.extend({
       this.action = "upload-progress";
       for(const fileData of this.editData.files){
         let result = await Vue.prototype.post("files/uploadFile", {
+            name: fileData.name,
             base64: fileData.base64,
             extension: fileData.extension,
             fileType: fileData.file.type,

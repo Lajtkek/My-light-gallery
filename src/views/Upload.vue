@@ -100,7 +100,7 @@
         <v-progress-linear :value="uploadData.uploadedFiles/editData.files.length*100"></v-progress-linear>
         <div class="text-progress">
           <!-- Todo: put in some methods? -->
-          ({{(editData.files[this.uploadData.uploadedFiles-1] || {}).name}}) Uploaded {{uploadData.uploadedFiles}} out of {{editData.files.length}} files.
+          ({{(editData.files[this.uploadData.uploadedFiles]).name}}) Uploaded {{uploadData.uploadedFiles}} out of {{editData.files.length}} files.
         </div>
       </div>
       <div v-else>

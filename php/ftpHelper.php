@@ -8,28 +8,6 @@ class FTPHelper {
     private $ftp_root_fullpath = "";
     private $ftp;
 
-    private function connect(){
-        $this->ftp = ftp_connect($this->ftp_server, $this->ftp_port);
-
-        if($this->ftp === FALSE)
-            return FALSE;
-
-        // try to login
-        if (@ftp_login($this->ftp, $this->ftp_user, $this->ftp_pass)) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-
-        // set passive mode
-        ftp_pasv($ftp, true);
-        return TRUE;
-    }
-
-    private function disconnect(){
-        ftp_close($this->ftp);
-    }
-
     private static $instance;
 
 	private function __construct()
@@ -48,6 +26,42 @@ class FTPHelper {
 
     }
 
+    private function connect(){
+        $this->ftp = ftp_connect($this->ftp_server, $this->ftp_port);
+
+        if($this->ftp === FALSE)
+            return FALSE;
+
+        // try to login
+        if (@ftp_login($this->ftp, $this->ftp_user, $this->ftp_pass)) {
+            ftp_pasv($this->ftp, true);
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    private function disconnect(){
+        ftp_close($this->ftp);
+    }
+
+    public function uploadFile($localPath, $destination){
+        $destination = $this->ftp_root."/".$destination;
+        //die(file_get_contents($localPath));
+        //die(getcwd()."->".$localPath);
+        if($this->connect()){
+            $result = ftp_put(
+                $this->ftp,
+                $destination,
+                $localPath
+            );
+            //$msg = error_get_last();
+            //$result = ftp_pwd($this->ftp)."/".$destination;
+            $this->disconnect();
+            return $result;//true;//$result;//$result;
+        }
+        return false;
+    }
 }
 
 ?>
