@@ -24,40 +24,53 @@
     $base64 = RequestHelper::getInstance()->getParam("base64");
     $tags = RequestHelper::getInstance()->getParam("tags");
 
-    $timestamp = (new DateTime())->getTimestamp();
-    
-    $permalink;
+    try {
+        $timestamp = (new DateTime())->getTimestamp();
+        $permalink;
 
-    do {
-        $permalink = PHPHelper::getInstance()->randomHash();
-        $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
-    } while (count($result) !== 0);
+        do {
+            $permalink = PHPHelper::getInstance()->randomHash();
+            $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
+        } while (count($result) !== 0);
 
-    $filename = $filename.".".$extension;
-    //CREATE DB RECORD
-    $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType) VALUES ({0}, '{1}', '{2}', '{3}')", [$userData->idUser, $filename, $permalink, $filetype]);
+        $filename = $filename.".".$extension;
 
-    //UPLOAD FILE
-    //LOCALHOST ONLY?? 
-    $user_directory = "../../php/tempFiles/".$userData->username;
-    @mkdir($user_directory);
+        Database::getInstance()->beginTransaction();
+        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType) VALUES ({0}, '{1}', '{2}', '{3}')", [$userData->idUser, $filename, $permalink, $filetype]);
 
-    $db_filename = $idFile.".".$extension;
-    $tmp_file_path = $user_directory."\\".$db_filename;
+        //UPLOAD FILE
+        //LOCALHOST ONLY?? 
+        $user_directory = "../../php/tempFiles/".$userData->username;
+        @mkdir($user_directory);
 
-    //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
-    $myfile = fopen($tmp_file_path, 'wb'); 
-    $data = explode(',', $base64);
+        $db_filename = $idFile.".".$extension;
+        $tmp_file_path = $user_directory."\\".$db_filename;
 
-    fwrite($myfile, base64_decode($data[1]));
-    $file_metadata = stream_get_meta_data($myfile);
-    fclose($myfile); 
+        //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
+        $myfile = fopen($tmp_file_path, 'wb'); 
+        $data = explode(',', $base64);
 
-    $result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);//.$destinationFilename);
+        fwrite($myfile, base64_decode($data[1]));
+        $file_metadata = stream_get_meta_data($myfile);
+        fclose($myfile); 
 
-    unlink($file_metadata["uri"]);
+        $result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);
 
-    echo json_encode([
-        "result" => $result
-    ]);
+        unlink($file_metadata["uri"]);
+
+        //ADD TAGS
+        
+        Database::getInstance()->commitTransaction();
+
+        echo json_encode([
+            "result" => $result
+        ]);
+    } catch (Exception $e) {
+        Database::getInstance()->rollbackTransaction();
+        echo json_encode([
+            "error" => $e->getMessage()
+        ]);
+    } finally {
+
+    }
  ?>

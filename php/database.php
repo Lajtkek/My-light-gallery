@@ -58,6 +58,22 @@ class Database {
         }
     }
 
+    function beginTransaction(){
+        $this->conn->begin_transaction();
+    }
+
+    function commitTransaction(){
+        $this->conn->commit();
+    }
+
+    function rollbackTransaction(){
+        try{
+            $this->conn->rollback();
+        }catch (Exception $e){
+
+        }
+    }
+
     public function hashPassword($password){
         return password_hash($password, PASSWORD_DEFAULT);
     }
