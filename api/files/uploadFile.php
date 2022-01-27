@@ -24,6 +24,7 @@
     $base64 = RequestHelper::getInstance()->getParam("base64");
     $tags = RequestHelper::getInstance()->getParam("tags");
 
+    $tmp_file_path = "";
     try {
         $timestamp = (new DateTime())->getTimestamp();
         $permalink;
@@ -57,9 +58,8 @@
         $result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);
 
         unlink($file_metadata["uri"]);
-
         //ADD TAGS
-        
+
         Database::getInstance()->commitTransaction();
 
         echo json_encode([
@@ -71,6 +71,10 @@
             "error" => $e->getMessage()
         ]);
     } finally {
-
+        try{
+            unlink($tmp_file_path);
+        }catch (Exception $e){
+            
+        }
     }
  ?>
