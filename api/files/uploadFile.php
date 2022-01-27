@@ -25,8 +25,6 @@
     $tags = RequestHelper::getInstance()->getParam("tags");
 
     $tmp_file_path = "";
-    $file_metadata;
-    $file_uri;
     try {
         $timestamp = (new DateTime())->getTimestamp();
         $permalink;
@@ -55,15 +53,12 @@
 
         fwrite($myfile, base64_decode($data[1]));
         $file_metadata = stream_get_meta_data($myfile);
-        $file_uri = $file_metadata["uri"];
         fclose($myfile); 
 
         $result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);
 
+        unlink($file_metadata["uri"]);
         //ADD TAGS
-        foreach ($tags as &$tag) {
-            Database::getInstance()->insertQuery("INSERT INTO FileTags (idFile, idTag) VALUES ({0}, {1})", [$idFile, $tag->idTag]);
-        }
 
         Database::getInstance()->commitTransaction();
 
@@ -77,7 +72,7 @@
         ]);
     } finally {
         try{
-            @unlink($file_uri);
+            unlink($tmp_file_path);
         }catch (Exception $e){
             
         }
