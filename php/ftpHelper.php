@@ -6,7 +6,6 @@ class FTPHelper {
     private $ftp_pass = "";
     private $ftp_root = "";
     private $ftp_root_fullpath = "";
-    private $ftp;
 
     private static $instance;
 
@@ -32,7 +31,6 @@ class FTPHelper {
         if($this->ftp === FALSE)
             return FALSE;
 
-        // try to login
         if (@ftp_login($this->ftp, $this->ftp_user, $this->ftp_pass)) {
             ftp_pasv($this->ftp, true);
             return TRUE;
@@ -47,18 +45,15 @@ class FTPHelper {
 
     public function uploadFile($localPath, $destination){
         $destination = $this->ftp_root."/".$destination;
-        //die(file_get_contents($localPath));
-        //die(getcwd()."->".$localPath);
+
         if($this->connect()){
             $result = ftp_put(
                 $this->ftp,
                 $destination,
                 $localPath
             );
-            //$msg = error_get_last();
-            //$result = ftp_pwd($this->ftp)."/".$destination;
             $this->disconnect();
-            return $result;//true;//$result;//$result;
+            return $result;
         }
         return false;
     }
