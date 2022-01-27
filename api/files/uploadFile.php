@@ -33,29 +33,27 @@
         $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
     } while (count($result) !== 0);
 
-    $destinationFilename = $filename.".".$extension;
+    $filename = $filename.".".$extension;
     //CREATE DB RECORD
-    $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType) VALUES ({0}, '{1}', '{2}', '{3}')", [$userData->idUser, $destinationFilename, $permalink, $filetype]);
+    $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType) VALUES ({0}, '{1}', '{2}', '{3}')", [$userData->idUser, $filename, $permalink, $filetype]);
 
     //UPLOAD FILE
     //LOCALHOST ONLY?? 
-    $userDirPath = str_replace("/", "\\",$_SERVER['DOCUMENT_ROOT'])."\\php\\tempFiles\\".$userData->username;
-    @mkdir($userDirPath);
+    $user_directory = "../../php/tempFiles/".$userData->username;
+    @mkdir($user_directory);
 
-    $filename_ = $idFile.".".$extension;;
-    $createdFile = $userDirPath."\\".$filename_;
+    $db_filename = $idFile.".".$extension;
+    $tmp_file_path = $user_directory."\\".$db_filename;
 
     //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
-    $myfile = fopen($createdFile, 'wb'); 
+    $myfile = fopen($tmp_file_path, 'wb'); 
     $data = explode(',', $base64);
 
     fwrite($myfile, base64_decode($data[1]));
-
     $file_metadata = stream_get_meta_data($myfile);
-
     fclose($myfile); 
 
-    $result = FTPHelper::getInstance()->uploadFile("../../php/tempFiles/".$userData->username."/".$filename_, $filename_);//.$destinationFilename);
+    $result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);//.$destinationFilename);
 
     unlink($file_metadata["uri"]);
 
