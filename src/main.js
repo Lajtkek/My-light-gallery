@@ -18,6 +18,10 @@ const MyPlugin = {
       return JSON.parse(jsonPayload);
     }
 
+    Vue.prototype.getFile = (fileName) => {
+      return `${process.env.VUE_APP_IMAGE_ROOT}/${fileName}`;
+    }
+
     Vue.prototype.get = async (url, data = null, options = {}) => {
       return Vue.prototype.wm(url, data, options, 'GET')
     }

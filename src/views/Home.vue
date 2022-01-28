@@ -8,7 +8,7 @@
       <div v-for="file in files" :key="file.idFile" class="file">
         <!-- store the link for file in cfg -->
         <div class="file-prev">
-          <img :src="`http://localhost/resources/${file.permalink}.${file.extension}`">
+          <img :src="getFile(`${file.permalink}.${file.extension}`)">
         </div>
         <div class="file-info">
           {{ file.filename }}

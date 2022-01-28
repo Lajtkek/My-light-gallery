@@ -34,7 +34,7 @@
         $filename = $filename.".".$extension;
 
         Database::getInstance()->beginTransaction();
-        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension) VALUES ({0}, '{1}', '{2}', '{3}', '{4}')", [$userData->idUser, $filename, $permalink, $filetype, $extension]);
+        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, description) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}')", [$userData->idUser, $filename, $permalink, $filetype, $extension, $description]);
 
         $file_path = $permalink.".".$extension;
 
