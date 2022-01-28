@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Admin from '../views/Admin.vue'
 import Upload from '../views/Upload.vue'
-import store from '../store/index.js'
+import store from '../store/store.js'
 
 Vue.use(VueRouter)
 

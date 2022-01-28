@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import store from '../store/index.js'
+  import store from '../store/store.js'
 
   export default {
     name: 'Navbar',

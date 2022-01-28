@@ -4,19 +4,31 @@
     <div>
       <v-card class="edit-image-wrapper">
         <v-tabs v-model="tab" background-color="primary" dark>
-          <v-tab v-for="i in 3" :key="i">
-            {{i}}
+          <v-tab key="overview">
+            Overview
+          </v-tab>
+          <v-tab key="b">
+            b
+          </v-tab>
+          <v-tab key="c">
+            c
           </v-tab>
         </v-tabs>
         <v-tabs-items v-model="tab" class="edit-wrapper">
-          <v-tab-item :key="0">
-            a
+          <v-tab-item key="overview">
+            <div class="tab-wrapper">
+              Overview  
+            </div>
           </v-tab-item>
-          <v-tab-item :key="1">
-            b
+          <v-tab-item key="b">
+            <div class="tab-wrapper">
+              b
+            </div>
           </v-tab-item>
-          <v-tab-item :key="2">
-            c
+          <v-tab-item key="c">
+            <div class="tab-wrapper">
+              c
+            </div>
           </v-tab-item>
         </v-tabs-items>
       </v-card>
@@ -41,4 +53,7 @@ export default Vue.extend({
 </script>
 
 <style lang="less" scoped>
+.tab-wrapper{
+  min-height: 60vh;
+}
 </style>
