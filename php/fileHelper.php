@@ -1,10 +1,12 @@
 <?php 
-require("phpHelper.php");
-class FTPHelper {
+include_once("phpHelper.php");
+class FileHelper {
+    private $root_file_path;
     private static $instance;
 
 	private function __construct()
 	{
+        $this->root_file_path = $_SERVER['DOCUMENT_ROOT']."\\resources\\";
     }
 
 	public static function getInstance()
@@ -19,50 +21,19 @@ class FTPHelper {
 
     }
 
-    public function uploadFile($localPath, $destination){
-        $destination = $this->ftp_root."/".$destination;
+    public function uploadFile($path, $file_base64){
+        $file_path = $this->root_file_path.$path;
+        $myfile = fopen($file_path, 'wb'); 
+        $data = explode(',', $file_base64);
 
-        if($this->connect()){
-            $result = ftp_put(
-                $this->ftp,
-                $destination,
-                $localPath
-            );
-            $this->disconnect();
-            return $result;
-        }
-        return false;
-    }
-
-    public function downloadFile($file_id, $extention){
-        $this->connect();
-
-        $path = "";
-        $fileHash = PHPHelper::getInstance()->randomHash();
-
-        do{
-            $path  = $_SERVER['DOCUMENT_ROOT']."/resources/".$fileHash.".".$extention;
-        }while(file_exists($path));
-
-
-        $server_path = $this->ftp_root."/".$file_id.".".$extention;
-       
-        $ret = ftp_nb_get($this->ftp, $path, $server_path, FTP_BINARY);
-        while ($ret == FTP_MOREDATA) {
-            $ret = ftp_nb_continue($this->ftp);
-        }
-        if ($ret != FTP_FINISHED) {
-            return false;
-        }
-        $this->disconnect();
-        return $path;
-
+        fwrite($myfile, base64_decode($data[1]));
+        $file_metadata = stream_get_meta_data($myfile);
+        fclose($myfile); 
     }
 
     //TODO: check for security
-    public function deleteFromTemp($path){
-        //check for only cache file folder
-        unlink($path);
+    public function deleteFile($path){
+        //unlink($path);
     }
 }
 

@@ -9,11 +9,10 @@
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
+    require("../../php/fileHelper.php");
 
     RequestHelper::getInstance()->checkMethod("POST");
     $userData = AuthHelper::getInstance()->auth();
-
-    //todo check role
 
     //param structure { filename, description, file, tags }
     $filename = RequestHelper::getInstance()->getParam("filename");
@@ -40,27 +39,12 @@
         Database::getInstance()->beginTransaction();
         $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension) VALUES ({0}, '{1}', '{2}', '{3}', '{4}')", [$userData->idUser, $filename, $permalink, $filetype, $extension]);
 
-        //UPLOAD FILE
-        //LOCALHOST ONLY?? 
-        //$user_directory = "../../php/tempFiles/".$userData->username;
-        //@mkdir($user_directory);
-
-        $user_directory  = $_SERVER['DOCUMENT_ROOT']."\\resources";
-        $db_filename = $permalink.".".$extension;
-        $file_path = $user_directory."\\".$db_filename;
+        $file_path = $permalink.".".$extension;
 
         //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
-        $myfile = fopen($file_path, 'wb'); 
-        $data = explode(',', $base64);
+        FileHelper::getInstance()->uploadFile($file_path,$base64);
 
-        fwrite($myfile, base64_decode($data[1]));
-        $file_metadata = stream_get_meta_data($myfile);
-        $file_uri = $file_metadata["uri"];
-        fclose($myfile); 
 
-        //$result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);
-
-        //ADD TAGS
         foreach ($tags as &$tag) {
             Database::getInstance()->insertQuery("INSERT INTO FileTags (idFile, idTag) VALUES ({0}, {1})", [$idFile, $tag->idTag]);
         }
@@ -68,7 +52,7 @@
         Database::getInstance()->commitTransaction();
 
         echo json_encode([
-            "result" => $result
+            "result" => true
         ]);
     } catch (Exception $e) {
         Database::getInstance()->rollbackTransaction();

@@ -7,7 +7,7 @@
     //=====================
     require("../../php/database.php");
     require("../../php/requestHelper.php");
-    require("../../php/ftpHelper.php");
+    //require("../../php/ftpHelper.php");
 
     //require("../../php/authHelper.php");
 
@@ -29,10 +29,10 @@
             die("imageNotFound");
         }
 
-        $filePath = FTPHelper::getInstance()->downloadFile($file[0]["idFile"],$file[0]["extension"]);
+        //$filePath = FTPHelper::getInstance()->downloadFile($file[0]["idFile"],$file[0]["extension"]);
 
         readfile($filePath);
-        FTPHelper::getInstance()->deleteFromTemp($filePath);
+        //FTPHelper::getInstance()->deleteFromTemp($filePath);
         //echo json_encode($files);
     } catch (Exception $e) {
         header('Content-Type: application/json; charset=utf-8');
