@@ -22,7 +22,7 @@
           </v-tab-item>
           <v-tab-item key="b">
             <div class="tab-wrapper">
-              <TagEditor/>
+              <TagOverview/>
             </div>
           </v-tab-item>
           <v-tab-item key="c">
@@ -39,7 +39,7 @@
 <script>
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
-import TagEditor from "../components/TagEditor.vue";
+import TagOverview from "../components/TagOverview.vue";
 
 export default Vue.extend({
   name: "Admin",
@@ -48,7 +48,7 @@ export default Vue.extend({
       tab: "overview"
     };
   },
-  components: { Navbar,TagEditor },
+  components: { Navbar,TagOverview },
   methods: {},
 });
 </script>

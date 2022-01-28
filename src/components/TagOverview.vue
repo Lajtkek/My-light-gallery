@@ -3,7 +3,7 @@
     <v-data-table
     :headers="headers"
     :items="$store.state.fileTags"
-    :items-per-page="5"
+    :items-per-page="50"
     ></v-data-table>
   </div>
 </template>
@@ -12,7 +12,7 @@
   import store from '../store/store.js'
 
   export default {
-    name: 'TagEditor',
+    name: 'TagOverview',
     data: function(){
       return {
         headers: [
