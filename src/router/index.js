@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Admin from '../views/Admin.vue'
 import Upload from '../views/Upload.vue'
 import store from '../store/index.js'
 
@@ -24,6 +25,15 @@ const routes = [
     component: Upload
   },
   {
+    path: '/admin',
+    name: 'Admin',
+    meta: {
+      requiresAuth: true,
+      requiredRoles: ['admin']
+    },
+    component: Admin
+  },
+  {
     path: '/login',
     name: 'Login',
     meta: {
@@ -42,6 +52,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
   const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
+  const requiredRoles = to.meta.requiredRoles ?? [];
   const hasToken = !!localStorage.token;
   
   //TODO check if token is not expired
@@ -50,7 +61,11 @@ router.beforeEach((to, from, next) => {
   } else if (requiresGuest && hasToken) {
     next("/");
   }  else {
-    next();
+    if(Vue.prototype.hasRoles(requiredRoles)){
+      next();
+    }else{
+      next(false);
+    }
   }
 });
 

@@ -1,26 +1,15 @@
 <?php 
-class PHPHelper {
-    private static $instance;
 
-	private function __construct()
-	{
-    }
+function randomHash($length = 64){
+	return bin2hex(random_bytes($length));
+}
 
-	public static function getInstance()
-	{
-		if (self::$instance === null) {
-			self::$instance = new self;
-		}
-		return self::$instance;
+function assocArrayToArray($assocArray, $key){
+	$arr = [];
+	foreach ($assocArray as &$object) {
+		array_push($arr, $object[$key]);
 	}
-
-    public function __destruct(){
-
-    }
-
-	public function randomHash($length = 64){
-		return bin2hex(random_bytes($length));
-	}
+	return $arr;
 }
 
 ?>

@@ -18,6 +18,18 @@ const MyPlugin = {
       return JSON.parse(jsonPayload);
     }
 
+    Vue.prototype.hasRole = (roleName) => {
+      return store.state.userData?.roles?.includes(roleName);
+    }
+
+    Vue.prototype.hasRoles = (roleNames) => {
+      for (const roleName of roleNames) {
+        if(!store.state.userData?.roles?.includes(roleName))
+          return false;
+      }
+      return true;
+    }
+
     Vue.prototype.getFile = (fileName) => {
       return `${process.env.VUE_APP_IMAGE_ROOT}/${fileName}`;
     }

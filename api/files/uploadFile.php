@@ -27,7 +27,7 @@
         $permalink;
 
         do {
-            $permalink = PHPHelper::getInstance()->randomHash();
+            $permalink = randomHash();
             $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
         } while (count($result) !== 0);
 

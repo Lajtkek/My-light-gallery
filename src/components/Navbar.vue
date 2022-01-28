@@ -8,9 +8,13 @@
       to="/upload"
       v-if="$store.state.token"
       >Upload</router-link>
+      <router-link
+      to="/admin"
+      v-if="$store.state.token"
+      >Admin</router-link>
     </div>
     <div class="right">
-      <div v-if="$store.state.token">
+      <div v-if="hasRole('admin')">
       Welcome {{$store.state.userData.username}}!&nbsp;
       <v-btn color="blue" @click="logout" right>
         Logout
@@ -31,7 +35,7 @@
   export default {
     name: 'Navbar',
     mounted(){
-      console.log(store.state.token)
+      //console.log(store.state.token)
     },
     methods: {
       logout(){

@@ -8,6 +8,7 @@
     require("../php/requestHelper.php");
     require("../php/database.php");
     require("../php/authHelper.php");
+    require("../php/phpHelper.php");
 
     RequestHelper::getInstance()->checkMethod("POST");
 
@@ -21,6 +22,7 @@
 
     //Bude vždy jediný, protože Username je unique
     $user = $user[0];
+    $roles = Database::getInstance()->assocQuery("SELECT r.name FROM userroles ur LEFT JOIN roles r ON(r.idRole = ur.idRole) WHERE idUser = '{0}'", [$user["idUser"]]);
 
     if(!password_verify($password, $user["password"])){
         die("IVALID_PASSWORD");
@@ -33,7 +35,7 @@
     $token = AuthHelper::getInstance()->generateToken([
         'idUser' => $user["idUser"],
         'username' => $user["username"],
-        'roles' => '',
+        'roles' => assocArrayToArray($roles, "name"),
         'exp' => $exp
     ]);
 
