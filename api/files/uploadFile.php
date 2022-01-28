@@ -7,7 +7,6 @@
     //=====================
     require("../../php/phpHelper.php");
     require("../../php/requestHelper.php");
-    require("../../php/ftpHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
 
@@ -43,14 +42,15 @@
 
         //UPLOAD FILE
         //LOCALHOST ONLY?? 
-        $user_directory = "../../php/tempFiles/".$userData->username;
-        @mkdir($user_directory);
+        //$user_directory = "../../php/tempFiles/".$userData->username;
+        //@mkdir($user_directory);
 
-        $db_filename = $idFile.".".$extension;
-        $tmp_file_path = $user_directory."\\".$db_filename;
+        $user_directory  = $_SERVER['DOCUMENT_ROOT']."\\resources";
+        $db_filename = $permalink.".".$extension;
+        $file_path = $user_directory."\\".$db_filename;
 
         //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
-        $myfile = fopen($tmp_file_path, 'wb'); 
+        $myfile = fopen($file_path, 'wb'); 
         $data = explode(',', $base64);
 
         fwrite($myfile, base64_decode($data[1]));
@@ -58,7 +58,7 @@
         $file_uri = $file_metadata["uri"];
         fclose($myfile); 
 
-        $result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);
+        //$result = FTPHelper::getInstance()->uploadFile($tmp_file_path, $db_filename);
 
         //ADD TAGS
         foreach ($tags as &$tag) {
@@ -77,7 +77,7 @@
         ]);
     } finally {
         try{
-            @unlink($file_uri);
+            //@unlink($file_uri);
         }catch (Exception $e){
             
         }

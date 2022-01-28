@@ -1,12 +1,12 @@
 <template>
   <div>
     <Navbar/>
-    <!-- <hello-world /> -->
     <div class="gallery">
       Gallery
     </div>
     <div v-for="file in files" :key="file.idFile">
-      <img :src="`http://localhost/api/files/getFile.php?permalink=${file.permalink}`">
+      <!-- store the link for file in cfg -->
+      <img :src="`http://localhost/resources/${file.permalink}.${file.extension}`">
     </div>
   </div>
 </template>

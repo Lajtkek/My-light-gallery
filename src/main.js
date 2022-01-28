@@ -18,15 +18,15 @@ const MyPlugin = {
       return JSON.parse(jsonPayload);
     }
 
-    Vue.prototype.get = async (url, data = {}, options = {}) => {
+    Vue.prototype.get = async (url, data = null, options = {}) => {
       return Vue.prototype.wm(url, data, options, 'GET')
     }
 
-    Vue.prototype.post = async (url, data = {}, options = {}) => {
+    Vue.prototype.post = async (url, data = null, options = {}) => {
       return Vue.prototype.wm(url, data, options, 'POST')
     }
 
-    Vue.prototype.wm = async (url, data = {}, options = {}, method) => {
+    Vue.prototype.wm = async (url, data = null, options = {}, method) => {
       let response;
       let success = false;
       let body = null;
@@ -39,8 +39,13 @@ const MyPlugin = {
           body = JSON.stringify(data);
       }
 
+      let urlParam = "";
+      if(method == "GET" && data){
+        urlParam = data;
+      }
+
       try{
-        response = await fetch(`${process.env.VUE_APP_API_URL}${url}${process.env.VUE_APP_API_END}`, {
+        response = await fetch(`${process.env.VUE_APP_API_URL}${url}${process.env.VUE_APP_API_END}${urlParam}`, {
           method,
           mode: 'cors',
           headers: {

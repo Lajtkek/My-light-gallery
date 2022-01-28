@@ -18,7 +18,7 @@ class PHPHelper {
 
     }
 
-	public function randomHash($length = 32){
+	public function randomHash($length = 64){
 		return bin2hex(random_bytes($length));
 	}
 }

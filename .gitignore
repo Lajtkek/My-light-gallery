@@ -25,3 +25,4 @@ pnpm-debug.log*
 /php/tempFiles/*
 /php/serverTempFiles/*
 php/ftpHelper.php
+/resources/*
