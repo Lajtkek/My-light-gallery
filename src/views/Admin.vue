@@ -1,8 +1,25 @@
 <template>
   <div>
-    <Navbar/>
+    <Navbar />
     <div>
-      Admin
+      <v-card class="edit-image-wrapper">
+        <v-tabs v-model="tab" background-color="primary" dark>
+          <v-tab v-for="i in 3" :key="i">
+            {{i}}
+          </v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tab" class="edit-wrapper">
+          <v-tab-item :key="0">
+            a
+          </v-tab-item>
+          <v-tab-item :key="1">
+            b
+          </v-tab-item>
+          <v-tab-item :key="2">
+            c
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </div>
   </div>
 </template>
@@ -15,9 +32,10 @@ export default Vue.extend({
   name: "Admin",
   data: function () {
     return {
+      tab: 0
     };
   },
-  components: {Navbar},
+  components: { Navbar },
   methods: {},
 });
 </script>

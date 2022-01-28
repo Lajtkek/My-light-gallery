@@ -22,9 +22,9 @@ const MyPlugin = {
       return store.state.userData?.roles?.includes(roleName);
     }
 
-    Vue.prototype.hasRoles = (roleNames) => {
+    Vue.prototype.hasRoles = (roleNames, userData = store.state.userData) => {
       for (const roleName of roleNames) {
-        if(!store.state.userData?.roles?.includes(roleName))
+        if(!userData?.roles?.includes(roleName))
           return false;
       }
       return true;
