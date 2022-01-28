@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <v-data-table
     :headers="headers"
     :items="$store.state.fileTags"
@@ -17,7 +16,7 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
-        <v-btn @click="() => {selectedTag= { test: 'aa'} }">Add new tag</v-btn>
+        <v-btn @click="createTag()">Add new tag</v-btn>
       </v-toolbar>
     </template>
     </v-data-table>
@@ -47,6 +46,12 @@
       store.commit("getFileTags");
     },
     methods: {
+      createTag(){
+        this.$store.commit("setEditedTag", {
+          test: 123,
+          name: "",
+        })
+      }
     },
   }
 </script>

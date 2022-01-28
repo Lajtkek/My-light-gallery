@@ -8,8 +8,12 @@ export default new Vuex.Store({
     token: null,
     userData: null,
     fileTags: [],
+    editedTag: null,
   },
   mutations: {
+    async setEditedTag(state, tag){
+      state.editedTag = tag;
+    },
     async getFileTags(state){
       let result = await Vue.prototype.get("tags/getAllTags");
       if(result.success){
