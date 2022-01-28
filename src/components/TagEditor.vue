@@ -3,31 +3,24 @@
     <v-card v-if="tag != null">
       <v-container>
         <v-row>
-          <v-col cols="12" sm="6" md="4">
+          <v-col cols="6" sm="6" md="6">
+            <v-color-picker
+              mode="hexa"
+              dot-size="25"
+              swatches-max-height="200"
+              v-model="tag.color"
+            ></v-color-picker>
+          </v-col>
+          <v-col cols="6" sm="6" md="6">
             <v-text-field
               v-model="tag.name"
-              label="Dessert name"
+              label="Tag name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field
-              label="Calories"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field
-              label="Fat (g)"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field
-              label="Carbs (g)"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field
-              label="Protein (g)"
-            ></v-text-field>
+        </v-row>
+        <v-row>
+          <v-col cols="12" sm="12" md="12">
+            <v-btn @click="saveTag" class="float-right" :disabled="tag.name.length < 3">Save</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -54,10 +47,11 @@ export default {
       this.tag = store.state.editedTag;
     }
   },
-  computed: {
+  methods: {
+    saveTag(){
+      console.log(this.tag)
+    }
   },
-  mounted() {},
-  methods: {},
 };
 </script>
 

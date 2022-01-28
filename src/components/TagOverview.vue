@@ -16,7 +16,7 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
-        <v-btn @click="createTag()">Add new tag</v-btn>
+        <v-btn @click="createTag()">Create new tag</v-btn>
       </v-toolbar>
     </template>
     </v-data-table>
@@ -48,8 +48,8 @@
     methods: {
       createTag(){
         this.$store.commit("setEditedTag", {
-          test: 123,
           name: "",
+          color: "#FF9393"
         })
       }
     },
