@@ -56,16 +56,16 @@ class AuthHelper {
         return $jwt;
     }
     
-    public function auth(){
+    public function auth($required_roles = []){
         if(!array_key_exists("Authorization",apache_request_headers()))
             die("token_is_null");
 
         $token = str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
 
-        return $this->validateToken($token);
+        return $this->validateToken($token, $required_roles);
     }
 
-    public function validateToken($token){
+    public function validateToken($token, $required_roles = []){
         if($token == null)
             die("token_is_null");
         // split the token
@@ -87,6 +87,18 @@ class AuthHelper {
 
         // verify it matches the signature provided in the token
         $signatureInvalid = !($base64UrlSignature === $signatureProvided);
+
+        if(count($required_roles) > 0){
+            $user_roles = $payload->roles;
+
+            foreach ($required_roles as &$role) {
+                if(!in_array($role, $user_roles)){
+                    die(json_encode([
+                        "error" => "missing role:". $role
+                    ]));
+                }
+            }
+        }
 
         if ($tokenExpired) {
             die(json_encode([

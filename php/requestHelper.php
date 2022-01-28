@@ -33,6 +33,26 @@ class RequestHelper {
                 return null;
         }
     }
+
+    public function reject($error = null){
+        if(is_null($error)){   
+            die(json_encode([
+                "error" => true
+            ]));
+        }
+        die(json_encode([
+            "error" => $error
+        ]));
+    }
+
+    public function resolve($data = null){
+        if(is_null($data)){
+            die(json_encode([
+                "success" =>  true 
+            ]));
+        }
+        die(json_encode($tags));
+    }
 }
 
 ?>

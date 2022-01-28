@@ -10,7 +10,7 @@
     require("../../php/authHelper.php");
 
     RequestHelper::getInstance()->checkMethod("GET");
-    //$userData = AuthHelper::getInstance()->auth();
+    $userData = AuthHelper::getInstance()->auth();
 
     $tags = Database::getInstance()->assocQuery("SELECT idTag, name, code, concat('#',color) as color FROM Tags");
 
