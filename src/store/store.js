@@ -20,6 +20,10 @@ export default new Vuex.Store({
         state.fileTags = result.data;
       }
     },
+    async fileTagIU(state, tag){
+      state.fileTags = state.fileTags.filter(x => x.idTag != tag.idTag);
+      state.fileTags.push(tag);
+    },
     setToken(state, token){
       if(token){
         try{

@@ -16,11 +16,15 @@
               v-model="tag.name"
               label="Tag name"
             ></v-text-field>
+             <v-text-field
+              v-model="tag.code"
+              label="Tag code"
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" sm="12" md="12">
-            <v-btn @click="saveTag" class="float-right" :disabled="tag.name.length < 3">Save</v-btn>
+            <v-btn :loading="pendingRequests.saveTag" @click="saveTag" class="float-right" :disabled="tag.name.length < 3 || tag.code.length < 3">Save</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -29,6 +33,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import store from '../store/store.js'
 
 export default {
@@ -38,7 +43,10 @@ export default {
   data: function () {
     return {
       showDialog: false,
-      tag: null
+      tag: null,
+      pendingRequests: {
+        saveTag: false,
+      }
     };
   },
   watch: {
@@ -48,8 +56,21 @@ export default {
     }
   },
   methods: {
-    saveTag(){
-      console.log(this.tag)
+    async saveTag(){
+      this.pendingRequests.saveTag = true;
+      if(this.tag.idTag){
+        console.warn("not implementes")
+      }else{
+        let {name, code, color} = {...this.tag};
+        let result = await Vue.prototype.post("tags/tagIU", {name, code, color});
+        if(!result.error){
+          this.$store.commit('fileTagIU', result.data);
+          this.$store.commit('setEditedTag', null);
+        }else{
+          console.log("invalid username or password");
+        }
+        this.pendingRequests.saveTag = false;
+      }
     }
   },
 };

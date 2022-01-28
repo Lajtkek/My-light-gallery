@@ -37,6 +37,7 @@
           { text: 'ID', value: 'idTag' },
           { text: 'Name', value: 'name' },
           { text: 'Color', value: 'color' },
+          { text: 'Code', value: 'code' },
         ],
         tags: [],
         selectedTag: null,
@@ -49,6 +50,7 @@
       createTag(){
         this.$store.commit("setEditedTag", {
           name: "",
+          code: "",
           color: "#FF9393"
         })
       }

@@ -94,7 +94,9 @@ const MyPlugin = {
       .catch((e) => { console.log(e); })
 
       return {
+        //success == legacy
         success: success && !responseJson.error,
+        error: !success || responseJson.error,
         data: responseJson
       };
     }

@@ -9,11 +9,19 @@
     require("../../php/database.php");
     require("../../php/authHelper.php");
 
-
+    //TODO check length and shit
     $method = $_SERVER['REQUEST_METHOD'];
+    $idTag = null;
+    $action = "";
+    $name = "";
+    $code = "";
+    $color = "";
     switch ($method) {
         case "POST":
-            RequestHelper::getInstance()->resolve();
+            $name = RequestHelper::getInstance()->getParam("name", true);
+            $code = RequestHelper::getInstance()->getParam("code", true);
+            $color = RequestHelper::getInstance()->getParam("color", true);
+            $action = "CREATE";
             break;
         case "PATCH":
             RequestHelper::getInstance()->resolve();
@@ -23,10 +31,20 @@
             break;
     }
 
-    //$idTag = RequestHelper::getInstance()->getParam("idTag");
+    $db_tags = Database::getInstance()->assocQuery("SELECT idTag FROM Tags WHERE code='{0}'", [$code]);
+    $color = str_replace("#", "", $color);
 
-    
-    
+    if($action === "CREATE"){
+        if(count($db_tags) > 0){
+            RequestHelper::getInstance()->reject("not_unique");
+        }
+
+        $tag_id = Database::getInstance()->insertQuery("INSERT INTO Tags (name, code, color) VALUES ('{0}', '{1}', '{2}')", [$name, $code, $color]);
+        if(is_numeric($tag_id))
+            RequestHelper::getInstance()->resolve(["idTag" => $tag_id, "name" => $name, "code" => $code, "color" => "#".$color]);
+        else
+            RequestHelper::getInstance()->reject($tag_id);
+    }
     //RequestHelper::getInstance()->checkMethod("GET");
     //$userData = AuthHelper::getInstance()->auth();
 

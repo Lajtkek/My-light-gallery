@@ -28,7 +28,7 @@ class RequestHelper {
             return $request_data->$paramName;
         }else{
             if($required)
-                die("param '".$paramName."' is required");
+                $this->reject("param '".$paramName."' is required");
             else    
                 return null;
         }
@@ -38,6 +38,11 @@ class RequestHelper {
         if(is_null($error)){   
             die(json_encode([
                 "error" => true
+            ]));
+        }
+        if(is_string($error)){   
+            die(json_encode([
+                "error" => $error
             ]));
         }
         die(json_encode([
@@ -51,7 +56,12 @@ class RequestHelper {
                 "success" =>  true 
             ]));
         }
-        die(json_encode($tags));
+        if(is_string($data) || is_numeric($data)){   
+            die(json_encode([
+                "success" => $data
+            ]));
+        }
+        die(json_encode($data));
     }
 }
 
