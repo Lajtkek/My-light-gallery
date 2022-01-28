@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Navbar/>
     <div>
       Admin
     </div>
@@ -8,6 +9,7 @@
 
 <script>
 import Vue from "vue";
+import Navbar from "../components/Navbar.vue";
 
 export default Vue.extend({
   name: "Admin",
@@ -15,7 +17,7 @@ export default Vue.extend({
     return {
     };
   },
-  components: {},
+  components: {Navbar},
   methods: {},
 });
 </script>
