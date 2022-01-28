@@ -22,9 +22,6 @@
     $base64 = RequestHelper::getInstance()->getParam("base64");
     $tags = RequestHelper::getInstance()->getParam("tags");
 
-    $tmp_file_path = "";
-    $file_metadata;
-    $file_uri;
     try {
         $timestamp = (new DateTime())->getTimestamp();
         $permalink;
@@ -42,8 +39,7 @@
         $file_path = $permalink.".".$extension;
 
         //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
-        FileHelper::getInstance()->uploadFile($file_path,$base64);
-
+        FileHelper::getInstance()->uploadFile($file_path, $base64);
 
         foreach ($tags as &$tag) {
             Database::getInstance()->insertQuery("INSERT INTO FileTags (idFile, idTag) VALUES ({0}, {1})", [$idFile, $tag->idTag]);
