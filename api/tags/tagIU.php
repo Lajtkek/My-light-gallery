@@ -45,10 +45,4 @@
         else
             RequestHelper::getInstance()->reject($tag_id);
     }
-    //RequestHelper::getInstance()->checkMethod("GET");
-    //$userData = AuthHelper::getInstance()->auth();
-
-    //$tags = Database::getInstance()->assocQuery("SELECT idTag, name, code, concat('#',color) as color FROM Tags");
-
-    //echo json_encode($tags);
 ?>
