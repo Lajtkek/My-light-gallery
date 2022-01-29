@@ -14,10 +14,15 @@
     $userData = AuthHelper::getInstance()->auth();
 
     $private_enabled = 0;
+    //if change change vue config
+    $limit = 15;
+    $offset = RequestHelper::getInstance()->getParam("offset") ?? 0;
     // if authToken is valid (not null or not string)
     if(!is_null($userData) && !is_string($userData)){
         //pokud má alespoň jednu roli (těď je jenom admin ale bude víc roli)
         $private_enabled = (int) (count(array_intersect($userData->roles, ["admin"])) > 0);
+        // to je asi buřt
+        //$limit = 20;
     }
 
     $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, f.permalink as permalink, f.mimetype as mimeType, f.extension as extension 
@@ -30,7 +35,8 @@
                                                         t.isPublic IS NULL 
                                                         OR
                                                         t.isPublic = 1
-                                                    GROUP BY f.idFile", [$private_enabled]);
+                                                    GROUP BY f.idFile 
+                                                    LIMIT {1} OFFSET {2}", [$private_enabled, $limit, $offset]);
 
     RequestHelper::getInstance()->resolve($files);
 ?>

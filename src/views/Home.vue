@@ -15,6 +15,9 @@
         </div>
       </div>
     </div>
+    <div class="load-next-wrapper" v-if="files.length > 0 && !allFilesFetched">
+      <v-btn color="red" :loading="pendingRequests.fetchFiles" @click="loadMore">Load more</v-btn>
+    </div>
   </div>
 </template>
 
@@ -29,10 +32,27 @@
     },
     data: function(){
       return {
-        files: []
+        files: [],
+        allFilesFetched: false,
+        pendingRequests: {
+          fetchFiles: false,
+        }
       }
     },
     methods: {
+      async loadMore(){
+        this.pendingRequests.fetchFiles = true;
+        let request = await Vue.prototype.get("files/getFiles", {offset: this.files.length });
+
+        if(!request.error){
+          this.files.push(...request.data);
+          if(request.data.length < process.env.VUE_APP_FILES_PER_REQUEST){
+            this.allFilesFetched = true;
+          }
+        }
+
+        this.pendingRequests.fetchFiles = false;
+      }
     },
     async mounted(){
       this.files = await Vue.prototype.get("files/getFiles");
@@ -90,5 +110,10 @@
         padding: 20px;
       }
     }
+  }
+
+  .load-next-wrapper{
+    .super-flex;
+    margin: 20px;
   }
 </style>

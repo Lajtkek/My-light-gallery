@@ -24,7 +24,12 @@ class RequestHelper {
     public function getParam($paramName, $required = false){
         $request_body = file_get_contents('php://input');
         $request_data = json_decode($request_body);
-        if(property_exists($request_data,$paramName)){
+
+        if($_SERVER['REQUEST_METHOD'] === "GET"){
+            $request_data = (object) $_GET;
+        }
+
+        if(!is_null($request_data) && property_exists($request_data,$paramName)){
             return $request_data->$paramName;
         }else{
             if($required)
