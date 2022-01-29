@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Admin from '../views/Admin.vue'
 import Upload from '../views/Upload.vue'
+import Detail from '../views/Detail.vue'
 import store from '../store/store.js'
 
 Vue.use(VueRouter)
@@ -12,9 +13,15 @@ const routes = [
     path: '/',
     name: 'Home',
     meta: {
-      //requiresAuth: true
     },
     component: Home
+  },
+  {
+    path: '/detail/:id',
+    name: 'Detail',
+    meta: {
+    },
+    component: Detail
   },
   {
     path: '/upload',

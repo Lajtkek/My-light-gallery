@@ -5,15 +5,15 @@
       Gallery
     </div>
     <div class="file-wrapper">
-      <div v-for="file in files" :key="file.idFile" class="file">
-        <!-- store the link for file in cfg -->
-        <div class="file-prev">
-          <img :src="getFile(`${file.permalink}.${file.extension}`)">
-        </div>
-        <div class="file-info">
-          {{ file.filename }}
-        </div>
-      </div>
+      <router-link v-for="file in files" :key="file.idFile" class="file" :to="`/detail/${file.idFile}`">
+          <!-- store the link for file in cfg -->
+          <div class="file-prev">
+            <img :src="getFile(file.permalink)">
+          </div>
+          <div class="file-info">
+            {{ file.filename }}
+          </div>
+      </router-link>
     </div>
     <div class="load-next-wrapper" v-if="files.length > 0 && !allFilesFetched">
       <v-btn color="red" :loading="pendingRequests.fetchFiles" @click="loadMore">Load more</v-btn>
@@ -76,6 +76,8 @@
     flex-wrap: wrap;
 
     .file{
+      text-decoration: none;
+      cursor: pointer;
       margin: 20px;
       min-width: calc(300px - 20px);
       width: calc(20% - 20px);
@@ -99,7 +101,7 @@
           max-height: calc(100% - 20px);
         }
       }
-
+      
       .file-info{
         width: 100%;
         grid-area: bottom-bar;
@@ -108,6 +110,8 @@
         text-overflow: ellipsis;
         text-align: center;
         padding: 20px;
+        text-decoration: none;
+        color: black;
       }
     }
   }
