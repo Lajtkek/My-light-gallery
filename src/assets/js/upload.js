@@ -1,10 +1,11 @@
 import Vue from "vue";
 import Navbar from "../../components/Navbar.vue";
+import TagEditor from "../../components/TagEditor.vue";
 
 export default Vue.extend({
   name: "Upload",
   components: {
-    Navbar,
+    Navbar, TagEditor
   },
   watch: {
     '$store.state.fileTags': function(){
@@ -50,6 +51,14 @@ export default Vue.extend({
     },
     reload(){
       window.location.reload();
+    },
+    createTag(){
+      this.$store.commit("setEditedTag", {
+        name: "",
+        code: "",
+        color: "#FF9393",
+        isPublic: true,
+      });
     },
     async edit() {
       for (const file of this.files) {

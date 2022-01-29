@@ -19,7 +19,7 @@
         </v-chip>
       </template>
     </v-data-table>
-    <TagEditor :tag="selectedTag"></TagEditor>
+    <TagEditor></TagEditor>
   </div>
 </template>
 
@@ -40,7 +40,6 @@ export default {
         { text: "Public", value: "isPublic" },
       ],
       tags: [],
-      selectedTag: null,
     };
   },
   mounted() {

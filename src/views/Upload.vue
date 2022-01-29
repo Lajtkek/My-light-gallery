@@ -45,13 +45,13 @@
                   <v-form>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" sm="6" md="6">
+                        <v-col cols="12" sm="12" md="6">
                           <v-text-field
                             label="Name"
                             v-model="file.newName"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" md="6">
+                        <v-col cols="9" sm="9" md="4">
                           <v-autocomplete
                             v-if="editData.hackBool"
                             clearable
@@ -59,6 +59,9 @@
                             :items="selectableTags(file)"
                             @change="addTag(file)"
                           ></v-autocomplete>
+                        </v-col>
+                        <v-col cols="3" sm="3" md="2" class="super-flex">
+                          <v-btn @click="createTag" class="pull-right">Create tag</v-btn>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -76,6 +79,7 @@
                             :key="tag.idTag"
                             close
                             close-icon="mdi-delete"
+                            class="tag"
                             :color="tag.color"
                             @click:close="removeTag(file, tag)"
                             >{{ tag.name }}</v-chip
@@ -112,8 +116,10 @@
         </v-btn>
       </div>
     </div>
+    <TagEditor></TagEditor>
   </div>
 </template>
 
 <script src="../assets/js/upload.js" lang="ts"></script>
-<style  src="../assets/styles/upload.less" lang="less" scoped>
+<style src="../assets/styles/main.less" lang="less" scoped></style>
+<style src="../assets/styles/upload.less" lang="less" scoped></style>
