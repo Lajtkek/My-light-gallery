@@ -10,7 +10,7 @@
     //require("../../php/ftpHelper.php");
 
     require("../../php/authHelper.php");
-
+    
     RequestHelper::getInstance()->checkMethod("GET");
     $idFile = RequestHelper::getInstance()->getParam("idFile", true);
 

@@ -25,7 +25,7 @@
         //$limit = 20;
     }
 
-    $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, f.permalink as permalink, f.mimetype as mimeType, f.extension as extension 
+    $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, concat(f.permalink,'.', f.extension) as permalink, f.mimetype as mimeType, f.extension as extension 
                                                     FROM Files f
                                                     LEFT JOIN FileTags ft ON(ft.idFile = f.idFile)
                                                     LEFT JOIN Tags t ON(t.idTag = ft.idTag)

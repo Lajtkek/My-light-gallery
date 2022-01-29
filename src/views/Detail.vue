@@ -9,7 +9,14 @@
         File not found :-(
       </div>
     </div>
-    <div v-else class="loading">Loading</div>
+    <div v-else class="loading">
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
+    </div>
   </div>
 </template>
 
