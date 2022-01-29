@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Homepage from '../views/Homepage.vue'
+import Gallery from '../views/Gallery.vue'
 import Admin from '../views/Admin.vue'
 import Upload from '../views/Upload.vue'
 import Detail from '../views/Detail.vue'
@@ -11,10 +12,17 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'Homepage',
     meta: {
     },
-    component: Home
+    component: Homepage
+  },
+  {
+    path: '/overview',
+    name: 'Gallery',
+    meta: {
+    },
+    component: Gallery
   },
   {
     path: '/detail/:id',

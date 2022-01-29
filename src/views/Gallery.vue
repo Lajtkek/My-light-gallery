@@ -26,7 +26,7 @@
   import Navbar from '../components/Navbar.vue'
 
   export default Vue.extend({
-    name: 'Home',
+    name: 'Gallery',
     components: {
       Navbar,
     },
