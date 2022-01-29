@@ -20,6 +20,10 @@
               v-model="tag.code"
               label="Tag code"
             ></v-text-field>
+            <v-checkbox
+              v-model="tag.isPublic"
+              label="Public"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-row>
@@ -61,8 +65,8 @@ export default {
       if(this.tag.idTag){
         console.warn("not implementes")
       }else{
-        let {name, code, color} = {...this.tag};
-        let result = await Vue.prototype.post("tags/tagIU", {name, code, color});
+        let {name, code, color, isPublic} = {...this.tag};
+        let result = await Vue.prototype.post("tags/tagIU", {name, code, color, isPublic});
         if(!result.error){
           this.$store.commit('fileTagIU', result.data);
           this.$store.commit('setEditedTag', null);

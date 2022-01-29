@@ -37,6 +37,7 @@ export default {
         { text: "Name", value: "name" },
         { text: "Code", value: "code" },
         { text: "Color", value: "color" },
+        { text: "Public", value: "isPublic" },
       ],
       tags: [],
       selectedTag: null,
@@ -51,6 +52,7 @@ export default {
         name: "",
         code: "",
         color: "#FF9393",
+        isPublic: true,
       });
     },
   },

@@ -16,11 +16,13 @@
     $name = "";
     $code = "";
     $color = "";
+    $is_public = 0;
     switch ($method) {
         case "POST":
             $name = RequestHelper::getInstance()->getParam("name", true);
             $code = RequestHelper::getInstance()->getParam("code", true);
             $color = RequestHelper::getInstance()->getParam("color", true);
+            $is_public = (int) RequestHelper::getInstance()->getParam("isPublic", true);
             $action = "CREATE";
             break;
         case "PATCH":
@@ -39,9 +41,9 @@
             RequestHelper::getInstance()->reject("not_unique");
         }
 
-        $tag_id = Database::getInstance()->insertQuery("INSERT INTO Tags (name, code, color) VALUES ('{0}', '{1}', '{2}')", [$name, $code, $color]);
+        $tag_id = Database::getInstance()->insertQuery("INSERT INTO Tags (name, code, color, isPublic) VALUES ('{0}', '{1}', '{2}', {3})", [$name, $code, $color, $is_public]);
         if(is_numeric($tag_id))
-            RequestHelper::getInstance()->resolve(["idTag" => $tag_id, "name" => $name, "code" => $code, "color" => "#".$color]);
+            RequestHelper::getInstance()->resolve(["idTag" => $tag_id, "name" => $name, "code" => $code, "color" => "#".$color, "isPublic" => $is_public]);
         else
             RequestHelper::getInstance()->reject($tag_id);
     }
