@@ -2,8 +2,8 @@
   <div class="nav">
     <div class="left">
       <router-link
-      to="/"
-      >Home</router-link>
+      to="/overview"
+      >Overview</router-link>
       <router-link
       to="/upload"
       v-if="$store.state.token"

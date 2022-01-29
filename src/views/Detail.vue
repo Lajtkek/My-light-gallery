@@ -3,7 +3,13 @@
     <Navbar />
     <div v-if="!loading">
       <div v-if="file" class="img-wrapper">
-        <img :src="getFile(this.file.permalink)">
+        <v-img :src="getFile(this.file.permalink)" max-height="80vh" contain></v-img>
+        <div class="tag-wrapper">
+          <v-chip
+              v-for="tag in file.tags"
+              :key="tag.idTag"
+              :color="tag.color">{{ tag.name }}</v-chip>
+        </div>
       </div>
       <div v-else class="error-wrapper">
         File not found :-(
@@ -52,15 +58,14 @@ export default Vue.extend({
 
 <style lang="less" scoped>
 @import "../assets/styles/main.less";
-.img-wrapper {
+.img-wrapper{
   .super-flex;
+  flex-flow: column;
 
-  img {
-    max-height: 80vh;
-    width: auto;
+  .tag-wrapper{
+    margin: 30px;
   }
 }
-
 .loading{
   height: 30vh;
   width: 100%;
