@@ -4,6 +4,9 @@
     <div v-if="!loading">
       <div v-if="file" class="img-wrapper">
         <v-img :src="getFile(this.file.permalink)" max-height="80vh" contain></v-img>
+        <div class="filename-wrapper">
+          {{ this.file.filename }}
+        </div>
         <div class="tag-wrapper">
           <v-chip
               v-for="tag in file.tags"
@@ -62,8 +65,14 @@ export default Vue.extend({
   .super-flex;
   flex-flow: column;
 
+  .filename-wrapper{
+    .text-overflow-ddd;
+    margin: 10px;
+    width: 60%;
+  }
+
   .tag-wrapper{
-    margin: 30px;
+    margin: 10px;
   }
 }
 .loading{
