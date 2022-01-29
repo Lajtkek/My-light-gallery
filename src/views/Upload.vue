@@ -20,21 +20,11 @@
     </div>
     <div v-if="action == 'edit'">
       <div class="edit-text">
-        File options&nbsp;
-        <v-btn color="green" @click="upload" right class="pull-right">
-          Upload
-        </v-btn>
+        <span class="md">Files left {{ editData.files.length }}</span>
+        <span class="sm">Uploading {{ uploadData.files.length }} files</span>
       </div>
-      <div class="edit-block">
-        <div class="arrow" @click="move(-1)">
-          <v-icon>mdi-arrow-left</v-icon>
-        </div>
+      <div class="edit-block" v-if="editData.files.length > 0">
         <v-card class="edit-image-wrapper">
-          <v-tabs v-model="editData.tab" background-color="primary" dark>
-            <v-tab v-for="file in editData.files" :key="file.name">
-              {{ trimString(file.name, 20) }}
-            </v-tab>
-          </v-tabs>
           <v-tabs-items v-model="editData.tab" class="edit-wrapper">
             <v-tab-item v-for="file in editData.files" :key="file.name">
               <v-card flat>
@@ -93,9 +83,17 @@
             </v-tab-item>
           </v-tabs-items>
         </v-card>
-        <div class="arrow" @click="move(1)">
-          <v-icon>mdi-arrow-right</v-icon>
+        <div class="action-buttons-wrapper">
+          <div class="action-btn" @click="uploadFirst()">
+            <v-icon>mdi-arrow-right</v-icon>
+          </div>
+          <div class="action-btn error" @click="deleteFirst()">
+            <v-icon>mdi-delete</v-icon>
+          </div>
         </div>
+      </div>
+      <div class="super-flex" v-else>
+        Plase wait for all items to upload.
       </div>
     </div>
     <div class="upload-progress-container" v-if="action == 'upload-progress'">

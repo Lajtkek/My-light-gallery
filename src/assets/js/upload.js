@@ -7,9 +7,18 @@ export default Vue.extend({
   components: {
     Navbar, TagEditor
   },
+  computed: {
+    fileState() {
+      return `${this.editData.files.length}|${this.uploadData.files.length}`;
+    },
+  },
   watch: {
     '$store.state.fileTags': function(){
       this.editData.tags = this.$store.state.fileTags
+    },
+    'fileState': function(){
+      if(this.editData.files.length == 0 && this.uploadData.files.length == 0)
+        this.reload();
     }
   },
   data: function () {
@@ -19,35 +28,47 @@ export default Vue.extend({
       editData: {
         hackBool: true,
         tagToAdd: null,
-        tab: null,
+        tab: 0,
         files: [],
         tags: this.$store.state.fileTags
       },
       uploadData: {
-        uploadedFiles: 0
+        files: [],
+        filesUploaded: 0
       }
     };
   },
   methods: {
-    async upload(){
-      //foreach file
-      this.uploadData.uploadedFiles = 0;
-      this.action = "upload-progress";
-      for(const fileData of this.editData.files){
-        let result = await Vue.prototype.post("files/uploadFile", {
-            name: fileData.name,
-            base64: fileData.base64,
-            extension: fileData.extension,
-            fileType: fileData.file.type,
-            filename: fileData.newName,
-            tags: fileData.tags,
-            description: fileData.description
-        });
-        if(result.success){
-          console.log(result.data);
-        }
-        this.uploadData.uploadedFiles++;
+    async uploadFirst(){
+      let fileData = this.editData.files.shift();
+      this.$nextTick(() => {
+        this.editData.tab = 0;
+      })
+      this.uploadData.files.push(fileData);
+
+      let result = await Vue.prototype.post("files/uploadFile", {
+          name: fileData.name,
+          base64: fileData.base64,
+          extension: fileData.extension,
+          fileType: fileData.file.type,
+          filename: fileData.newName,
+          tags: fileData.tags,
+          description: fileData.description
+      });
+
+      this.uploadData.files = this.uploadData.files.filter(x => x != fileData);
+
+      if(result.error){
+        this.editData.files.push(fileData);
       }
+
+      this.uploadData.filesUploaded++;
+    },
+    async deleteFirst(){
+      this.editData.files.shift();
+      this.$nextTick(() => {
+        this.editData.tab = 0;
+      })
     },
     reload(){
       window.location.reload();
@@ -119,13 +140,6 @@ export default Vue.extend({
     },
     selectableTags(file){
       return this.editData.tags.filter(tag => !file.tags.some(x => x.idTag == tag.idTag)).map(x => ({ text: x.name,  value: x.idTag}))
-    },
-    move(dir){
-        this.editData.tab += dir;
-        if(dir < 0)
-            this.editData.tab = this.editData.tab < 0 ? this.editData.files.length-1 : this.editData.tab;
-        else
-            this.editData.tab %= this.files.length;
     }
   },
   async mounted() {
