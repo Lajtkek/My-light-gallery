@@ -1,4 +1,5 @@
 <?php 
+require_once("phpHelper.php");
 class AuthHelper {
     //https://developer.okta.com/blog/2019/02/04/create-and-verify-jwts-in-php
     private $secret = "7c32d31dbdd39f2111da0b1dea59e94f3ed715fd8cdf0ca3ecf354ca1a2e3e30";
@@ -57,18 +58,47 @@ class AuthHelper {
     }
     
     public function auth($required_roles = []){
-        if(!array_key_exists("Authorization",apache_request_headers()))
-            die("token_is_null");
+        $die_on_error = count($required_roles) > 0;
+        $token = null;
+        if(array_key_exists("Authorization",apache_request_headers()))
+            $token = str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
 
-        $token = str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
+        if($token == "undefined") $token = null;
 
-        return $this->validateToken($token, $required_roles);
+        if(!is_null($token))
+            $token = $this->parseToken($token, $die_on_error);
+
+        if(count($required_roles) > 0){
+            if(is_null($token))
+                die(json_encode([
+                    "error" => "missing token:"
+                ]));
+
+            $user_roles = $token->roles;
+
+            foreach ($required_roles as &$role) {
+                if(!in_array($role, $user_roles)){
+                    die(json_encode([
+                        "error" => "missing role:". $role
+                    ]));
+                }
+            }
+        }
+
+        return $token;
     }
 
-    public function validateToken($token, $required_roles = []){
-        if($token == null)
-            die("token_is_null");
-        // split the token
+    public function getToken(){
+        if(!array_key_exists("Authorization",apache_request_headers()))
+            return null;
+        else
+            return str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
+    }
+
+    public function parseToken($token, $die_on_error = true){
+        if(is_null($token) || !is_string($token))
+            return null;
+
         $tokenParts = explode('.', $token);
         $header = base64_decode($tokenParts[0]);
         $payload = json_decode(base64_decode($tokenParts[1]));
@@ -88,25 +118,17 @@ class AuthHelper {
         // verify it matches the signature provided in the token
         $signatureInvalid = !($base64UrlSignature === $signatureProvided);
 
-        if(count($required_roles) > 0){
-            $user_roles = $payload->roles;
-
-            foreach ($required_roles as &$role) {
-                if(!in_array($role, $user_roles)){
-                    die(json_encode([
-                        "error" => "missing role:". $role
-                    ]));
-                }
-            }
-        }
-
         if ($tokenExpired) {
+            if(!$die_on_error)
+                return "token_expired";
             die(json_encode([
                 "error" => "token_expired"
             ]));
         }
 
         if ($signatureInvalid) {
+            if(!$die_on_error)
+                return "invalid_signature";
             die(json_encode([
                 "error" => "invalid_signature"
             ]));

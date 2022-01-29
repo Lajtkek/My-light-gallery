@@ -5,7 +5,7 @@
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     header('Content-Type: application/json; charset=utf-8');
     //=====================
-    require("../../php/phpHelper.php");
+    require_once("../../php/phpHelper.php");
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");

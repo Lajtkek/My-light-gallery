@@ -40,6 +40,7 @@
     methods: {
       logout(){
         store.commit("setToken", null);
+        location.reload();
       }
     },
   }

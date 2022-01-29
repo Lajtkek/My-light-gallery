@@ -54,7 +54,10 @@ router.beforeEach((to, from, next) => {
   const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
   const requiredRoles = to.meta.requiredRoles ?? [];
   const hasToken = !!localStorage.token;
-  const userData = Vue.prototype.parseJwt(localStorage.token)
+
+  let userData = {};
+  if(hasToken)
+    userData = Vue.prototype.parseJwt(localStorage.token)
   
   //TODO check if token is not expired
   if (requiresAuth && !hasToken) {

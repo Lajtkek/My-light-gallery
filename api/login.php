@@ -8,7 +8,7 @@
     require("../php/requestHelper.php");
     require("../php/database.php");
     require("../php/authHelper.php");
-    require("../php/phpHelper.php");
+    require_once("../php/phpHelper.php");
 
     RequestHelper::getInstance()->checkMethod("POST");
 
