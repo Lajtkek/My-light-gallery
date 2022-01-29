@@ -3,7 +3,7 @@
     <Navbar />
     <div v-if="!loading">
       <div v-if="file" class="img-wrapper">
-        <v-img :src="getFile(this.file.permalink)" max-height="80vh" contain></v-img>
+        <v-img :src="getFile(this.file.permalink)" max-height="80vh" max-WIDTH="95%" contain></v-img>
         <div class="filename-wrapper">
           {{ this.file.filename }}
         </div>
