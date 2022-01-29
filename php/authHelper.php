@@ -59,11 +59,7 @@ class AuthHelper {
     
     public function auth($required_roles = []){
         $die_on_error = count($required_roles) > 0;
-        $token = null;
-        if(array_key_exists("Authorization",apache_request_headers()))
-            $token = str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
-
-        if($token == "undefined") $token = null;
+        $token = $this->getToken();
 
         if(!is_null($token))
             $token = $this->parseToken($token, $die_on_error);
@@ -89,10 +85,14 @@ class AuthHelper {
     }
 
     public function getToken(){
+        $token = null;
         if(!array_key_exists("Authorization",apache_request_headers()))
             return null;
         else
-            return str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
+            $token = str_replace("Bearer ", "", apache_request_headers()["Authorization"]);
+        
+        if($token == "undefined") $token = null;
+        return $token;
     }
 
     public function parseToken($token, $die_on_error = true){

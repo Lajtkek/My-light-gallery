@@ -14,8 +14,8 @@
     $userData = AuthHelper::getInstance()->auth();
 
     $private_enabled = 0;
-    // if authToken is valid
-    if(!is_null($userData)){
+    // if authToken is valid (not null or not string)
+    if(!is_null($userData) && !is_string($userData)){
         //pokud má alespoň jednu roli (těď je jenom admin ale bude víc roli)
         $private_enabled = (int) (count(array_intersect($userData->roles, ["admin"])) > 0);
     }
