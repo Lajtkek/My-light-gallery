@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router/router'
 import store from './store/store'
 import vuetify from './plugins/vuetify'
+import { isJson } from "../src/assets/js/common"
 
 Vue.config.productionTip = false
 
@@ -42,67 +43,67 @@ const MyPlugin = {
       return Vue.prototype.wm(url, data, options, 'POST')
     }
 
+    // options is waiting for implementation
+    // eslint-disable-next-line no-unused-vars
     Vue.prototype.wm = async (url, data = null, options = {}, method) => {
-      let response;
-      let success = false;
-      let body = null;
-      let isFormData = (data instanceof FormData);
+      return new Promise((resolve) => {
+        let body = null;
+        let isFormData = (data instanceof FormData);
 
-      if(method != "GET"){
-        if(isFormData)
-          body = data;
-        else
-          body = JSON.stringify(data);
-      }
-
-      let urlParam = "";
-      if(method == "GET" && data){
-        urlParam = "?";
-        for (const [key, value] of Object.entries(data)) {
-          urlParam += (`&${key}=${value}`);
+        if(method != "GET"){
+          if(isFormData)
+            body = data;
+          else
+            body = JSON.stringify(data);
         }
-        urlParam = urlParam.replace("&", "");
-      }
 
-      try{
-        response = await fetch(`${process.env.VUE_APP_API_URL}${url}${process.env.VUE_APP_API_END}${urlParam}`, {
-          method,
-          mode: process.env.VUE_APP_CORS_MODE,
-          headers: {
-            'Content-Type':  isFormData ? 'application/x-www-form-urlencoded' : 'application/json',
-            'Authorization' : `Bearer ${localStorage.token}`
-          },
-          body
-        })
-      }catch(e){
-        if(options.onFail)
-          await options.onFail()
-        else  
-          console.log("fail")
-
-        if(options.allways)
-          await options.allways()
-
-        return {
-          success,
-          error: e
+        let urlParam = "";
+        if(method == "GET" && data){
+          urlParam = "?";
+          for (const [key, value] of Object.entries(data)) {
+            urlParam += (`&${key}=${value}`);
+          }
+          urlParam = urlParam.replace("&", "");
         }
-      }
 
-      let responseJson = {};
-      await response.json()
-      .then(data => {
-        responseJson = data;
-        success = true;
+        try{
+          var xhr = new XMLHttpRequest();
+          xhr.open(method, `${process.env.VUE_APP_API_URL}${url}${process.env.VUE_APP_API_END}${urlParam}`);
+
+          xhr.setRequestHeader("Accept", "application/json");
+          xhr.setRequestHeader("Authorization", `Bearer ${localStorage.token}`);
+          xhr.setRequestHeader("Content-Type", "application/json");
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if(isJson(xhr.responseText)){
+                  resolve({
+                    data: JSON.parse(xhr.responseText)
+                  })
+                }else{
+                  resolve({
+                    data: xhr.responseText
+                  })
+                }
+            }};
+          
+          xhr.onerror = function (e) {
+            console.warn("Error occured when resolving xhr request")
+            console.warn(e);
+            resolve({
+              error: e
+            });
+          }
+
+          xhr.send(body);
+        }catch(e){
+          console.warn("Error occured in XHR:")
+          console.warn(e)
+          resolve({
+            error: e
+          });
+        }
       })
-      .catch((e) => { console.log(e); })
-
-      return {
-        //success == legacy
-        success: success && !responseJson.error,
-        error: !success || responseJson.error,
-        data: responseJson
-      };
     }
   }
 }

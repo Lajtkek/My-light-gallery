@@ -51,7 +51,7 @@
       async loadMore(){
         this.pendingRequests.fetchFiles = true;
         let request = await Vue.prototype.get("files/getFiles", {offset: this.files.length });
-        
+
         if(!request.error){
           this.files.push(...request.data);
           if(request.data.length < this.filesPerRequest){
@@ -63,8 +63,10 @@
       }
     },
     async mounted(){
-      this.files = await Vue.prototype.get("files/getFiles");
-      this.files = this.files.data
+      let result = await Vue.prototype.get("files/getFiles");
+
+      if(!result.error)
+        this.files = result.data;
     }
   })
 </script>

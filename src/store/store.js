@@ -16,7 +16,7 @@ export default new Vuex.Store({
     },
     async getFileTags(state){
       let result = await Vue.prototype.get("tags/getAllTags");
-      if(result.success){
+      if(!result.error){
         state.fileTags = result.data;
       }
     },
