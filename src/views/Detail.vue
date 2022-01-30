@@ -3,9 +3,9 @@
     <Navbar />
     <div v-if="!loading">
       <div v-if="file" class="img-wrapper">
-        <v-img :src="getFile(this.file.permalink)" max-height="80vh" max-WIDTH="95%" contain></v-img>
+        <v-img :src="getFile(file.permalink)" max-height="80vh" max-WIDTH="95%" contain></v-img>
         <div class="filename-wrapper">
-          {{ this.file.filename }}
+          {{ file.filename }} <v-icon class="copy-permalink" @click="copyToClipboard(`${fileRootPath}/${file.permalink}`)">mdi-content-copy</v-icon>
         </div>
         <div class="tag-wrapper">
           <v-chip
@@ -32,6 +32,7 @@
 <script>
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
+import { copyToClipboard } from "../assets/js/common";
 
 export default Vue.extend({
   name: "Detail",
@@ -39,7 +40,8 @@ export default Vue.extend({
     return {
       file: null,
       error: null,
-      loading: true
+      loading: true,
+      fileRootPath: process.env.VUE_APP_IMAGE_ROOT
     };
   },
   async mounted() {
@@ -55,7 +57,9 @@ export default Vue.extend({
     this.loading = false;
   },
   components: { Navbar },
-  methods: {},
+  methods: {
+    copyToClipboard
+  },
 });
 </script>
 
@@ -73,6 +77,10 @@ export default Vue.extend({
 
   .tag-wrapper{
     margin: 10px;
+  }
+
+  .copy-permalink{
+    cursor: pointer;
   }
 }
 .loading{
