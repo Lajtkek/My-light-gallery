@@ -18,14 +18,14 @@
     $user = Database::getInstance()->assocQuery("SELECT idUser, username, password FROM Users WHERE Username = '{0}'", [$username]);
 
     if(count($user) == 0)
-        die("USER_NOT_FOUND");
+        RequestHelper::getInstance()->reject("USER_NOT_FOUND");
 
     //Bude vždy jediný, protože Username je unique
     $user = $user[0];
     $roles = Database::getInstance()->assocQuery("SELECT r.name FROM userroles ur LEFT JOIN roles r ON(r.idRole = ur.idRole) WHERE idUser = '{0}'", [$user["idUser"]]);
 
     if(!password_verify($password, $user["password"])){
-        die("IVALID_PASSWORD");
+        RequestHelper::getInstance()->reject("IVALID_PASSWORD");
     }
 
     $exp = new DateTime();
