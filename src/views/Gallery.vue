@@ -5,15 +5,20 @@
       Gallery
     </div>
     <div class="file-wrapper">
-      <router-link v-for="file in files" :key="file.idFile" class="file" :to="`/detail/${file.idFile}`">
+      <div v-for="file in files" :key="file.idFile" class="file">
           <!-- store the link for file in cfg -->
           <div class="file-prev">
-            <img :src="getFile(file.permalink)">
+            <a :href="`/detail/${file.idFile}`" target="_blank">
+              <img :src="getFile(file.permalink)">
+            </a>
           </div>
           <div class="file-info">
-            {{ file.filename }}
+            <div class="filename">
+              {{ file.filename }} 
+            </div>
+            <v-icon class="copy-permalink" @click="copyToClipboard(`${fileRootPath}/${file.permalink}`)">mdi-content-copy</v-icon>
           </div>
-      </router-link>
+      </div>
     </div>
     <div class="load-next-wrapper" v-if="files.length > 0 && !allFilesFetched">
       <v-btn color="red" :loading="pendingRequests.fetchFiles" @click="loadMore">Load more</v-btn>
@@ -24,7 +29,7 @@
 <script lang="ts">
   import Vue from 'vue'
   import Navbar from '../components/Navbar.vue'
-
+  import { copyToClipboard } from "../assets/js/common"
   export default Vue.extend({
     name: 'Gallery',
     components: {
@@ -36,10 +41,12 @@
         allFilesFetched: false,
         pendingRequests: {
           fetchFiles: false,
-        }
+        },
+        fileRootPath: process.env.VUE_APP_IMAGE_ROOT
       }
     },
     methods: {
+      copyToClipboard,
       async loadMore(){
         this.pendingRequests.fetchFiles = true;
         let request = await Vue.prototype.get("files/getFiles", {offset: this.files.length });
@@ -77,7 +84,6 @@
 
     .file{
       text-decoration: none;
-      cursor: pointer;
       margin: 20px;
       min-width: calc(300px - 20px);
       width: calc(20% - 20px);
@@ -93,8 +99,13 @@
       "bottom-bar";
       
       .file-prev{
-        .super-flex;
         grid-area: file-prev;
+
+        a{
+          .super-flex;
+          height: 100%;
+          width: 100%;
+        }
 
         img{
           max-width: calc(100% - 20px);
@@ -103,15 +114,17 @@
       }
       
       .file-info{
+        .super-flex;
         width: 100%;
         grid-area: bottom-bar;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        text-align: center;
         padding: 20px;
+        overflow: hidden;
         text-decoration: none;
-        color: black;
+        color: black; 
+        .filename{
+          .text-overflow-ddd;
+          width: calc(100% - 48px);
+        }
       }
     }
   }
