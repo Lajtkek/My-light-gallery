@@ -20,7 +20,7 @@
           </div>
       </div>
     </div>
-    <div class="load-next-wrapper" v-if="files.length > 0 && !allFilesFetched">
+    <div class="load-next-wrapper" v-if="files.length >= filesPerRequest && !allFilesFetched">
       <v-btn color="red" :loading="pendingRequests.fetchFiles" @click="loadMore">Load more</v-btn>
     </div>
   </div>
@@ -42,6 +42,7 @@
         pendingRequests: {
           fetchFiles: false,
         },
+        filesPerRequest: process.env.VUE_APP_FILES_PER_REQUEST,
         fileRootPath: process.env.VUE_APP_IMAGE_ROOT
       }
     },
@@ -50,10 +51,10 @@
       async loadMore(){
         this.pendingRequests.fetchFiles = true;
         let request = await Vue.prototype.get("files/getFiles", {offset: this.files.length });
-
+        
         if(!request.error){
           this.files.push(...request.data);
-          if(request.data.length < process.env.VUE_APP_FILES_PER_REQUEST){
+          if(request.data.length < this.filesPerRequest){
             this.allFilesFetched = true;
           }
         }
