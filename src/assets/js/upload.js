@@ -125,9 +125,10 @@ export default Vue.extend({
         };
       });
     },
-    addTag(file){
+    addTag(file, tag = null){
+      console.log(tag)
       //Projistotu kopíruju, asi nebude potřeba idk
-      file.tags.push({...this.editData.tags.find(x => x.idTag == this.editData.tagToAdd)});
+      file.tags.push({...(tag ?? this.editData.tags.find(x => x.idTag == this.editData.tagToAdd))});
       this.editData.tagToAdd = null;
       // TODO: fix? mby not nessesary https://github.com/vuetifyjs/vuetify/issues/10765
       this.editData.hackBool = false;
@@ -143,5 +144,8 @@ export default Vue.extend({
     }
   },
   async mounted() {
+    this.$store.onTagIU = (tag) => {
+      this.addTag(this.editData.files[0], tag);
+    }
   },
 });
