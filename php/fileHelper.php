@@ -6,7 +6,8 @@ class FileHelper {
 
 	private function __construct()
 	{
-        $this->root_file_path = $_SERVER['DOCUMENT_ROOT']."\\resources\\";
+        // Only temporary (endora routes)
+        $this->root_file_path = "../../resources/";
     }
 
 	public static function getInstance()
@@ -21,14 +22,15 @@ class FileHelper {
 
     }
 
-    public function uploadFile($path, $file_base64){
-        $file_path = $this->root_file_path.$path;
+    public function uploadFile($file_path, $file_base64){
+        $temp = getcwd();
+        chdir($this->root_file_path);
         $myfile = fopen($file_path, 'wb'); 
         $data = explode(',', $file_base64);
 
         fwrite($myfile, base64_decode($data[1]));
-        $file_metadata = stream_get_meta_data($myfile);
         fclose($myfile); 
+        chdir($temp);
     }
 
     //TODO: check for security
