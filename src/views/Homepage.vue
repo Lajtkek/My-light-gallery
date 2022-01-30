@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link to="/gallery">Explore light gallery</router-link>
+    <router-link to="/overview">Explore light gallery</router-link>
   </div>
 </template>
 
