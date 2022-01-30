@@ -10,11 +10,11 @@
       >Upload</router-link>
       <router-link
       to="/admin"
-      v-if="$store.state.token"
+      v-if="hasRole('admin')"
       >Admin</router-link>
     </div>
     <div class="right">
-      <div v-if="hasRole('admin')">
+      <div v-if="$store.state.token">
       Welcome {{$store.state.userData.username}}!&nbsp;
       <v-btn color="blue" @click="logout" right>
         Logout
