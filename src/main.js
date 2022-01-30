@@ -67,7 +67,7 @@ const MyPlugin = {
       try{
         response = await fetch(`${process.env.VUE_APP_API_URL}${url}${process.env.VUE_APP_API_END}${urlParam}`, {
           method,
-          mode: 'cors',
+          mode: process.env.VUE_APP_CORS_MODE,
           headers: {
             'Content-Type':  isFormData ? 'application/x-www-form-urlencoded' : 'application/json',
             'Authorization' : `Bearer ${localStorage.token}`
