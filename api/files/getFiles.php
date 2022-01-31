@@ -17,6 +17,12 @@
     //if change change vue config
     $limit = 15;
     $offset = RequestHelper::getInstance()->getParam("offset") ?? 0;
+    $tags = RequestHelper::getInstance()->getParam("tags") ?? "";
+    $file_name = RequestHelper::getInstance()->getParam("filename") ?? "";
+    $tags = $tags == "" ? [] : explode(",", $tags);
+    
+    $tag_array = count($tags) > 0 ? implode(",",$tags) : -1;
+
     // if authToken is valid (not null or not string)
     if(!is_null($userData) && !is_string($userData)){
         //pokud má alespoň jednu roli (těď je jenom admin ale bude víc roli)
@@ -28,15 +34,17 @@
     $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, concat(f.permalink,'.', f.extension) as permalink, f.mimetype as mimeType, f.extension as extension 
                                                     FROM Files f
                                                     LEFT JOIN FileTags ft ON(ft.idFile = f.idFile)
-                                                    LEFT JOIN Tags t ON(t.idTag = ft.idTag)
+                                                    LEFT JOIN Tags t ON(t.idTag = ft.idTag AND (t.isPublic = 0))
                                                     WHERE 
-                                                        1={0}
-                                                        OR
-                                                        t.isPublic IS NULL 
-                                                        OR
-                                                        t.isPublic = 1
+                                                        f.filename LIKE '%{0}%'
+                                                        AND 
+                                                        (SELECT COUNT(rt.idTag) FROM FileTags rt WHERE rt.idFile = f.idFile AND rt.idTag IN ({1})) = {2}
                                                     GROUP BY f.idFile 
-                                                    LIMIT {1} OFFSET {2}", [$private_enabled, $limit, $offset]);
+                                                    HAVING 
+                                                        COUNT(t.idTag) = 0 
+                                                        OR
+                                                        1 = {3}    
+                                                    LIMIT {4} OFFSET {5}", [ $file_name, $tag_array, count($tags), $private_enabled, $limit, $offset]);
 
     RequestHelper::getInstance()->resolve($files);
 ?>

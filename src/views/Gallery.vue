@@ -6,7 +6,7 @@
       <v-row>
         <v-col cols="2" sm="0" md="2"> </v-col>
         <v-col cols="3" sm="12" md="3" class="super-flex">
-          <v-text-field label="Filename"></v-text-field>
+          <v-text-field v-model="filterData.filename" label="Filename"></v-text-field>
         </v-col>
         <v-col cols="4" sm="12" md="4" class="tag-filter-wrapper">
           <v-autocomplete
@@ -42,7 +42,7 @@
           </v-autocomplete>
         </v-col>
         <v-col cols="2" sm="12" md="2" class="apply-filter-btn-wrapper">
-          <v-btn>Apply filter</v-btn>
+          <v-btn @click="reloadGallery">Apply filter</v-btn>
         </v-col>
         <v-col cols="1" sm="0" md="1"> </v-col>
       </v-row>
@@ -99,6 +99,7 @@ export default Vue.extend({
         tags: [],
         values: [],
         value: null,
+        filename: ""
       },
       files: [],
       allFilesFetched: false,
@@ -113,8 +114,11 @@ export default Vue.extend({
     copyToClipboard,
     async loadMore() {
       this.pendingRequests.fetchFiles = true;
+      
       let request = await Vue.prototype.get("files/getFiles", {
         offset: this.files.length,
+        filename: this.filterData.filename,
+        tags: this.filterData.values
       });
 
       if (!request.error) {
@@ -126,12 +130,18 @@ export default Vue.extend({
 
       this.pendingRequests.fetchFiles = false;
     },
+    async reloadGallery(){
+      let result = await Vue.prototype.get("files/getFiles", {
+        filename: this.filterData.filename,
+        tags: this.filterData.values
+      });
+      if (!result.error) this.files = result.data;
+    }
   },
   async mounted() {
     this.$store.commit("getFileTags");
-    let result = await Vue.prototype.get("files/getFiles");
+    this.reloadGallery();
 
-    if (!result.error) this.files = result.data;
   },
 });
 </script>

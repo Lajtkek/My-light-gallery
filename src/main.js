@@ -61,7 +61,9 @@ const MyPlugin = {
         if(method == "GET" && data){
           urlParam = "?";
           for (const [key, value] of Object.entries(data)) {
-            urlParam += (`&${key}=${value}`);
+
+            if(value && (!Array.isArray(value) || value.length > 0))
+              urlParam += (`&${key}=${value}`);
           }
           urlParam = urlParam.replace("&", "");
         }
