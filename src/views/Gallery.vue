@@ -12,7 +12,7 @@
           <v-autocomplete
             v-model="filterData.values"
             :items="
-              filterData.tags.map((x) => ({ value: x.idTag, name: x.name }))
+              filterData.tags.map((x) => ({ value: x.idTag, name: x.name, color: x.color }))
             "
             outlined
             dense
