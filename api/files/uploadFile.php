@@ -13,7 +13,10 @@
 
     RequestHelper::getInstance()->checkMethod("POST");
     $userData = AuthHelper::getInstance()->auth();
-    
+
+    if(is_null($userData))
+        RequestHelper::getInstance()->reject("auth_required");
+
     //param structure { filename, description, file, tags }
     $filename = RequestHelper::getInstance()->getParam("filename");
     $extension = RequestHelper::getInstance()->getParam("extension");
