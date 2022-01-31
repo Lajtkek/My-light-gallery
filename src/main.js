@@ -77,9 +77,15 @@ const MyPlugin = {
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if(isJson(xhr.responseText)){
-                  resolve({
-                    data: JSON.parse(xhr.responseText)
-                  })
+                  let data = JSON.parse(xhr.responseText);
+                  if(!data.error)
+                    resolve({
+                      data
+                    })
+                  else
+                    resolve({
+                      error: data.error
+                    })
                 }else{
                   resolve({
                     data: xhr.responseText
