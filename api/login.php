@@ -22,7 +22,7 @@
 
     //Bude vždy jediný, protože Username je unique
     $user = $user[0];
-    $roles = Database::getInstance()->assocQuery("SELECT r.name FROM userroles ur LEFT JOIN roles r ON(r.idRole = ur.idRole) WHERE idUser = '{0}'", [$user["idUser"]]);
+    $roles = Database::getInstance()->assocQuery("SELECT r.name FROM UserRoles ur LEFT JOIN Roles r ON(r.idRole = ur.idRole) WHERE idUser = '{0}'", [$user["idUser"]]);
 
     if(!password_verify($password, $user["password"])){
         RequestHelper::getInstance()->reject("IVALID_PASSWORD");
