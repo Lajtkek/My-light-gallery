@@ -78,7 +78,7 @@ router.beforeEach((to, from, next) => {
   if (requiresAuth && !hasToken) {
     next("/login");
   } else if (requiresGuest && hasToken) {
-    next("/");
+    next("/overview");
   }  else {
     if(Vue.prototype.hasRoles(requiredRoles, userData)){
       next();
