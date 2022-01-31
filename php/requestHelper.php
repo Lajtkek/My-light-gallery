@@ -18,7 +18,7 @@ class RequestHelper {
 
     public function checkMethod($wantedMethod){
         if($_SERVER['REQUEST_METHOD'] != $wantedMethod)
-            die($wantedMethod."_REQUEST_REQUIRED");
+            $this->reject($wantedMethod."_REQUEST_REQUIRED");
     }
 
     public function getParam($paramName, $required = false){

@@ -7,10 +7,10 @@
           <v-tab key="overview">
             Overview
           </v-tab>
-          <v-tab key="b">
+          <v-tab key="tags">
             Tags
           </v-tab>
-          <v-tab key="c">
+          <v-tab key="users">
             Users
           </v-tab>
         </v-tabs>
@@ -20,14 +20,14 @@
               Overview  
             </div>
           </v-tab-item>
-          <v-tab-item key="b">
+          <v-tab-item key="tags">
             <div class="tab-wrapper">
               <TagOverview/>
             </div>
           </v-tab-item>
-          <v-tab-item key="c">
+          <v-tab-item key="users">
             <div class="tab-wrapper">
-              Users
+              <UserOverview/>
             </div>
           </v-tab-item>
         </v-tabs-items>
@@ -40,6 +40,7 @@
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
 import TagOverview from "../components/TagOverview.vue";
+import UserOverview from "../components/UserOverview.vue";
 
 export default Vue.extend({
   name: "Admin",
@@ -48,7 +49,7 @@ export default Vue.extend({
       tab: "overview"
     };
   },
-  components: { Navbar,TagOverview },
+  components: { Navbar,TagOverview, UserOverview },
   methods: {},
 });
 </script>

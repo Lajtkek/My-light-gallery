@@ -9,6 +9,7 @@ export default new Vuex.Store({
     userData: null,
     fileTags: [],
     editedTag: null,
+    editedUser: null
   },
   mutations: {
     async setEditedTag(state, tag){
@@ -23,8 +24,10 @@ export default new Vuex.Store({
     async fileTagIU(state, tag){
       state.fileTags = state.fileTags.filter(x => x.idTag != tag.idTag);
       state.fileTags.push(tag);
-      //TODO:check for propert event implementation
       this.onTagIU?.(tag);
+    },
+    async setEditedUser(state, user){
+      state.editedUser = user;
     },
     setToken(state, token){
       if(token){
