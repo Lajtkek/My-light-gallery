@@ -67,11 +67,12 @@ export default {
       }else{
         let {name, code, color, isPublic} = {...this.tag};
         let result = await Vue.prototype.post("tags/tagIU", {name, code, color, isPublic});
+
         if(!result.error){
           this.$store.commit('fileTagIU', result.data);
           this.$store.commit('setEditedTag', null);
         }else{
-          console.log("invalid username or password");
+          console.warn(`Error occured when saving tag error code: ${result.error}`);
         }
         this.pendingRequests.saveTag = false;
       }
