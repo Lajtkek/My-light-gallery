@@ -151,7 +151,7 @@ export default Vue.extend({
   padding-top: 20px;
 }
 .input-selected-tag {
-  margin: 4px;
+  margin: 4px !important;
 }
 .apply-filter-btn-wrapper{
   display: flex;
