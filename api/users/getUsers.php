@@ -20,9 +20,9 @@
             return $role["idUser"] == $user["idUser"];
         });
 
-        $user["roles"] = array_map(function ($role){
-            return $role["name"];
-        }, $user["roles"]);
+        // $user["roles"] = array_map(function ($role){
+        //     return $role["name"];
+        // }, $user["roles"]);
     }
 
     RequestHelper::getInstance()->resolve($users);

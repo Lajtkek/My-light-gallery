@@ -14,8 +14,8 @@
         </v-toolbar>
       </template>
       <template v-slot:item.roles="{ item }">
-        <v-chip v-for="role in item.roles" :key="role">
-          {{ role }}
+        <v-chip v-for="role in item.roles" :key="role.idRole">
+          {{ role.name }}
         </v-chip>
       </template>
     </v-data-table>
@@ -53,7 +53,9 @@ export default {
     createUser() {
       this.$store.commit("setEditedUser", {
         username: "",
-        code: "",
+        password: "",
+        email: "",
+        roles: [],
         isApproved: true,
       });
     },
