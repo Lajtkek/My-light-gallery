@@ -6,7 +6,7 @@
       >Overview</router-link>
       <router-link
       to="/upload"
-      v-if="$store.state.token"
+      v-if="hasRole('admin')"
       >Upload</router-link>
       <router-link
       to="/admin"

@@ -12,10 +12,7 @@
     require("../../php/fileHelper.php");
 
     RequestHelper::getInstance()->checkMethod("POST");
-    $userData = AuthHelper::getInstance()->auth();
-
-    if(is_null($userData))
-        RequestHelper::getInstance()->reject("auth_required");
+    $userData = AuthHelper::getInstance()->auth(["admin"]);
 
     //param structure { filename, description, file, tags }
     $filename = RequestHelper::getInstance()->getParam("filename");
