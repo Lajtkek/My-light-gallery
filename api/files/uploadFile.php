@@ -35,14 +35,16 @@
         } while (count($result) !== 0);
 
         $filename = $filename.".".$extension;
-
-        Database::getInstance()->beginTransaction();
-        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, description) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}')", [$userData->idUser, $filename, $permalink, $filetype, $extension, $description]);
-
         $file_path = $permalink.".".$extension;
-
+        
         //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
         FileHelper::getInstance()->uploadFile($file_path, $base64);
+        $size_in_kB = FileHelper::getInstance()->getFileSize($file_path); //kB;
+
+        Database::getInstance()->beginTransaction();
+        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, size, description) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", [$userData->idUser, $filename, $permalink, $filetype, $extension, $size_in_kB, $description]);
+
+
 
         foreach ($tags as &$tag) {
             Database::getInstance()->insertQuery("INSERT INTO FileTags (idFile, idTag) VALUES ({0}, {1})", [$idFile, $tag->idTag]);

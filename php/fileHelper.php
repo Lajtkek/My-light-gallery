@@ -24,6 +24,7 @@ class FileHelper {
 
     public function uploadFile($file_path, $file_base64){
         $temp = getcwd();
+        // combine but not nessesary
         chdir($this->root_file_path);
         $myfile = fopen($file_path, 'wb'); 
         $data = explode(',', $file_base64);
@@ -31,6 +32,15 @@ class FileHelper {
         fwrite($myfile, base64_decode($data[1]));
         fclose($myfile); 
         chdir($temp);
+    }
+
+    public function getFileSize($file_path){
+        $temp = getcwd();
+        chdir($this->root_file_path);
+        //todo more precise
+        $size = filesize($file_path);
+        chdir($temp);
+        return $size;
     }
 
     //TODO: check for security
