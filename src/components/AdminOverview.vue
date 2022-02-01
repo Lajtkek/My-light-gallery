@@ -2,7 +2,7 @@
   <div>
     <div v-if="galleryData != null" class="wrapper">
       <div class="graph-wrapper">
-        <div class="text">Zaplnění discu</div>
+        <div class="text">Used drive space</div>
         <v-progress-circular
           :rotate="90"
           :size="300"
@@ -18,7 +18,7 @@
         </v-progress-circular>
       </div>
       <div class="graph-wrapper">
-        <div class="text">Zaplnění databáze</div>
+        <div class="text">Used database space</div>
         <v-progress-circular
           :rotate="90"
           :size="300"
