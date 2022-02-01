@@ -3,7 +3,12 @@ class Database {
     private $servername = "localhost";
     private $username = "root";
     private $password = "";
-    public $database = "light_gallery";
+    private $database = "light_gallery";
+
+    public function getDatabase(){
+        return $this->database;
+    }
+
     private $conn;
     
     private static $instance;
