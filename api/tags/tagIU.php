@@ -26,7 +26,7 @@
             $action = "CREATE";
             break;
         case "PATCH":
-            RequestHelper::getInstance()->resolve();
+            RequestHelper::getInstance()->reject("not_implemented");
             break;
         default:
             RequestHelper::getInstance()->reject("POST_OR_PATCH_REQUIRED");

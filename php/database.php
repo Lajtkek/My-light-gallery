@@ -74,6 +74,29 @@ class Database {
         }
     }
 
+    public function getUsers($user_ids = []){
+        $filter_ids = count($user_ids) > 0 ? 1 : 0;
+        $user_ids = $filter_ids == 1 ? "(".implode(",",$user_ids,).")" : "(0)";
+
+        $users = $this->assocQuery("SELECT idUser, username, email, isApproved, createdAt FROM Users WHERE idUser IN {0} OR {1} = 0 ORDER BY idUser", [$user_ids, $filter_ids]);
+        $roles = $this->assocQuery("SELECT ur.idUser, r.name, r.idRole FROM UserRoles ur LEFT JOIN Roles r ON(r.idRole = ur.idRole)  WHERE ur.idUser IN {0} OR {1} = 0 ORDER BY r.name asc", [$user_ids, $filter_ids]);
+    
+        foreach ($users as &$user) {
+            $user["roles"] = array_filter($roles, function ($role) use (&$user){
+                return $role["idUser"] == $user["idUser"];
+            });
+
+            $user["roles"] = array_map(function ($role){
+                return [
+                    "idRole" => $role["idRole"],
+                    "name" => $role["name"]
+                ];
+            }, $user["roles"]);
+        }
+
+        return $users;
+    }
+
     public function hashPassword($password){
         return password_hash($password, PASSWORD_DEFAULT);
     }

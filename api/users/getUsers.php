@@ -12,18 +12,7 @@
     RequestHelper::getInstance()->checkMethod("GET");
     $userData = AuthHelper::getInstance()->auth(["admin"]);
 
-    $users = Database::getInstance()->assocQuery("SELECT idUser, username, email, isApproved, createdAt FROM Users ORDER BY idUser");
-    $roles = Database::getInstance()->assocQuery("SELECT ur.idUser, r.name FROM UserRoles ur LEFT JOIN Roles r ON(r.idRole = ur.idRole) ORDER BY r.name asc");
-
-    foreach ($users as &$user) {
-        $user["roles"] = array_filter($roles, function ($role) use (&$user){
-            return $role["idUser"] == $user["idUser"];
-        });
-
-        // $user["roles"] = array_map(function ($role){
-        //     return $role["name"];
-        // }, $user["roles"]);
-    }
+    $users = Database::getInstance()->getUsers();
 
     RequestHelper::getInstance()->resolve($users);
 ?>

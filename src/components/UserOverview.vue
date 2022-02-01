@@ -19,7 +19,7 @@
         </v-chip>
       </template>
     </v-data-table>
-    <UserEditor/>
+    <UserEditor @onUserIU="onUserIU"/>
   </div>
 </template>
 
@@ -50,6 +50,10 @@ export default {
     }
   },
   methods: {
+    onUserIU(user){
+      this.users = this.users.filter(x => x.idUser != user.idUser);
+      this.users.push(user);
+    },
     createUser() {
       this.$store.commit("setEditedUser", {
         username: "",

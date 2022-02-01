@@ -9,42 +9,63 @@
     require("../../php/database.php");
     require("../../php/authHelper.php");
 
-    // //TODO check length and shit
-    // $method = $_SERVER['REQUEST_METHOD'];
-    // $idTag = null;
-    // $action = "";
-    // $name = "";
-    // $code = "";
-    // $color = "";
-    // $is_public = 0;
-    // switch ($method) {
-    //     case "POST":
-    //         $name = RequestHelper::getInstance()->getParam("name", true);
-    //         $code = RequestHelper::getInstance()->getParam("code", true);
-    //         $color = RequestHelper::getInstance()->getParam("color", true);
-    //         $is_public = (int) RequestHelper::getInstance()->getParam("isPublic", true);
-    //         $action = "CREATE";
-    //         break;
-    //     case "PATCH":
-    //         RequestHelper::getInstance()->resolve();
-    //         break;
-    //     default:
-    //         RequestHelper::getInstance()->reject("POST_OR_PATCH_REQUIRED");
-    //         break;
-    // }
+    AuthHelper::getInstance()->auth(["admin"]);
+    //TODO check length and shit
+    $method = $_SERVER['REQUEST_METHOD'];
+    $idUser = null;
+    $username = "";
+    $password = "";
+    $email = "";
+    $is_approved = "";
+    $roles = "";
+    switch ($method) {
+        case "POST":
+            $username = RequestHelper::getInstance()->getParam("username", true);
+            $password = password_hash(RequestHelper::getInstance()->getParam("password", true), PASSWORD_DEFAULT);
+            $email = RequestHelper::getInstance()->getParam("email", true);
+            $is_approved = (int) RequestHelper::getInstance()->getParam("isApproved", true);
+            $roles = RequestHelper::getInstance()->getParam("roles", true);
+            $action = "CREATE";
+            break;
+        case "PATCH":
+            RequestHelper::getInstance()->reject("not_implemented");
+            break;
+        default:
+            RequestHelper::getInstance()->reject("POST_OR_PATCH_REQUIRED");
+            break;
+    }
 
-    // $db_tags = Database::getInstance()->assocQuery("SELECT idTag FROM Tags WHERE code='{0}'", [$code]);
-    // $color = str_replace("#", "", $color);
 
-    // if($action === "CREATE"){
-    //     if(count($db_tags) > 0){
-    //         RequestHelper::getInstance()->reject("not_unique");
-    //     }
+    if($action === "CREATE"){
+        $db_users = Database::getInstance()->assocQuery("SELECT username, email FROM Users WHERE email = '{0}' OR username = '{1}'", [$email, $username]);
 
-    //     $tag_id = Database::getInstance()->insertQuery("INSERT INTO Tags (name, code, color, isPublic) VALUES ('{0}', '{1}', '{2}', {3})", [$name, $code, $color, $is_public]);
-    //     if(is_numeric($tag_id))
-    //         RequestHelper::getInstance()->resolve(["idTag" => $tag_id, "name" => $name, "code" => $code, "color" => "#".$color, "isPublic" => $is_public]);
-    //     else
-    //         RequestHelper::getInstance()->reject($tag_id);
-    // }
+        if(count($db_users) > 0){
+            if($db_users[0]["email"] == $email)
+                RequestHelper::getInstance()->reject("EMAIL_NOT_UNIQUE");
+            else
+                RequestHelper::getInstance()->reject("USERNAME_NOT_UNIQUE");
+        }
+
+        Database::getInstance()->beginTransaction();
+        try{
+            $user_id = Database::getInstance()->insertQuery("INSERT INTO Users (username, password, email, isApproved) VALUES ('{0}', '{1}', '{2}', {3})", [$username, $password, $email, $is_approved]);
+            
+            if(count($roles) > 0){
+                $roleInsert = "";
+                foreach ($roles as &$role) {
+                    $roleInsert .= "(".$user_id.",".$role."),";
+                }
+                $roleInsert = rtrim($roleInsert, ',');
+
+                Database::getInstance()->insertQuery("INSERT INTO UserRoles (idUser, idRole) VALUES {0}", [$roleInsert]);
+            }
+            Database::getInstance()->commitTransaction();
+        }catch(Exception $e){
+            RequestHelper::getInstance()->reject($e);
+            Database::getInstance()->rollbackTransaction();
+        }
+        
+        $created_user = Database::getInstance()->getUsers([$user_id])[0];
+        RequestHelper::getInstance()->resolve($created_user);
+    }
 ?>

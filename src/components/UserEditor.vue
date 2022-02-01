@@ -67,7 +67,6 @@ import store from "../store/store.js";
 
 export default {
   name: "UserEditor",
-  props: {},
   data: function () {
     return {
       showDialog: false,
@@ -100,24 +99,25 @@ export default {
       if (this.user.idUser) {
         console.warn("not implemented");
       } else {
-        let { name, code, color, isPublic } = { ...this.user };
-        let result = await Vue.prototype.post("tags/userIU", {
-          name,
-          code,
-          color,
-          isPublic,
+        let { username, password, email, isApproved, roles } = { ...this.user };
+        let result = await Vue.prototype.post("users/userIU", {
+          username, 
+          password,
+          email,
+          isApproved, 
+          roles
         });
 
         if (!result.error) {
-          this.$store.commit("userIU", result.data);
-          this.$store.commit("setEditedUser", null);
+          this.$emit('onUserIU', result.data)
         } else {
           console.warn(
             `Error occured when saving user error code: ${result.error}`
           );
         }
-        this.pendingRequests.saveUser = false;
       }
+      this.$store.commit("setEditedUser", null);
+      this.pendingRequests.saveUser = false;
     },
   },
 };
