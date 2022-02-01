@@ -6,40 +6,32 @@
       <v-row>
         <v-col cols="2" sm="0" md="2"> </v-col>
         <v-col cols="3" sm="12" md="3" class="super-flex">
-          <v-text-field v-model="filterData.filename" label="Filename"></v-text-field>
+          <v-text-field
+            v-model="filterData.filename"
+            label="Filename"
+          ></v-text-field>
         </v-col>
         <v-col cols="4" sm="12" md="4" class="tag-filter-wrapper">
           <v-autocomplete
-            v-model="filterData.values"
-            :items="
-              filterData.tags.map((x) => ({ value: x.idTag, name: x.name, color: x.color }))
-            "
-            outlined
-            dense
-            chips
-            small-chips
-            label="Tags"
+            @input="filterData.tagSearch = ''"
+            :search-input.sync="filterData.tagSearch"
             multiple
-          >
-            <template v-slot:selection="data">
+            clearable
+            v-model="filterData.values"
+            :items="selectTags"
+            ><template v-slot:selection="data">
               <v-chip
-                class="input-selected-tag"
                 v-bind="data.attrs"
                 :input-value="data.selected"
+                close
                 :color="data.item.color"
+                @click="data.select"
+                @click:close="remove(data.item)"
               >
-                {{ data.item.name }}
+                {{ data.item.text }}
               </v-chip>
-            </template>
-            <template v-slot:item="data">
-              <v-list-item-content>
-                <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                <v-list-item-subtitle
-                  v-html="data.item.group"
-                ></v-list-item-subtitle>
-              </v-list-item-content>
-            </template>
-          </v-autocomplete>
+            </template></v-autocomplete
+          >
         </v-col>
         <v-col cols="2" sm="12" md="2" class="apply-filter-btn-wrapper">
           <v-btn @click="reloadGallery">Apply filter</v-btn>
@@ -93,13 +85,23 @@ export default Vue.extend({
       this.filterData.tags = this.$store.state.fileTags;
     },
   },
+  computed: {
+    selectTags() {
+      return this.filterData.tags.map((x) => ({
+        color: x.color,
+        text: x.name,
+        value: x.idTag,
+      }));
+    },
+  },
   data: function () {
     return {
       filterData: {
         tags: [],
         values: [],
         value: null,
-        filename: ""
+        filename: "",
+        tagSearch: ""
       },
       files: [],
       allFilesFetched: false,
@@ -112,13 +114,18 @@ export default Vue.extend({
   },
   methods: {
     copyToClipboard,
+    remove(item) {
+      this.filterData.values = this.filterData.values.filter(
+        (x) => x != item.value
+      );
+    },
     async loadMore() {
       this.pendingRequests.fetchFiles = true;
-      
+
       let request = await Vue.prototype.get("files/getFiles", {
         offset: this.files.length,
         filename: this.filterData.filename,
-        tags: this.filterData.values
+        tags: this.filterData.values,
       });
 
       if (!request.error) {
@@ -130,18 +137,17 @@ export default Vue.extend({
 
       this.pendingRequests.fetchFiles = false;
     },
-    async reloadGallery(){
+    async reloadGallery() {
       let result = await Vue.prototype.get("files/getFiles", {
         filename: this.filterData.filename,
-        tags: this.filterData.values
+        tags: this.filterData.values,
       });
       if (!result.error) this.files = result.data;
-    }
+    },
   },
   async mounted() {
     this.$store.commit("getFileTags");
     this.reloadGallery();
-
   },
 });
 </script>
@@ -163,7 +169,7 @@ export default Vue.extend({
 .input-selected-tag {
   margin: 4px !important;
 }
-.apply-filter-btn-wrapper{
+.apply-filter-btn-wrapper {
   display: flex;
   justify-content: flex-start;
   align-items: center;
