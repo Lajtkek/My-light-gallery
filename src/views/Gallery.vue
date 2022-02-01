@@ -162,11 +162,6 @@ export default Vue.extend({
   height: 20vh;
   font-size: 3rem;
 }
-
-//todo put into some wrapper
-.tag-filter-wrapper {
-  padding-top: 20px;
-}
 .input-selected-tag {
   margin: 4px !important;
 }
