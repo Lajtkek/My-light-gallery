@@ -17,8 +17,8 @@
     $db_size =  Database::getInstance()->assocQuery("SELECT 
                     ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) 'totalDatabaseSize' 
                 FROM information_schema.tables 
-                WHERE table_schema = 'light_gallery'
-                GROUP BY table_schema; ")[0]; 
+                WHERE table_schema = '{0}'
+                GROUP BY table_schema; ", [Database::getInstance()->database])[0]; 
 
     //todo config
     RequestHelper::getInstance()->resolve([
