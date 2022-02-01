@@ -17,7 +17,7 @@
         <v-tabs-items v-model="tab" class="edit-wrapper">
           <v-tab-item key="overview">
             <div class="tab-wrapper">
-              Overview  
+              <AdminOverview/>  
             </div>
           </v-tab-item>
           <v-tab-item key="tags">
@@ -39,6 +39,7 @@
 <script>
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
+import AdminOverview from "../components/AdminOverview.vue";
 import TagOverview from "../components/TagOverview.vue";
 import UserOverview from "../components/UserOverview.vue";
 
@@ -49,7 +50,7 @@ export default Vue.extend({
       tab: "overview"
     };
   },
-  components: { Navbar,TagOverview, UserOverview },
+  components: { Navbar, AdminOverview,TagOverview, UserOverview },
   methods: {},
 });
 </script>
