@@ -17,7 +17,7 @@
     //param structure { filename, description, file, tags }
     $filename = RequestHelper::getInstance()->getParam("filename");
     $extension = RequestHelper::getInstance()->getParam("extension");
-    $filetype = RequestHelper::getInstance()->getParam("fileType");
+    $mimeType = RequestHelper::getInstance()->getParam("mimeType");
     $description = RequestHelper::getInstance()->getParam("description");
     $base64 = RequestHelper::getInstance()->getParam("base64");
     $tags = RequestHelper::getInstance()->getParam("tags");
@@ -39,7 +39,7 @@
         $size_in_kB = FileHelper::getInstance()->getFileSize($file_path); //kB;
 
         Database::getInstance()->beginTransaction();
-        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, size, description) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", [$userData->idUser, $filename, $permalink, $filetype, $extension, $size_in_kB, $description]);
+        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, size, description) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", [$userData->idUser, $filename, $permalink, $mimeType, $extension, $size_in_kB, $description]);
 
 
 

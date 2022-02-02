@@ -9,6 +9,7 @@
           counter
           multiple
           show-size
+          accept="image/*,video/*"
           truncate-length="20"
         ></v-file-input>
         <v-card-actions class="justify-center">
@@ -29,7 +30,7 @@
             <v-tab-item v-for="file in editData.files" :key="file.name">
               <v-card flat>
                 <div class="edit-image-card">
-                  <img :src="file.base64" class="edit-image" />
+                  <FilePreview :file="file" class="edit-image"></FilePreview>
                 </div>
                 <div class="edit-image-info-card">
                   <v-form>

@@ -1,11 +1,14 @@
 import Vue from "vue";
+import FilePreview from "../../components/FilePreview.vue";
 import Navbar from "../../components/Navbar.vue";
 import TagEditor from "../../components/TagEditor.vue";
 
 export default Vue.extend({
   name: "Upload",
   components: {
-    Navbar, TagEditor
+    Navbar, 
+    TagEditor,
+    FilePreview
   },
   computed: {
     fileState() {
@@ -50,7 +53,7 @@ export default Vue.extend({
           name: fileData.name,
           base64: fileData.base64,
           extension: fileData.extension,
-          fileType: fileData.file.type,
+          mimeType: fileData.file.type,
           filename: fileData.newName,
           tags: fileData.tags,
           description: fileData.description
@@ -85,11 +88,9 @@ export default Vue.extend({
       for (const file of this.files) {
         let splitName = file.name.split(".");
         let extension = splitName[splitName.length - 1];
-
-        if (extension != "gif" && extension != "jpg" && extension != "png") {
-          console.warn(
-            `${file.name} is not image. Support for other filetypes will be soon™`
-          );
+        
+        if (!file.type.includes("video") && !file.type.includes("image")) {
+          console.warn(`${file.name} is not image or video. Support for other filetypes will be soon™`);
           continue;
         }
 
@@ -97,6 +98,7 @@ export default Vue.extend({
         this.editData.files.push({
           name: file.name,
           extension,
+          mimeType: file.type,
           newName: file.name.replace(`.${extension}`, ""),
           description: "",
           tags: [],

@@ -3,7 +3,9 @@
     <Navbar />
     <div v-if="!loading">
       <div v-if="file" class="img-wrapper">
-        <v-img :src="getFile(file.permalink)" max-height="80vh" max-WIDTH="95%" contain></v-img>
+        <div class="file">
+          <FilePreview :file="file"></FilePreview>
+        </div>
         <div class="filename-wrapper">
           {{ file.filename }} <v-icon class="copy-permalink" @click="copyToClipboard(`${fileRootPath}/${file.permalink}`)">mdi-content-copy</v-icon>
         </div>
@@ -32,10 +34,15 @@
 <script>
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
+import FilePreview from "../components/FilePreview.vue";
 import { copyToClipboard } from "../assets/js/common";
 
 export default Vue.extend({
   name: "Detail",
+  components: {
+    Navbar,
+    FilePreview
+  },
   data: function () {
     return {
       file: null,
@@ -56,7 +63,6 @@ export default Vue.extend({
     }
     this.loading = false;
   },
-  components: { Navbar },
   methods: {
     copyToClipboard
   },
@@ -81,6 +87,11 @@ export default Vue.extend({
 
   .copy-permalink{
     cursor: pointer;
+  }
+
+  .file{
+    max-width: 80vh;
+    height: 60vh;
   }
 }
 .loading{

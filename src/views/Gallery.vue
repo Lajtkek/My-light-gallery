@@ -43,11 +43,8 @@
     </v-container>
     <div class="file-wrapper">
       <div v-for="file in files" :key="file.idFile" class="file">
-        <!-- store the link for file in cfg -->
         <div class="file-prev">
-          <a :href="`/detail/${file.idFile}`" target="_blank">
-            <img :src="getFile(file.permalink)" />
-          </a>
+          <FilePreview :file="file"></FilePreview>
         </div>
         <div class="file-info">
           <div class="filename">
@@ -56,8 +53,11 @@
           <v-icon
             class="copy-permalink"
             @click="copyToClipboard(`${fileRootPath}/${file.permalink}`)"
-            >mdi-content-copy</v-icon
-          >
+            >mdi-content-copy
+          </v-icon>
+          <a :href="`/detail/${file.idFile}`" target="_blank" class="no-link">
+            <v-icon class="copy-permalink">mdi-arrow-expand</v-icon>
+          </a>
         </div>
       </div>
     </div>
@@ -72,14 +72,17 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
+import FilePreview from "../components/FilePreview.vue";
 import { copyToClipboard } from "../assets/js/common";
+
 export default Vue.extend({
   name: "Gallery",
   components: {
     Navbar,
+    FilePreview
   },
   watch: {
     "$store.state.fileTags": function () {
@@ -102,7 +105,7 @@ export default Vue.extend({
         values: [],
         value: null,
         filename: "",
-        tagSearch: ""
+        tagSearch: "",
       },
       files: [],
       allFilesFetched: false,
@@ -194,17 +197,6 @@ export default Vue.extend({
 
     .file-prev {
       grid-area: file-prev;
-
-      a {
-        .super-flex;
-        height: 100%;
-        width: 100%;
-      }
-
-      img {
-        max-width: calc(100% - 20px);
-        max-height: calc(100% - 20px);
-      }
     }
 
     .file-info {
@@ -217,7 +209,7 @@ export default Vue.extend({
       color: black;
       .filename {
         .text-overflow-ddd;
-        width: calc(100% - 48px);
+        width: calc(100% - 80px);
       }
     }
   }
