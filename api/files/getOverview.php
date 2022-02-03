@@ -23,11 +23,10 @@
     //todo config
     RequestHelper::getInstance()->resolve([
         "totalFileSize" =>  (double) $total_filesize["totalFileSize"],
-        //endora max disc space 6GB
-        "maxFilesize" => 6 * 1024 * 1024,
+        "maxFilesize" => ConfigHelper::getInstance()->getConfigValue("max_file_size"),
         "totalDatabaseSize" => (double) $db_size["totalDatabaseSize"],
         //endora max db space 60 MB
-        "maxDatabaseSize" => 60 * 1024,
+        "maxDatabaseSize" => ConfigHelper::getInstance()->getConfigValue("max_database_size"),
     ]);
 
 ?>
