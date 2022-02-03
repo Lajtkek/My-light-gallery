@@ -5,6 +5,7 @@
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     header('Content-Type: application/json; charset=utf-8');
     //=====================
+    require("../../php/configHelper.php");
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
@@ -14,8 +15,7 @@
     $userData = AuthHelper::getInstance()->auth();
 
     $private_enabled = 0;
-    //if change change vue config
-    $limit = 15;
+    $limit = ConfigHelper::getInstance()->getConfigValue("file_fetch_limit");
     $offset = RequestHelper::getInstance()->getParam("offset") ?? 0;
     $tags = RequestHelper::getInstance()->getParam("tags") ?? "";
     $file_name = RequestHelper::getInstance()->getParam("filename") ?? "";
@@ -27,8 +27,6 @@
     if(!is_null($userData) && !is_string($userData)){
         //pokud má alespoň jednu roli (těď je jenom admin ale bude víc roli)
         $private_enabled = (int) (count(array_intersect($userData->roles, ["admin"])) > 0);
-        // to je asi buřt
-        //$limit = 20;
     }
 
     $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, concat(f.permalink,'.', f.extension) as permalink, f.mimetype as mimeType, f.extension as extension 
@@ -46,5 +44,8 @@
                                                         1 = {3}    
                                                     LIMIT {4} OFFSET {5}", [ $file_name, $tag_array, count($tags), $private_enabled, $limit, $offset]);
 
-    RequestHelper::getInstance()->resolve($files);
+    RequestHelper::getInstance()->resolve([
+        "limit" => $limit,
+        "files" => $files
+    ]);
 ?>

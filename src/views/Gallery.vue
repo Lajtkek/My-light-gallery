@@ -63,7 +63,7 @@
     </div>
     <div
       class="load-next-wrapper"
-      v-if="files.length >= filesPerRequest && !allFilesFetched"
+      v-if="canLoadMore && !allFilesFetched"
     >
       <v-btn color="red" :loading="pendingRequests.fetchFiles" @click="loadMore"
         >Load more</v-btn
@@ -112,7 +112,7 @@ export default Vue.extend({
       pendingRequests: {
         fetchFiles: false,
       },
-      filesPerRequest: process.env.VUE_APP_FILES_PER_REQUEST,
+      canLoadMore: false,
       fileRootPath: process.env.VUE_APP_IMAGE_ROOT,
     };
   },
@@ -133,8 +133,8 @@ export default Vue.extend({
       });
 
       if (!request.error) {
-        this.files.push(...request.data);
-        if (request.data.length < this.filesPerRequest) {
+        this.files.push(...request.data.files);
+        if (request.data.files.length < request.data.limit) {
           this.allFilesFetched = true;
         }
       }
@@ -146,7 +146,8 @@ export default Vue.extend({
         filename: this.filterData.filename,
         tags: this.filterData.values,
       });
-      if (!result.error) this.files = result.data;
+      if (!result.error) this.files = result.data.files;
+      this.canLoadMore = result.data.files.length >= result.data.limit
     },
   },
   async mounted() {
