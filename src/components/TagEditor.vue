@@ -14,6 +14,7 @@
           <v-col cols="6" sm="6" md="6">
             <v-text-field
               v-model="tag.name"
+              @input="updateTagCode"
               label="Tag name"
             ></v-text-field>
              <v-text-field
@@ -60,6 +61,10 @@ export default {
     }
   },
   methods: {
+    updateTagCode(){
+      let code = this.tag.name.replaceAll(" ", "_").toUpperCase();
+      this.tag.code = code;
+    },
     async saveTag(){
       this.pendingRequests.saveTag = true;
       if(this.tag.idTag){

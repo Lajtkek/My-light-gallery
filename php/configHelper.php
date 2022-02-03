@@ -11,7 +11,15 @@ class ConfigHelper {
 
 	private function __construct()
 	{
-        $this->config = parse_ini_file($_SERVER['DOCUMENT_ROOT']."/appConfig.ini");
+        // Todo refactor
+        $temp = getcwd();
+        while(!file_exists("appConfig.ini")){
+            chdir("../");
+        }
+
+        $this->config = parse_ini_file("appConfig.ini");
+
+        chdir($temp);
 
         if($this->config == false){
             throw new Exception("config couldnt be loaded");
