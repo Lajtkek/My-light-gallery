@@ -6,6 +6,7 @@
     header('Content-Type: application/json; charset=utf-8');
     //=====================
     require_once("../../php/phpHelper.php");
+    require_once("../../php/configHelper.php");
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
@@ -25,9 +26,10 @@
     try {
         $timestamp = (new DateTime())->getTimestamp();
         $permalink;
-
+        $hash_size = (int) ConfigHelper::getInstance()->getConfigValue("hash_size");
+        
         do {
-            $permalink = randomHash();
+            $permalink = randomHash($hash_size);
             $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
         } while (count($result) !== 0);
 
