@@ -1,13 +1,16 @@
 <?php 
 require_once("phpHelper.php");
+require_once("configHelper.php");
 class AuthHelper {
     //https://developer.okta.com/blog/2019/02/04/create-and-verify-jwts-in-php
-    private $secret = "7c32d31dbdd39f2111da0b1dea59e94f3ed715fd8cdf0ca3ecf354ca1a2e3e30";
+    private $secret;
 
     private static $instance;
 
 	private function __construct()
-	{}
+	{
+        $this->secret = ConfigHelper::getInstance()->getConfigValue("sercret_key");
+    }
 
 	public static function getInstance()
 	{

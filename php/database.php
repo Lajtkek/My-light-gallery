@@ -1,9 +1,10 @@
 <?php 
+require_once("configHelper.php");
 class Database {
-    private $servername = "localhost";
-    private $username = "root";
-    private $password = "";
-    private $database = "light_gallery";
+    private $servername;
+    private $username;
+    private $password;
+    private $database;
 
     public function getDatabase(){
         return $this->database;
@@ -22,13 +23,16 @@ class Database {
 	}
 
     function __construct() {
+        $this->servername = ConfigHelper::getInstance()->getConfigValue("servername");
+        $this->username = ConfigHelper::getInstance()->getConfigValue("username");
+        $this->password = ConfigHelper::getInstance()->getConfigValue("password");
+        $this->database = ConfigHelper::getInstance()->getConfigValue("database");
+
         $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->database);
 
         if ($this->conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
-
-        //echo "Connected successfully";
     }
 
     function renderSQL($sql, $parameters = []){

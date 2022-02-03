@@ -5,6 +5,7 @@
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     header('Content-Type: application/json; charset=utf-8');
     //=====================
+    require_once("../php/configHelper.php");
     require("../php/requestHelper.php");
     require("../php/database.php");
     require("../php/authHelper.php");
@@ -29,7 +30,7 @@
     }
 
     $exp = new DateTime();
-    $exp->modify('+9999 minutes');
+    $exp->modify(ConfigHelper::getInstance()->getConfigValue("token_valid_time"));
     $exp = $exp->getTimestamp();
 
     $token = AuthHelper::getInstance()->generateToken([
