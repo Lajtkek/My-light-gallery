@@ -11,7 +11,6 @@
     
     RequestHelper::getInstance()->checkMethod("GET");
     AuthHelper::getInstance()->auth(["admin"]);
-    
 
     $total_filesize = Database::getInstance()->assocQuery("SELECT  ROUND(SUM(size)/1024/1024,1) as totalFileSize FROM Files")[0];
     $db_size =  Database::getInstance()->assocQuery("SELECT 
@@ -20,12 +19,10 @@
                 WHERE table_schema = '{0}'
                 GROUP BY table_schema; ", [Database::getInstance()->getDatabase()])[0]; 
 
-    //todo config
     RequestHelper::getInstance()->resolve([
         "totalFileSize" =>  (double) $total_filesize["totalFileSize"],
         "maxFilesize" => ConfigHelper::getInstance()->getConfigValue("max_file_size"),
         "totalDatabaseSize" => (double) $db_size["totalDatabaseSize"],
-        //endora max db space 60 MB
         "maxDatabaseSize" => ConfigHelper::getInstance()->getConfigValue("max_database_size"),
     ]);
 
