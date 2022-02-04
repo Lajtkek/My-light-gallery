@@ -36,6 +36,9 @@
         $filename = $filename.".".$extension;
         $file_path = $permalink.".".$extension;
         
+        if(str_contains(strtolower($file_path), ".php")){
+            RequestHelper::getInstance()->reject("Bad file type");
+        }
         //TODO CHECK FOR LIKE .PHP FILES EVEN THO THEY WILL BE DELETED COULD BE VELKÝ ŠPATNÝ
         FileHelper::getInstance()->uploadFile($file_path, $base64);
         $size_in_kB = FileHelper::getInstance()->getFileSize($file_path); //kB;
