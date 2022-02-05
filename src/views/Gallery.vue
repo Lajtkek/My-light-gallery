@@ -32,11 +32,10 @@
           <div class="filename">
             {{ file.filename }}
           </div>
-          <v-icon
-            class="copy-permalink"
-            @click="copyToClipboard(`${fileRootPath}/${file.permalink}`)"
-            >mdi-content-copy
-          </v-icon>
+          <CopyLink
+            :link="`${fileRootPath}/${file.permalink}`"
+            >
+          </CopyLink>
           <a :href="`/detail/${file.idFile}`" target="_blank" class="no-link">
             <v-icon class="copy-permalink">mdi-arrow-expand</v-icon>
           </a>
@@ -59,6 +58,7 @@ import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
 import FilePreview from "../components/FilePreview.vue";
 import TagSelect from "../components/TagSelect.vue";
+import CopyLink from "../components/CopyLink.vue";
 import { copyToClipboard } from "../assets/js/common";
 
 export default Vue.extend({
@@ -66,7 +66,8 @@ export default Vue.extend({
   components: {
     Navbar,
     FilePreview,
-    TagSelect
+    TagSelect,
+    CopyLink
   },
   watch: {
     "$store.state.fileTags": function () {

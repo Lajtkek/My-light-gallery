@@ -14,8 +14,8 @@
     RequestHelper::getInstance()->checkMethod("GET");
     $idFile = RequestHelper::getInstance()->getParam("idFile", true);
 
-    $file = Database::getInstance()->assocQuery("SELECT idFile, filename, concat(permalink,'.', extension) as permalink, mimeType, extension FROM Files WHERE idFile = '{0}'", [$idFile]);
-    $tags = Database::getInstance()->assocQuery("SELECT t.idTag, t.name, t.code, t.color, t.isPublic FROM Tags t 
+    $file = Database::getInstance()->assocQuery("SELECT idFile, filename, concat(permalink,'.', extension) as permalink, mimeType, extension, description FROM Files WHERE idFile = '{0}'", [$idFile]);
+    $tags = Database::getInstance()->assocQuery("SELECT t.idTag, t.name, t.code, concat('#',t.color) as color, t.isPublic FROM Tags t 
                                                     LEFT JOIN FileTags ft ON(ft.idTag = t.idTag)
                                                     WHERE ft.idFile = '{0}'", [$idFile]);
 

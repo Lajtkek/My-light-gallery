@@ -7,13 +7,16 @@
           <FilePreview :file="file"></FilePreview>
         </div>
         <div class="filename-wrapper">
-          {{ file.filename }} <v-icon class="copy-permalink" @click="copyToClipboard(`${fileRootPath}/${file.permalink}`)">mdi-content-copy</v-icon>
+          {{ file.filename }} <CopyLink :link="`${fileRootPath}/${file.permalink}`"></CopyLink>
         </div>
         <div class="tag-wrapper">
           <v-chip
               v-for="tag in file.tags"
               :key="tag.idTag"
               :color="tag.color">{{ tag.name }}</v-chip>
+        </div>
+        <div class="description" v-if="file.description">
+          {{file.description}}
         </div>
       </div>
       <div v-else class="error-wrapper">
@@ -35,13 +38,14 @@
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
 import FilePreview from "../components/FilePreview.vue";
-import { copyToClipboard } from "../assets/js/common";
+import CopyLink from "../components/CopyLink.vue";
 
 export default Vue.extend({
   name: "Detail",
   components: {
     Navbar,
-    FilePreview
+    FilePreview,
+    CopyLink
   },
   data: function () {
     return {
@@ -64,7 +68,6 @@ export default Vue.extend({
     this.loading = false;
   },
   methods: {
-    copyToClipboard
   },
 });
 </script>
@@ -74,6 +77,12 @@ export default Vue.extend({
 .img-wrapper{
   .super-flex;
   flex-flow: column;
+  width: 80%;
+  margin: auto;
+  background: #f6f6f6;
+  border-radius: 10px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 
   .filename-wrapper{
     .text-overflow-ddd;
@@ -92,6 +101,14 @@ export default Vue.extend({
   .file{
     max-width: 80vh;
     height: 60vh;
+  }
+
+  .description{
+    width: 60%;
+    margin: 30px;
+    background: rgba(1,1,1,0.1);
+    padding: 30px;
+    border-radius: 10px;
   }
 }
 .loading{
