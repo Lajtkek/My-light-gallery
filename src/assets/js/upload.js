@@ -104,7 +104,7 @@ export default Vue.extend({
           mimeType: file.type,
           newName: this.editData.renameFiles ? randomHash(32) : file.name.replace(`.${extension}`, ""),
           description: "",
-          tags: this.editData.tagsToAdd,
+          tags: this.editData.tagsToAdd ?? [],
           file,
           base64,
         });
