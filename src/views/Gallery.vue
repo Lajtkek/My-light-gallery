@@ -13,26 +13,8 @@
           ></v-text-field>
         </v-col>
         <v-col cols="4" sm="12" md="4" class="tag-filter-wrapper">
-          <v-autocomplete
-            @input="filterData.tagSearch = ''"
-            :search-input.sync="filterData.tagSearch"
-            multiple
-            clearable
-            v-model="filterData.values"
-            :items="selectTags"
-            ><template v-slot:selection="data">
-              <v-chip
-                v-bind="data.attrs"
-                :input-value="data.selected"
-                close
-                :color="data.item.color"
-                @click="data.select"
-                @click:close="remove(data.item)"
-              >
-                {{ data.item.text }}
-              </v-chip>
-            </template></v-autocomplete
-          >
+          <TagSelect v-model="filterData.values">
+          </TagSelect>
         </v-col>
         <v-col cols="2" sm="12" md="2" class="apply-filter-btn-wrapper">
           <v-btn @click="reloadGallery">Apply filter</v-btn>
@@ -76,13 +58,15 @@
 import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
 import FilePreview from "../components/FilePreview.vue";
+import TagSelect from "../components/TagSelect.vue";
 import { copyToClipboard } from "../assets/js/common";
 
 export default Vue.extend({
   name: "Gallery",
   components: {
     Navbar,
-    FilePreview
+    FilePreview,
+    TagSelect
   },
   watch: {
     "$store.state.fileTags": function () {
@@ -105,7 +89,6 @@ export default Vue.extend({
         values: [],
         value: null,
         filename: "",
-        tagSearch: "",
       },
       files: [],
       allFilesFetched: false,
@@ -118,11 +101,6 @@ export default Vue.extend({
   },
   methods: {
     copyToClipboard,
-    remove(item) {
-      this.filterData.values = this.filterData.values.filter(
-        (x) => x != item.value
-      );
-    },
     async loadMore() {
       this.pendingRequests.fetchFiles = true;
 

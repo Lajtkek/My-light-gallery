@@ -37,3 +37,7 @@ export function copyToClipboard(text) {
 
     return false;
 }
+
+export function randomHash(length){
+    return [...Array(length)].map(() => Math.random().toString(36)[2]).join('');
+}

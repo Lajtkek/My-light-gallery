@@ -1,14 +1,17 @@
 import Vue from "vue";
+import { randomHash } from "../../assets/js/common"
 import FilePreview from "../../components/FilePreview.vue";
 import Navbar from "../../components/Navbar.vue";
 import TagEditor from "../../components/TagEditor.vue";
+import TagSelect from "../../components/TagSelect.vue";
 
 export default Vue.extend({
   name: "Upload",
   components: {
     Navbar, 
     TagEditor,
-    FilePreview
+    FilePreview,
+    TagSelect
   },
   computed: {
     fileState() {
@@ -29,11 +32,11 @@ export default Vue.extend({
       action: "upload",
       files: [],
       editData: {
-        hackBool: true,
         tagToAdd: null,
         tab: 0,
         files: [],
-        tags: this.$store.state.fileTags
+        tags: this.$store.state.fileTags,
+        renameFiles: false,
       },
       uploadData: {
         files: [],
@@ -99,14 +102,13 @@ export default Vue.extend({
           name: file.name,
           extension,
           mimeType: file.type,
-          newName: file.name.replace(`.${extension}`, ""),
+          newName: this.editData.renameFiles ? randomHash(32) : file.name.replace(`.${extension}`, ""),
           description: "",
           tags: [],
           file,
           base64,
         });
       }
-      this.$store.commit('getFileTags');
       this.action = "edit";
     },
     //TODO: try to do it in css? propably not it will fuck up the compoennt
@@ -127,25 +129,9 @@ export default Vue.extend({
         };
       });
     },
-    addTag(file, tag = null){
-      console.log(tag)
-      //Projistotu kopíruju, asi nebude potřeba idk
-      file.tags.push({...(tag ?? this.editData.tags.find(x => x.idTag == this.editData.tagToAdd))});
-      this.editData.tagToAdd = null;
-      // TODO: fix? mby not nessesary https://github.com/vuetifyjs/vuetify/issues/10765
-      this.editData.hackBool = false;
-      this.$nextTick(() => {
-        this.editData.hackBool = true;
-      })
-    },
-    removeTag(file,tag){
-      file.tags = file.tags.filter(x => x.idTag != tag.idTag);
-    },
-    selectableTags(file){
-      return this.editData.tags.filter(tag => !file.tags.some(x => x.idTag == tag.idTag)).map(x => ({ text: x.name,  value: x.idTag}))
-    }
   },
   async mounted() {
+    this.$store.commit('getFileTags');
     this.$store.onTagIU = (tag) => {
       this.addTag(this.editData.files[0], tag);
     }

@@ -12,9 +12,22 @@
           accept="image/*,video/*"
           truncate-length="20"
         ></v-file-input>
+          <v-container>
+            <v-row>
+              <v-col cols="6" sm="6" md="6">
+                <v-checkbox
+                  v-model="editData.renameFiles"
+                  label="Rename all files with random hash"
+                ></v-checkbox>
+              </v-col>
+              <v-col>
+              <TagSelect></TagSelect>
+            </v-col>
+            </v-row>
+          </v-container>
         <v-card-actions class="justify-center">
           <v-btn color="blue" @click="edit" :disabled="files.length == 0">
-            Review and upload
+            Confirm and edit
           </v-btn>
         </v-card-actions>
       </div>
@@ -27,7 +40,7 @@
       <div class="edit-block" v-if="editData.files.length > 0">
         <v-card class="edit-image-wrapper">
           <v-tabs-items v-model="editData.tab" class="edit-wrapper">
-            <v-tab-item v-for="file in editData.files" :key="file.name">
+            <v-tab-item v-for="(file, index) in editData.files" :key="file.name">
               <v-card flat>
                 <div class="edit-image-card">
                   <FilePreview :file="file" class="edit-image"></FilePreview>
@@ -43,13 +56,7 @@
                           ></v-text-field>
                         </v-col>
                         <v-col cols="9" sm="9" md="4">
-                          <v-autocomplete
-                            v-if="editData.hackBool"
-                            clearable
-                            v-model="editData.tagToAdd"
-                            :items="selectableTags(file)"
-                            @change="addTag(file)"
-                          ></v-autocomplete>
+                          <TagSelect v-model="file.tags" :showChips="false" ref="tagSelect"></TagSelect>
                         </v-col>
                         <v-col cols="3" sm="3" md="2" class="super-flex">
                           <v-btn @click="createTag" class="pull-right">Create tag</v-btn>
@@ -64,15 +71,15 @@
                             solo
                           ></v-textarea>
                         </v-col>
-                        <v-col cols="12" sm="6" md="6">
+                        <v-col cols="12" sm="6" md="6" v-if="$refs.tagSelect">
                           <v-chip
-                            v-for="tag in file.tags"
+                            v-for="tag in $store.state.fileTags.filter(x => file.tags.includes(x.idTag))"
                             :key="tag.idTag"
                             close
                             close-icon="mdi-delete"
                             class="tag"
                             :color="tag.color"
-                            @click:close="removeTag(file, tag)"
+                            @click:close="$refs.tagSelect[index].remove(tag)"
                             >{{ tag.name }}</v-chip
                           >
                         </v-col>
