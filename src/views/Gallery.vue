@@ -165,7 +165,7 @@ export default Vue.extend({
     min-width: calc(300px - 20px);
     width: calc(20% - 20px);
 
-    background: rgba(194, 194, 194, 0.671);
+    // background: rgba(194, 194, 194, 0.671);
     border-radius: 10px;
 
     float: left;

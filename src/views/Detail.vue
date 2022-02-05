@@ -79,7 +79,7 @@ export default Vue.extend({
   flex-flow: column;
   width: 80%;
   margin: auto;
-  background: #f6f6f6;
+  // background: #f6f6f6;
   border-radius: 10px;
   margin-top: 30px;
   margin-bottom: 30px;
