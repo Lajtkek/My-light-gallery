@@ -21,7 +21,7 @@
                 ></v-checkbox>
               </v-col>
               <v-col>
-              <TagSelect></TagSelect>
+              <TagSelect v-model="editData.tagsToAdd"></TagSelect>
             </v-col>
             </v-row>
           </v-container>
@@ -56,7 +56,7 @@
                           ></v-text-field>
                         </v-col>
                         <v-col cols="9" sm="9" md="4">
-                          <TagSelect v-model="file.tags" :showChips="false" ref="tagSelect"></TagSelect>
+                          <TagSelect v-model="file.tags" :showChips="false" :preselectedTags="file.tags" ref="tagSelect" priority="1"></TagSelect>
                         </v-col>
                         <v-col cols="3" sm="3" md="2" class="super-flex">
                           <v-btn @click="createTag" class="pull-right">Create tag</v-btn>

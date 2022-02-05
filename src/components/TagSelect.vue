@@ -30,13 +30,19 @@ export default {
     showChips: {
       type: Boolean,
       default: true,
+    },
+    preselectedTags: {
+      type: Array,
+      default: function(){
+        []
+      }
     }
   },
   data: function(){
     return {
       serachInput: "",
-      value: [],
       selectableTags: [],
+      value: []
     }
   },
   watch: {
@@ -48,9 +54,10 @@ export default {
     }
   },
   mounted() {
+    this.value = this.preselectedTags;
     this.refreshTags();
   },
-  methods: { 
+  methods: {
     refreshTags(){
       this.selectableTags = this.$store.state.fileTags.map(x => ({
         ...x,

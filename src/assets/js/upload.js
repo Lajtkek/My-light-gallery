@@ -32,7 +32,7 @@ export default Vue.extend({
       action: "upload",
       files: [],
       editData: {
-        tagToAdd: null,
+        tagsToAdd: [],
         tab: 0,
         files: [],
         tags: this.$store.state.fileTags,
@@ -58,7 +58,7 @@ export default Vue.extend({
           extension: fileData.extension,
           mimeType: fileData.file.type,
           filename: fileData.newName,
-          tags: fileData.tags,
+          tags: this.$store.state.fileTags.filter(x => fileData.tags.includes(x.idTag)),
           description: fileData.description
       });
 
@@ -104,12 +104,16 @@ export default Vue.extend({
           mimeType: file.type,
           newName: this.editData.renameFiles ? randomHash(32) : file.name.replace(`.${extension}`, ""),
           description: "",
-          tags: [],
+          tags: this.editData.tagsToAdd,
           file,
           base64,
         });
       }
       this.action = "edit";
+      //Todo find if better fix
+      this.$nextTick(() => {
+        this.editData.files = [...this.editData.files];
+      })
     },
     //TODO: try to do it in css? propably not it will fuck up the compoennt
     trimString(string, length) {
