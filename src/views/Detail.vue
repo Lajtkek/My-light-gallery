@@ -7,7 +7,9 @@
           <FilePreview :file="file"></FilePreview>
         </div>
         <div class="filename-wrapper">
-          {{ file.filename }} <CopyLink :link="`${fileRootPath}/${file.permalink}`"></CopyLink>
+          {{ file.filename }} 
+          <CopyLink :link="`${fileRootPath}/${file.permalink}`"></CopyLink>
+          <v-icon v-if="hasRole('admin')" @click="editFile()" class="copy-permalink">mdi-application-edit-outline</v-icon>
         </div>
         <div class="tag-wrapper">
           <v-chip
@@ -20,7 +22,7 @@
         </div>
       </div>
       <div v-else class="error-wrapper">
-        File not found :-(
+        File not found :-( or its private file >:-)
       </div>
     </div>
     <div v-else class="loading">
@@ -31,6 +33,7 @@
         color="primary"
       ></v-progress-circular>
     </div>
+    <FileEditor ref="fileEditor"></FileEditor>
   </div>
 </template>
 
@@ -39,16 +42,19 @@ import Vue from "vue";
 import Navbar from "../components/Navbar.vue";
 import FilePreview from "../components/FilePreview.vue";
 import CopyLink from "../components/CopyLink.vue";
+import FileEditor from "../components/FileEditor.vue";
 
 export default Vue.extend({
   name: "Detail",
   components: {
     Navbar,
     FilePreview,
-    CopyLink
+    CopyLink,
+    FileEditor
   },
   data: function () {
     return {
+      showEditDialog: false,
       file: null,
       error: null,
       loading: true,
@@ -60,6 +66,10 @@ export default Vue.extend({
       idFile: this.$route.params.id,
     });
 
+    if(this.hasRole("admin")){
+      this.$store.commit("getFileTags");
+    }
+
     if (!request.error) {
       this.file = request.data;
     }else{
@@ -68,6 +78,15 @@ export default Vue.extend({
     this.loading = false;
   },
   methods: {
+    editFile(){
+      this.showEditDialog = true;
+      
+      let file = {...this.file};
+      file.filename = file.filename.split(".")[0]
+      file.tags = file.tags.map(x => x.idTag);
+      this.$refs.fileEditor.file = file;
+      this.$refs.fileEditor.showDialog = true;
+    } 
   },
 });
 </script>
