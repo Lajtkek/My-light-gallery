@@ -136,7 +136,7 @@ export default Vue.extend({
     },
   },
   async mounted() {
-    this.$store.commit('getFileTags');
+    this.$store.commit('getFileTags', 1);
     this.$store.onTagIU = (tag) => {
       this.addTag(this.editData.files[0], tag);
     }
