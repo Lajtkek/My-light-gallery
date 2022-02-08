@@ -24,7 +24,7 @@
         Database::getInstance()->beginTransaction();
 
         //TODO dont update extension redundency
-        Database::getInstance()->normalQuery("UPDATE files SET filename = '{0}', description = '{1}' WHERE idFile = {2}", [$filename, $description, $file_id]);
+        Database::getInstance()->normalQuery("UPDATE Files SET filename = '{0}', description = '{1}' WHERE idFile = {2}", [$filename, $description, $file_id]);
 
         Database::getInstance()->normalQuery("DELETE FROM FileTags WHERE idFile = {0}", [$file_id]);
 
