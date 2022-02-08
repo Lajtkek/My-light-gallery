@@ -33,7 +33,7 @@
         color="primary"
       ></v-progress-circular>
     </div>
-    <FileEditor ref="fileEditor"></FileEditor>
+    <FileEditor ref="fileEditor" :onFileSaved="reloadFile"></FileEditor>
   </div>
 </template>
 
@@ -62,20 +62,11 @@ export default Vue.extend({
     };
   },
   async mounted() {
-    let request = await Vue.prototype.get("files/getFile", {
-      idFile: this.$route.params.id,
-    });
+    this.reloadFile();
 
     if(this.hasRole("admin")){
       this.$store.commit("getFileTags");
     }
-
-    if (!request.error) {
-      this.file = request.data;
-    }else{
-      this.error = request.error;
-    }
-    this.loading = false;
   },
   methods: {
     editFile(){
@@ -86,7 +77,19 @@ export default Vue.extend({
       file.tags = file.tags.map(x => x.idTag);
       this.$refs.fileEditor.file = file;
       this.$refs.fileEditor.showDialog = true;
-    } 
+    },
+    async reloadFile(){
+      this.loading = true;
+      let request = await Vue.prototype.get("files/getFile", {
+        idFile: this.$route.params.id,
+      });
+        if (!request.error) {
+        this.file = request.data;
+      }else{
+        this.error = request.error;
+      }
+      this.loading = false;
+      }
   },
 });
 </script>

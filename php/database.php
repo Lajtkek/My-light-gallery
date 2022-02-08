@@ -67,6 +67,12 @@ class Database {
         }
     }
 
+    function normalQuery($sql, $parameters = []){
+        $sql = $this->renderSQL($sql, $parameters);
+
+        return $this->conn->query($sql);
+    }
+
     function beginTransaction(){
         $this->conn->begin_transaction();
     }

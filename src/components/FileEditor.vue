@@ -28,7 +28,7 @@
         </v-row>
         <v-row>
           <v-col cols="12" sm="12" md="12">
-            <v-btn>Save</v-btn>
+            <v-btn @click="save" :loading="savingFile" class="pull-right">Save</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -46,23 +46,41 @@ export default {
   components: {
     TagSelect
   },
+  props: ["onFileSaved"],
   data: function () {
     return {
       showDialog: false,
-      file: {}
+      file: {},
+      savingFile: false
     };
   },
   watch: {
-    'showDialog': function(){
-    }
   },
   mounted(){
-
   },
   methods: {
+    async save(){
+      this.savingFile = true;
+
+      let result = await this.put("files/editFile", {
+          ...this.file,
+          filename: this.file.filename +"."+ this.file.extension,
+          tags: this.file.tags.map(x => ({ idTag: x}))
+      });
+
+      if(!result.error){
+        this.onFileSaved?.();
+        this.showDialog = false;
+      }else{
+        console.log(result.error)
+      }
+
+      this.savingFile = false;
+    }
   },
 };
 </script>
 
 <style lang="less" scoped>
+@import "../assets/styles/main.less";
 </style>

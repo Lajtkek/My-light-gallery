@@ -35,6 +35,10 @@ const MyPlugin = {
       return `${process.env.VUE_APP_IMAGE_ROOT}/${fileName}`;
     }
 
+    Vue.prototype.put = async (url, data = null, options = {}) => {
+      return Vue.prototype.wm(url, data, options, 'PUT')
+    }
+
     Vue.prototype.get = async (url, data = null, options = {}) => {
       return Vue.prototype.wm(url, data, options, 'GET')
     }
