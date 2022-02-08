@@ -112,7 +112,7 @@ export default Vue.extend({
           text: "Rating lowest",
           value: "RATING_DESC"
         }],
-        orderBy: "DATE_ASC",
+        orderBy: "DATE_DESC",
         tags: [],
         values: [],
         value: null,
