@@ -4,7 +4,7 @@
     <div class="gallery">Gallery</div>
     <v-container>
       <v-row>
-        <v-col cols="2" sm="0" md="2"> </v-col>
+        <v-col cols="1" sm="0" md="1"> </v-col>
         <v-col cols="3" sm="12" md="3" class="super-flex">
           <v-text-field
             v-model="filterData.filename"
@@ -16,7 +16,14 @@
           <TagSelect v-model="filterData.values">
           </TagSelect>
         </v-col>
-        <v-col cols="2" sm="12" md="2" class="apply-filter-btn-wrapper">
+        <v-col cols="2" sm="12" md="2" class="tag-filter-wrapper">
+          <v-select
+            v-model="filterData.orderBy"
+            :items="filterData.orderOptions"
+            label="Order by"
+          ></v-select>
+        </v-col>
+        <v-col cols="1" sm="12" md="1" class="apply-filter-btn-wrapper">
           <v-btn @click="reloadGallery">Apply filter</v-btn>
         </v-col>
         <v-col cols="1" sm="0" md="1"> </v-col>
@@ -86,6 +93,26 @@ export default Vue.extend({
   data: function () {
     return {
       filterData: {
+        orderOptions: [{
+          text: "Date upload oldest",
+          value: "DATE_ASC"
+        },{
+          text: "Date upload newest",
+          value: "DATE_DESC"
+        },{
+          text: "Name ASC",
+          value: "NAME_ASC"
+        },{
+          text: "Name DESC",
+          value: "NAME_DESC"
+        },{
+          text: "Rating highest",
+          value: "RATING_ASC"
+        },{
+          text: "Rating lowest",
+          value: "RATING_DESC"
+        }],
+        orderBy: "DATE_ASC",
         tags: [],
         values: [],
         value: null,
@@ -124,6 +151,7 @@ export default Vue.extend({
       let result = await Vue.prototype.get("files/getFiles", {
         filename: this.filterData.filename,
         tags: this.filterData.values,
+        orderBy: this.filterData.orderBy
       });
       if (!result.error) this.files = result.data.files;
       this.canLoadMore = result.data.files.length >= result.data.limit

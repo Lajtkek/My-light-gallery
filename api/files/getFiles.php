@@ -19,9 +19,25 @@
     $offset = RequestHelper::getInstance()->getParam("offset") ?? 0;
     $tags = RequestHelper::getInstance()->getParam("tags") ?? "";
     $file_name = RequestHelper::getInstance()->getParam("filename") ?? "";
+    $order_by = RequestHelper::getInstance()->getParam("orderBy") ?? "DATE_ASC";
     $tags = $tags == "" ? [] : explode(",", $tags);
     
     $tag_array = count($tags) > 0 ? implode(",",$tags) : -1;
+
+    //orderBy login
+    $allowed_orders = [
+        "DATE_ASC" => "ORDER BY f.uploadedAt ASC", 
+        "DATE_DESC" => "ORDER BY f.uploadedAt DESC", 
+        "NAME_ASC" => "ORDER BY f.filename ASC", 
+        "NAME_DESC" => "ORDER BY f.filename DESC", 
+        "RATING_ASC" => "ORDER BY f.rating ASC", 
+        "RATING_ASC" => "ORDER BY f.rating ASC", 
+    ];
+
+    if(!in_array($order_by, array_keys($allowed_orders)))
+        RequestHelper::getInstance()->reject("Unknown order value");
+
+    $order_by_sql = $allowed_orders[$order_by];
 
     // if authToken is valid (not null or not string)
     if(!is_null($userData) && !is_string($userData)){
@@ -41,7 +57,8 @@
                                                     HAVING 
                                                         COUNT(t.idTag) = 0 
                                                         OR
-                                                        1 = {3}    
+                                                        1 = {3}
+                                                    ".$order_by_sql."
                                                     LIMIT {4} OFFSET {5}", [ $file_name, $tag_array, count($tags), $private_enabled, $limit, $offset]);
 
     RequestHelper::getInstance()->resolve([
