@@ -136,6 +136,7 @@ export default Vue.extend({
         offset: this.files.length,
         filename: this.filterData.filename,
         tags: this.filterData.values,
+        orderBy: this.filterData.orderBy
       });
 
       if (!request.error) {
