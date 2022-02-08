@@ -8,6 +8,7 @@
           label="Username"
           :rules="usernameRules"
           required
+          @keydown.enter="login"
         ></v-text-field>
         <v-text-field
           type="password"
@@ -15,6 +16,7 @@
           label="Password"
           :rules="passwordRules"
           required
+          @keydown.enter="login"
         ></v-text-field>
         <v-col class="text-right">
           <v-btn color="blue" @click="login" right>
@@ -52,11 +54,19 @@ export default Vue.extend({
         let result = await Vue.prototype.post("login", { username: this.username, password: this.password }, {});
 
         if(result.error){
-          //todo add toaster
-          console.log("invalid username or password")
+          this.showErrorTooltip("Wrong username or password.");
+          //console.log("invalid username or password")
         }else{
-          localStorage.token = result.data.token;
-          location.reload();
+          try{
+            let parsed = this.parseJwt(result.data.token)
+            if(parsed != null){
+              localStorage.token = result.data.token;
+              location.reload();
+            }
+          }catch(e){
+            console.error(e);
+          }
+          
         }
       }
     },

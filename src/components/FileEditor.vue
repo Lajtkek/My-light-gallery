@@ -37,8 +37,6 @@
 </template>
 
 <script>
-// import Vue from "vue";
-// import store from '../store/store.js'
 import TagSelect from "../components/TagSelect.vue"
 
 export default {
