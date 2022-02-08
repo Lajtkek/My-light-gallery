@@ -36,13 +36,19 @@ export default {
       default: function(){
         []
       }
+    },
+    hiddenTags: {
+      type: Array,
+      default: function(){
+        []
+      }
     }
   },
   data: function(){
     return {
       serachInput: "",
       selectableTags: [],
-      value: []
+      value: [],
     }
   },
   watch: {
@@ -59,7 +65,7 @@ export default {
   },
   methods: {
     refreshTags(){
-      this.selectableTags = this.$store.state.fileTags.map(x => ({
+      this.selectableTags = this.$store.state.fileTags.filter(x => !this.hiddenTags.includes(x.idTag)).map(x => ({
         ...x,
         text: x.name,
         value: x.idTag

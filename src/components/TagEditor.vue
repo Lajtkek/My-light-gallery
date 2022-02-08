@@ -29,6 +29,11 @@
         </v-row>
         <v-row>
           <v-col cols="12" sm="12" md="12">
+            <TagSelect v-model="tag.tags" :preselectedTags="tag.tags" :hiddenTags="tag.idTag ? [tag.idTag] : []"></TagSelect>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" sm="12" md="12">
             <v-btn :loading="pendingRequests.saveTag" @click="saveTag" class="float-right" :disabled="tag.name.length < 3 || tag.code.length < 3">Save</v-btn>
           </v-col>
         </v-row>
@@ -38,11 +43,15 @@
 </template>
 
 <script>
+import TagSelect from "../components/TagSelect.vue"
 import Vue from "vue";
 import store from '../store/store.js'
 
 export default {
   name: "TagEditor",
+  components: {
+    TagSelect
+  },
   props: {
   },
   data: function () {
