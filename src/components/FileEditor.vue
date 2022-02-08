@@ -69,6 +69,7 @@ export default {
       });
 
       if(!result.error){
+        this.showSuccessTooltip("File was updated.")
         this.onFileSaved?.();
         this.showDialog = false;
       }else{

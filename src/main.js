@@ -5,10 +5,41 @@ import store from './store/store'
 import vuetify from './plugins/vuetify'
 import { isJson } from "../src/assets/js/common"
 
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
 Vue.config.productionTip = false
+
+const options = {
+  position: "top-center",
+  timeout: 5000,
+  closeOnClick: true,
+  pauseOnFocusLoss: true,
+  pauseOnHover: true,
+  draggable: true,
+  draggablePercent: 0.6,
+  showCloseButtonOnHover: false,
+  closeButton: "button",
+  icon: true,
+  rtl: false
+};
+
+Vue.use(Toast, options);
 
 const MyPlugin = {
   install(Vue) {
+    Vue.prototype.showMainTooltip = (msg) => {
+      Vue.prototype.$toast(msg);
+    }
+
+    Vue.prototype.showSuccessTooltip = (msg) => {
+      Vue.prototype.$toast.success(msg);
+    }
+
+    Vue.prototype.showErrorTooltip = (msg) => {
+      Vue.prototype.$toast.error(msg);
+    }
+
     Vue.prototype.parseJwt = (token) => {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -119,6 +150,7 @@ const MyPlugin = {
     }
   }
 }
+
 Vue.use(MyPlugin)
 
 new Vue({
