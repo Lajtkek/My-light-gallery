@@ -22,15 +22,18 @@ export default new Vuex.Store({
     async setEditedTag(state, tag){
       state.editedTag = tag;
     },
-    async getFileTags(state){
-      let result = await Vue.prototype.get("tags/getTags");
+    async getFileTags(state, detail){
+      let result = await Vue.prototype.get("tags/getTags", {
+        detail
+      });
       if(!result.error){
         state.fileTags = result.data;
       }
     },
     async fileTagIU(state, tag){
+      let index = state.fileTags.findIndex(x => x.idTag == tag.idTag)
       state.fileTags = state.fileTags.filter(x => x.idTag != tag.idTag);
-      state.fileTags.push(tag);
+      state.fileTags.splice(index, 0, tag);
       this.onTagIU?.(tag);
     },
     async setEditedUser(state, user){

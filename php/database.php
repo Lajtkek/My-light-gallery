@@ -48,6 +48,9 @@ class Database {
 
         $result = $this->conn->query($sql);
 
+        if($result === FALSE)
+            throw new Exception("Failed Query: ".$sql);
+
         $resultArray = [];
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()){
@@ -59,8 +62,12 @@ class Database {
 
     function insertQuery($sql, $parameters = []){
         $sql = $this->renderSQL($sql, $parameters);
+        $result = $this->conn->query($sql);
 
-        if ($this->conn->query($sql) === TRUE) {
+        if($result === FALSE)
+            throw new Exception("Failed Insert Query: ".$sql);
+
+        if ($result === TRUE) {
             return $this->conn->insert_id;
         } else {
             return FALSE;
@@ -69,8 +76,13 @@ class Database {
 
     function normalQuery($sql, $parameters = []){
         $sql = $this->renderSQL($sql, $parameters);
+        
+        $result = $this->conn->query($sql);
+        
+        if($result === FALSE)
+            throw new Exception("Failed Insert Query: ".$sql);
 
-        return $this->conn->query($sql);
+        return $result;
     }
 
     function beginTransaction(){

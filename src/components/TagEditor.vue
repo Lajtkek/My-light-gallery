@@ -67,20 +67,22 @@ export default {
     },
     async saveTag(){
       this.pendingRequests.saveTag = true;
-      if(this.tag.idTag){
-        console.warn("not implementes")
-      }else{
-        let {name, code, color, isPublic} = {...this.tag};
-        let result = await Vue.prototype.post("tags/tagIU", {name, code, color, isPublic});
+      let {idTag, name, code, color, isPublic, tags} = {...this.tag};
 
-        if(!result.error){
-          this.$store.commit('fileTagIU', result.data);
-          this.$store.commit('setEditedTag', null);
-        }else{
-          console.warn(`Error occured when saving tag error code: ${result.error}`);
-        }
-        this.pendingRequests.saveTag = false;
-      }
+      let result;
+      if(this.tag.idTag)
+        result = await Vue.prototype.put("tags/tagIU", {idTag, name, code, color, isPublic, tags});
+      else
+        result = await Vue.prototype.post("tags/tagIU", {name, code, color, isPublic, tags});
+
+      if(!result.error){
+        this.$store.commit('fileTagIU', result.data);
+        this.$store.commit('setEditedTag', null);
+      }else{
+        console.warn(`Error occured when saving tag error code: ${result.error}`);
+      } 
+
+      this.pendingRequests.saveTag = false;
     }
   },
 };

@@ -18,6 +18,12 @@
           {{ item.color }}
         </v-chip>
       </template>
+        <template v-slot:item.tags="{ item }">
+        {{item.tags.join(",")}}
+        </template>
+      <template v-slot:item.edit="{ item }">
+        <v-btn @click="editTag(item)">Edit</v-btn>
+      </template>
     </v-data-table>
     <TagEditor></TagEditor>
   </div>
@@ -36,22 +42,30 @@ export default {
         { text: "ID", value: "idTag" },
         { text: "Name", value: "name" },
         { text: "Code", value: "code" },
-        { text: "Color", value: "color" },
-        { text: "Public", value: "isPublic" },
+        { text: "Color", value: "color", width: "60px" },
+        { text: "Public", value: "isPublic", width: "100px" },
+        { text: "Tags", value: "tags" },
+        { text: "Edit", value: "edit", width: "1%" },
       ],
       tags: [],
     };
   },
   mounted() {
-    store.commit("getFileTags");
+    store.commit("getFileTags", 1);
   },
   methods: {
+    editTag(tag){
+      this.$store.commit("setEditedTag", {
+        ...tag
+      });
+    },
     createTag() {
       this.$store.commit("setEditedTag", {
         name: "",
         code: "",
-        color: "#FF9393",
+        color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
         isPublic: true,
+        tags: []
       });
     },
   },
