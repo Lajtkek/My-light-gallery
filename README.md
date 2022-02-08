@@ -1,24 +1,24 @@
-# my-light-gallery
 
-## Project setup
+# My light gallery
+Readme version 0.8
+## How to deploy
+###  1) Database
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+Run "LightGallery_mysql_create.sql" in phpMyAdmin //note id doesnt contain roles or users yet
 ```
 
-### Compiles and minifies for production
+### 2) VUE
 ```
+open project root
+tune .env.production
 npm run build
+copy files from "dist" directory into your server root folder
+copy .htaccess to your server root
 ```
 
-### Lints and fixes files
+### 3) Api
 ```
-npm run lint
+copy folders "api, php, resources" into your server root folder
+add and configure appConfig.ini
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
