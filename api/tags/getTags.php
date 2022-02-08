@@ -26,7 +26,7 @@
                                                     t.isPublic as isPublic,
                                                     GROUP_CONCAT(tt.idChildTag) as tags
                                                 FROM Tags t
-                                                LEFT JOIN tagtags tt ON (tt.idTag = t.idTag)
+                                                LEFT JOIN TagTags tt ON (tt.idTag = t.idTag)
                                                 GROUP BY t.idTag");
 
     foreach ($tags as &$tag) {
