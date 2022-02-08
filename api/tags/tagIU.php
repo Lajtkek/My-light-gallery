@@ -53,7 +53,7 @@
                 RequestHelper::getInstance()->reject("tag_doesnt_exist");
             }
 
-            Database::getInstance()->normalQuery("UPDATE Tags SET name = '{0}', code = '{1}', color = '{2}', isPublic = '{3}' WHERE idTag = {4}", [$name, $code, $color, $is_public, $idTag]);
+            Database::getInstance()->normalQuery("UPDATE Tags SET name = '{0}', code = '{1}', color = '{2}', isPublic = {3} WHERE idTag = {4}", [$name, $code, $color, $is_public, $idTag]);
             Database::getInstance()->normalQuery("DELETE FROM TagTags WHERE idTag = {0}", [$idTag]);
 
             foreach ($tags as &$tag_to_add) {
