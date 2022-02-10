@@ -31,7 +31,7 @@
         "NAME_ASC" => "ORDER BY f.filename ASC", 
         "NAME_DESC" => "ORDER BY f.filename DESC", 
         "RATING_ASC" => "ORDER BY f.rating ASC", 
-        "RATING_ASC" => "ORDER BY f.rating ASC", 
+        "RATING_DESC" => "ORDER BY f.rating DESC", 
     ];
 
     if(!in_array($order_by, array_keys($allowed_orders)))
@@ -55,7 +55,7 @@
             $ratingQuery = "LEFT JOIN Rating r ON (r.idFile = f.idFile AND r.ipAddress = '{0}')";
     }
 
-    $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, concat(f.permalink,'.', f.extension) as permalink, f.mimetype as mimeType, f.extension as extension, IFNULL(r.rating, 0) as rating  
+    $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, concat(f.permalink,'.', f.extension) as permalink, f.mimetype as mimeType, f.extension as extension, IFNULL(r.rating, 0) as rating, f.rating as globalRating
                                                     FROM Files f
                                                     LEFT JOIN FileTags ft ON(ft.idFile = f.idFile)
                                                     LEFT JOIN Tags t ON(t.idTag = ft.idTag AND (t.isPublic = 0))

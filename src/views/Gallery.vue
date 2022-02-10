@@ -40,7 +40,8 @@
             {{ file.filename }}
           </div>
           <div>
-            <RatingComponent>
+            {{file.globalRating}}
+            <RatingComponent :idFile="file.idFile" :currentRating="file.rating" :file="file">
             </RatingComponent>
             <CopyLink
               :link="`${fileRootPath}/${file.permalink}`"
@@ -119,7 +120,7 @@ export default Vue.extend({
           text: "Rating lowest",
           value: "RATING_DESC"
         }],
-        orderBy: "DATE_DESC",
+        orderBy: "DATE_ASC",
         tags: [],
         values: [],
         value: null,
