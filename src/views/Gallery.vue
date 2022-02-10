@@ -39,13 +39,17 @@
           <div class="filename">
             {{ file.filename }}
           </div>
-          <CopyLink
-            :link="`${fileRootPath}/${file.permalink}`"
-            >
-          </CopyLink>
-          <a :href="`/detail/${file.idFile}`" target="_blank" class="no-link">
-            <v-icon class="copy-permalink">mdi-arrow-expand</v-icon>
-          </a>
+          <div>
+            <RatingComponent>
+            </RatingComponent>
+            <CopyLink
+              :link="`${fileRootPath}/${file.permalink}`"
+              >
+            </CopyLink>
+            <a :href="`/detail/${file.idFile}`" target="_blank" class="no-link">
+              <v-icon class="copy-permalink">mdi-arrow-expand</v-icon>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -66,6 +70,8 @@ import Navbar from "../components/Navbar.vue";
 import FilePreview from "../components/FilePreview.vue";
 import TagSelect from "../components/TagSelect.vue";
 import CopyLink from "../components/CopyLink.vue";
+import RatingComponent from "../components/RatingComponent.vue";
+
 import { copyToClipboard } from "../assets/js/common";
 
 export default Vue.extend({
@@ -74,7 +80,8 @@ export default Vue.extend({
     Navbar,
     FilePreview,
     TagSelect,
-    CopyLink
+    CopyLink,
+    RatingComponent
   },
   watch: {
     "$store.state.fileTags": function () {
@@ -216,6 +223,8 @@ export default Vue.extend({
       overflow: hidden;
       text-decoration: none;
       color: black;
+      flex-direction: column;
+      height: 90px;
       .filename {
         .text-overflow-ddd;
         width: calc(100% - 80px);

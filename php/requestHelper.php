@@ -68,6 +68,17 @@ class RequestHelper {
         }
         die(json_encode($data));
     }
+
+    public function getIP(){
+        return $_SERVER['HTTP_CLIENT_IP'] 
+            ?? $_SERVER["HTTP_CF_CONNECTING_IP"] # when behind cloudflare
+            ?? $_SERVER['HTTP_X_FORWARDED'] 
+            ?? $_SERVER['HTTP_X_FORWARDED_FOR'] 
+            ?? $_SERVER['HTTP_FORWARDED'] 
+            ?? $_SERVER['HTTP_FORWARDED_FOR'] 
+            ?? $_SERVER['REMOTE_ADDR'] 
+            ?? NULL;
+    }
 }
 
 ?>
