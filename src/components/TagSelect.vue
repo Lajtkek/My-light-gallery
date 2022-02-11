@@ -61,7 +61,7 @@ export default {
     },
     'value': function(new_val,old_val){
       if(this.preselectTags && new_val.length > old_val.length){
-        let addedTagId = new_val.find(x => !old_val.includes(x))[0];
+        let addedTagId = new_val.find(x => !old_val.includes(x));
         let addedTag = this.$store.state.fileTags.find(x => x.idTag == addedTagId);
         this.value = [...this.value, ...addedTag.tags.filter(c => !this.value.includes(c)) ];
       }
