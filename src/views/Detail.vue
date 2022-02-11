@@ -7,9 +7,14 @@
           <FilePreview :file="file"></FilePreview>
         </div>
         <div class="filename-wrapper">
-          {{ file.filename }} 
+          {{ file.filename }}
+          <div>
+          {{file.globalRating}}
+          <RatingComponent :file="file">
+          </RatingComponent>
           <CopyLink :link="`${fileRootPath}/${file.permalink}`"></CopyLink>
           <v-icon v-if="hasRole('admin')" @click="editFile()" class="copy-permalink">mdi-application-edit-outline</v-icon>
+          </div>
         </div>
         <div class="tag-wrapper">
           <v-chip
@@ -43,6 +48,7 @@ import Navbar from "../components/Navbar.vue";
 import FilePreview from "../components/FilePreview.vue";
 import CopyLink from "../components/CopyLink.vue";
 import FileEditor from "../components/FileEditor.vue";
+import RatingComponent from "../components/RatingComponent.vue";
 
 export default Vue.extend({
   name: "Detail",
@@ -50,7 +56,8 @@ export default Vue.extend({
     Navbar,
     FilePreview,
     CopyLink,
-    FileEditor
+    FileEditor,
+    RatingComponent
   },
   data: function () {
     return {

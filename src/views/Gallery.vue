@@ -41,7 +41,7 @@
           </div>
           <div>
             {{file.globalRating}}
-            <RatingComponent :idFile="file.idFile" :currentRating="file.rating" :file="file">
+            <RatingComponent :file="file">
             </RatingComponent>
             <CopyLink
               :link="`${fileRootPath}/${file.permalink}`"
