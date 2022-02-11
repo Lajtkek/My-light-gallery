@@ -115,12 +115,12 @@ export default Vue.extend({
           value: "NAME_DESC"
         },{
           text: "Rating highest",
-          value: "RATING_ASC"
+          value: "RATING_DESC"
         },{
           text: "Rating lowest",
-          value: "RATING_DESC"
+          value: "RATING_ASC"
         }],
-        orderBy: "DATE_ASC",
+        orderBy: "RATING_DESC",
         tags: [],
         values: [],
         value: null,
