@@ -39,8 +39,13 @@
         }
 
         $tag_id = Database::getInstance()->insertQuery("INSERT INTO Tags (name, code, color, isPublic) VALUES ('{0}', '{1}', '{2}', {3})", [$name, $code, $color, $is_public]);
-        if(is_numeric($tag_id))
+        if(is_numeric($tag_id)){
+            foreach ($tags as &$tag_to_add) {
+                Database::getInstance()->insertQuery("INSERT INTO TagTags (idTag, idChildTag) VALUES ({0}, {1})", [$tag_id, $tag_to_add]);
+            }
+
             RequestHelper::getInstance()->resolve(["idTag" => $tag_id, "name" => $name, "code" => $code, "color" => "#".$color, "isPublic" => $is_public, "tags" => $tags]);
+        }
         else
             RequestHelper::getInstance()->reject($tag_id);
     }
