@@ -45,7 +45,6 @@ class Database {
 
     function assocQuery($sql, $parameters = []){
         $sql = $this->renderSQL($sql, $parameters);
-
         $result = $this->conn->query($sql);
 
         if($result === FALSE)
