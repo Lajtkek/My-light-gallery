@@ -1,6 +1,7 @@
 <?php 
 require_once("phpHelper.php");
 require_once("configHelper.php");
+require_once("authHelper.php");
 class AuthHelper {
     //https://developer.okta.com/blog/2019/02/04/create-and-verify-jwts-in-php
     private $secret;
@@ -138,6 +139,25 @@ class AuthHelper {
         }
 
         return $payload;
+    }
+
+    function getUserIdentifier(){
+        $userData = $this->auth();
+        $identifier = RequestHelper::getInstance()->getIP() ?? -1;
+
+        if(!is_null($userData) && !is_string($userData)){
+            $identifier = [
+                "value" => $userData->idUser,
+                "type" => "idUser"
+            ];
+        }else{
+            $identifier = [
+                "value" => $identifier,
+                "type" => "ip"
+            ];
+        }
+
+        return $identifier;
     }
 }
 

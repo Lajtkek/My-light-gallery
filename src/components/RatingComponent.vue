@@ -11,26 +11,38 @@ export default {
   props: ["file"],
   data: function () {
     return {
-      // icon: "mdi-content-copy"
+      rating: false,
     };
   },
   mounted(){
   },
   methods: {
-    rate(score){
-      console.log(this.file.rating)
-      if(this.file.rating == 0){
-        this.file.globalRating += score;
-        this.file.rating = score;
-        return;
+    async rate(score){
+      if(this.rating) return;
+      this.rating = true;
+      
+      let result = await this.post("files/rateFile", {
+        idFile: this.file.idFile,
+        rating: this.file.rating == score ? 0 : score
+      });
+
+      if(!result.error){
+        if(this.file.rating == 0){
+          this.file.globalRating += score;
+          this.file.rating = score;
+        }
+        else if(this.file.rating == score){
+          this.file.globalRating -= score;
+          this.file.rating = 0;
+        }else{
+          this.file.globalRating += score * 2;
+          this.file.rating = score;
+        }
+      }else{
+        this.showErrorTooltip("Rating was not successfull");
       }
-      if(this.file.rating == score){
-        this.file.globalRating -= score;
-        this.file.rating = 0;
-        return;
-      }
-      this.file.globalRating += score * 2;
-      this.file.rating = score;
+
+      this.rating = false;
     }
   },
 };
