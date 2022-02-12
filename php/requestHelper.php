@@ -21,13 +21,18 @@ class RequestHelper {
             $this->reject($wantedMethod."_REQUEST_REQUIRED");
     }
 
-    public function getParam($paramName, $required = false){
+    public function getRequestData(){
         $request_body = file_get_contents('php://input');
         $request_data = json_decode($request_body);
 
         if($_SERVER['REQUEST_METHOD'] === "GET"){
             $request_data = (object) $_GET;
         }
+        return $request_data;
+    }
+    
+    public function getParam($paramName, $required = false){
+        $request_data = $this->getRequestData();
 
         if(!is_null($request_data) && property_exists($request_data,$paramName)){
             return $request_data->$paramName;

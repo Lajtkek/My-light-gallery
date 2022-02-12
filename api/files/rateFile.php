@@ -11,7 +11,8 @@
     require("../../php/database.php");
     require("../../php/authHelper.php");
     require("../../php/fileHelper.php");
-
+    require("../../php/logHelper.php");
+    
     RequestHelper::getInstance()->checkMethod("POST");
 
     $idFile = RequestHelper::getInstance()->getParam("idFile", true);
@@ -23,6 +24,8 @@
 
     $rating = $rating == 0 ? $rating : $rating/abs($rating); //convert to 1,-1,0
 
+    LogHelper::getInstance()->log();
+    
     try {
         Database::getInstance()->beginTransaction();
         $user_query = "";

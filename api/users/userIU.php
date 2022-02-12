@@ -8,7 +8,8 @@
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
-
+    require("../../php/logHelper.php");
+    
     AuthHelper::getInstance()->auth(["admin"]);
     //TODO check length and shit
     $method = $_SERVER['REQUEST_METHOD'];
@@ -35,6 +36,7 @@
             break;
     }
 
+    LogHelper::getInstance()->log();
 
     if($action === "CREATE"){
         $db_users = Database::getInstance()->assocQuery("SELECT username, email FROM Users WHERE email = '{0}' OR username = '{1}'", [$email, $username]);

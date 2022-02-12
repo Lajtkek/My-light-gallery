@@ -8,10 +8,13 @@
     require("../../php/database.php");
     require("../../php/requestHelper.php");
     require("../../php/authHelper.php");
+    require("../../php/logHelper.php");
     
     RequestHelper::getInstance()->checkMethod("GET");
     AuthHelper::getInstance()->auth(["admin"]);
 
+    LogHelper::getInstance()->log();
+    
     $total_filesize = Database::getInstance()->assocQuery("SELECT  ROUND(SUM(size)/1024/1024,1) as totalFileSize FROM Files")[0];
     $db_size =  Database::getInstance()->assocQuery("SELECT 
                     ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) 'totalDatabaseSize' 

@@ -7,9 +7,8 @@
     //=====================
     require("../../php/database.php");
     require("../../php/requestHelper.php");
-    //require("../../php/ftpHelper.php");
-
     require("../../php/authHelper.php");
+    require("../../php/logHelper.php");
     
     RequestHelper::getInstance()->checkMethod("GET");
     $idFile = RequestHelper::getInstance()->getParam("idFile", true);
@@ -18,6 +17,8 @@
     $userData = AuthHelper::getInstance()->auth();
     $identifier = RequestHelper::getInstance()->getIP();
     $ratingQuery = "";
+
+    LogHelper::getInstance()->log();
 
     if(!is_null($userData) && !is_string($userData)){
         //pokud má alespoň jednu roli (těď je jenom admin ale bude víc roli)

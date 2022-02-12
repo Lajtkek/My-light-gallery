@@ -79,7 +79,7 @@
   }
 
   .info-wrapper{
-    width: fit-content;
+    width: 800px;
     margin: auto;
 
     >div{

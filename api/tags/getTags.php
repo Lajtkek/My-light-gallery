@@ -8,6 +8,7 @@
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
+    require("../../php/logHelper.php");
 
     RequestHelper::getInstance()->checkMethod("GET");
     $detail = RequestHelper::getInstance()->getParam("detail") ?? 0;

@@ -10,6 +10,7 @@
     require("../../php/database.php");
     require("../../php/authHelper.php");
     require_once("../../php/phpHelper.php");
+    require_once("../../php/logHelper.php");
 
     RequestHelper::getInstance()->checkMethod("GET");
     $userData = AuthHelper::getInstance()->auth();
@@ -39,6 +40,9 @@
 
     $order_by_sql = $allowed_orders[$order_by];
 
+    // Log only
+    LogHelper::getInstance()->log();
+    
     // if authToken is valid (not null or not string)
     $identifier = RequestHelper::getInstance()->getIP();
     $ratingQuery = "";

@@ -37,8 +37,11 @@ class ConfigHelper {
     public function __destruct(){
     }
 
-    public function getConfigValue($value_name)
+    public function getConfigValue($value_name, $fallback = null)
     {
+        if(!array_key_exists($value_name,$this->config))
+            return $fallback;
+            
         return $this->config[$value_name];
     }
 }

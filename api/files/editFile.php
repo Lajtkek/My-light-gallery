@@ -11,6 +11,7 @@
     require("../../php/database.php");
     require("../../php/authHelper.php");
     require("../../php/fileHelper.php");
+    require("../../php/logHelper.php");
 
     RequestHelper::getInstance()->checkMethod("PUT");
     $userData = AuthHelper::getInstance()->auth(["admin"]);
@@ -19,6 +20,8 @@
     $filename = RequestHelper::getInstance()->getParam("filename", true);
     $description = RequestHelper::getInstance()->getParam("description", true);
     $tags = RequestHelper::getInstance()->getParam("tags", true);
+    
+    LogHelper::getInstance()->log();
 
     try {
         Database::getInstance()->beginTransaction();

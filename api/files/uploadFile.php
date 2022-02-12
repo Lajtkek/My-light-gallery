@@ -11,17 +11,22 @@
     require("../../php/database.php");
     require("../../php/authHelper.php");
     require("../../php/fileHelper.php");
+    require("../../php/logHelper.php");
 
     RequestHelper::getInstance()->checkMethod("POST");
     $userData = AuthHelper::getInstance()->auth(["admin"]);
 
     //param structure { filename, description, file, tags }
-    $filename = RequestHelper::getInstance()->getParam("filename");
-    $extension = RequestHelper::getInstance()->getParam("extension");
-    $mimeType = RequestHelper::getInstance()->getParam("mimeType");
-    $description = RequestHelper::getInstance()->getParam("description");
-    $base64 = RequestHelper::getInstance()->getParam("base64");
-    $tags = RequestHelper::getInstance()->getParam("tags");
+    $filename = RequestHelper::getInstance()->getParam("filename", true);
+    $extension = RequestHelper::getInstance()->getParam("extension", true);
+    $mimeType = RequestHelper::getInstance()->getParam("mimeType", true);
+    $description = RequestHelper::getInstance()->getParam("description", true);
+    $base64 = RequestHelper::getInstance()->getParam("base64", true);
+    $tags = RequestHelper::getInstance()->getParam("tags", true);
+
+    $log_data = RequestHelper::getInstance()->getRequestData();
+    $log_data->base64 = "Big File :-)";
+    LogHelper::getInstance()->log($log_data);
 
     try {
         $timestamp = (new DateTime())->getTimestamp();

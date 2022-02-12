@@ -8,6 +8,7 @@
     require("../../php/requestHelper.php");
     require("../../php/database.php");
     require("../../php/authHelper.php");
+    require("../../php/logHelper.php");
 
     //TODO check length and shit
     $method = $_SERVER['REQUEST_METHOD'];
@@ -32,6 +33,8 @@
 
     $color = str_replace("#", "", $color);
 
+    LogHelper::getInstance()->log();
+    
     if($action === "CREATE"){
         $db_tags = Database::getInstance()->assocQuery("SELECT idTag FROM Tags WHERE code='{0}'", [$code]);
         if(count($db_tags) > 0){
