@@ -11,7 +11,7 @@
     require("../../php/database.php");
     require("../../php/authHelper.php");
     require("../../php/fileHelper.php");
-    require("../../php/logHelper.php");
+    //require("../../php/logHelper.php");
     
     RequestHelper::getInstance()->checkMethod("POST");
 
@@ -24,7 +24,7 @@
 
     $rating = $rating == 0 ? $rating : $rating/abs($rating); //convert to 1,-1,0
 
-    LogHelper::getInstance()->log();
+    //LogHelper::getInstance()->log();
     
     try {
         Database::getInstance()->beginTransaction();
