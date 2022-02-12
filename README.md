@@ -1,5 +1,6 @@
 
 # My light gallery
+Preview at gallery.lajtkep.dev
 Readme version 0.8
 ## How to deploy
 ###  1) Database
