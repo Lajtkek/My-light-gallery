@@ -1,16 +1,11 @@
 <?php
-    //CHANGE FOR PRODUCTION
-    header("Access-Control-Allow-Origin: http://localhost:8080");
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    header('Content-Type: application/json; charset=utf-8');
-    //=====================
-    require("../../php/requestHelper.php");
-    require("../../php/database.php");
-    require("../../php/authHelper.php");
-    require("../../php/logHelper.php");
+    require_once("../../php/requestHelper.php");
+    require_once("../../php/database.php");
+    require_once("../../php/authHelper.php");
+    require_once("../../php/logHelper.php");
+    
+    RequestHelper::getInstance()->setHeader();
 
-    //TODO check length and shit
     $method = $_SERVER['REQUEST_METHOD'];
     $idTag = RequestHelper::getInstance()->getParam("idTag", $method == "PUT");
     $tags = RequestHelper::getInstance()->getParam("tags", true);

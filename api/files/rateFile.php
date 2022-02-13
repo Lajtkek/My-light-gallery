@@ -1,18 +1,12 @@
 <?php
-    //CHANGE FOR PRODUCTION
-    header("Access-Control-Allow-Origin: http://localhost:8080");
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    header('Content-Type: application/json; charset=utf-8');
-    //=====================
     require_once("../../php/phpHelper.php");
     require_once("../../php/configHelper.php");
-    require("../../php/requestHelper.php");
-    require("../../php/database.php");
-    require("../../php/authHelper.php");
-    require("../../php/fileHelper.php");
-    //require("../../php/logHelper.php");
+    require_once("../../php/requestHelper.php");
+    require_once("../../php/database.php");
+    require_once("../../php/authHelper.php");
+    require_once("../../php/fileHelper.php");
     
+    RequestHelper::getInstance()->setHeader();
     RequestHelper::getInstance()->checkMethod("POST");
 
     $idFile = RequestHelper::getInstance()->getParam("idFile", true);
@@ -24,8 +18,6 @@
 
     $rating = $rating == 0 ? $rating : $rating/abs($rating); //convert to 1,-1,0
 
-    //LogHelper::getInstance()->log();
-    
     try {
         Database::getInstance()->beginTransaction();
         $user_query = "";
@@ -49,7 +41,6 @@
         Database::getInstance()->insertQuery("INSERT INTO Rating (".$user_query.", idFile, rating) VALUES ('{0}', {1}, {2})", [$identifier["value"], $idFile, $rating]);
         Database::getInstance()->normalQuery("UPDATE Files SET rating = (rating + {0}) WHERE idFile = {1}", [$rating_balance, $idFile]);
         
-        //RATE
         Database::getInstance()->commitTransaction();
         RequestHelper::getInstance()->resolve([
             "result" => true

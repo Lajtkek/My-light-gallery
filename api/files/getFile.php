@@ -1,29 +1,24 @@
 <?php
-    //CHANGE FOR PRODUCTION
-    header("Access-Control-Allow-Origin: http://localhost:8080");
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    header('Content-Type: application/json; charset=utf-8');
-    //=====================
-    require("../../php/database.php");
-    require("../../php/requestHelper.php");
-    require("../../php/authHelper.php");
-    require("../../php/logHelper.php");
+    require_once("../../php/database.php");
+    require_once("../../php/requestHelper.php");
+    require_once("../../php/authHelper.php");
+    require_once("../../php/logHelper.php");
     
+    RequestHelper::getInstance()->setHeader();
     RequestHelper::getInstance()->checkMethod("GET");
+
     $idFile = RequestHelper::getInstance()->getParam("idFile", true);
 
-    //TODO: 
-    $userData = AuthHelper::getInstance()->auth();
+    $user_data = AuthHelper::getInstance()->auth();
     $identifier = RequestHelper::getInstance()->getIP();
     $ratingQuery = "";
 
     LogHelper::getInstance()->log();
 
-    if(!is_null($userData) && !is_string($userData)){
+    if(!is_null($user_data) && !is_string($user_data)){
         //pokud má alespoň jednu roli (těď je jenom admin ale bude víc roli)
-        $private_enabled = (int) (count(array_intersect($userData->roles, ["admin"])) > 0);
-        $identifier = $userData->idUser;
+        $private_enabled = (int) (count(array_intersect($user_data->roles, ["admin"])) > 0);
+        $identifier = $user_data->idUser;
         $ratingQuery = "LEFT JOIN Rating r ON (r.idFile = f.idFile AND r.idUser = {1})";
     }else{
         if(is_null($identifier))
@@ -49,5 +44,4 @@
     $file = $file[0];
     $file["tags"] = $tags;
     RequestHelper::getInstance()->resolve($file);
-
 ?>

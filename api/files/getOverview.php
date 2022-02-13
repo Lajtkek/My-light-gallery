@@ -1,19 +1,12 @@
 <?php
-    //CHANGE FOR PRODUCTION
-    header("Access-Control-Allow-Origin: http://localhost:8080");
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    header('Content-Type: application/json; charset=utf-8');
-    //=====================
-    require("../../php/database.php");
-    require("../../php/requestHelper.php");
-    require("../../php/authHelper.php");
-    require("../../php/logHelper.php");
+    require_once("../../php/database.php");
+    require_once("../../php/requestHelper.php");
+    require_once("../../php/authHelper.php");
+    require_once("../../php/logHelper.php");
     
+    RequestHelper::getInstance()->setHeader();
     RequestHelper::getInstance()->checkMethod("GET");
     AuthHelper::getInstance()->auth(["admin"]);
-
-    LogHelper::getInstance()->log();
     
     $total_filesize = Database::getInstance()->assocQuery("SELECT  ROUND(SUM(size)/1024/1024,1) as totalFileSize FROM Files")[0];
     $db_size =  Database::getInstance()->assocQuery("SELECT 

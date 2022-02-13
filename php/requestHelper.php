@@ -16,6 +16,13 @@ class RequestHelper {
     public function __destruct(){
     }
 
+    public function setHeader(){
+        header("Access-Control-Allow-Origin: http://localhost:8080");
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+        header('Content-Type: application/json; charset=utf-8');
+    }
+
     public function checkMethod($wantedMethod){
         if($_SERVER['REQUEST_METHOD'] != $wantedMethod)
             $this->reject($wantedMethod."_REQUEST_REQUIRED");

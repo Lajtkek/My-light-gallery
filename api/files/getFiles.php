@@ -1,17 +1,12 @@
 <?php
-    //CHANGE FOR PRODUCTION
-    header("Access-Control-Allow-Origin: http://localhost:8080");
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    header('Content-Type: application/json; charset=utf-8');
-    //=====================
-    require("../../php/configHelper.php");
-    require("../../php/requestHelper.php");
-    require("../../php/database.php");
-    require("../../php/authHelper.php");
+    require_once("../../php/configHelper.php");
+    require_once("../../php/requestHelper.php");
+    require_once("../../php/database.php");
+    require_once("../../php/authHelper.php");
     require_once("../../php/phpHelper.php");
     require_once("../../php/logHelper.php");
 
+    RequestHelper::getInstance()->setHeader();
     RequestHelper::getInstance()->checkMethod("GET");
     $userData = AuthHelper::getInstance()->auth();
 
@@ -25,7 +20,6 @@
     
     $tag_array = count($tags) > 0 ? implode(",",$tags) : -1;
 
-    //orderBy login
     $allowed_orders = [
         "DATE_ASC" => "ORDER BY f.uploadedAt ASC", 
         "DATE_DESC" => "ORDER BY f.uploadedAt DESC", 
@@ -40,15 +34,13 @@
 
     $order_by_sql = $allowed_orders[$order_by];
 
-    // Log only
     LogHelper::getInstance()->log();
     
-    // if authToken is valid (not null or not string)
     $identifier = RequestHelper::getInstance()->getIP();
     $ratingQuery = "";
 
     if(!is_null($userData) && !is_string($userData)){
-        //pokud má alespoň jednu roli (těď je jenom admin ale bude víc roli)
+        //If he has at least one required role
         $private_enabled = (int) (count(array_intersect($userData->roles, ["admin"])) > 0);
         $identifier = $userData->idUser;
         $ratingQuery = "LEFT JOIN Rating r ON (r.idFile = f.idFile AND r.idUser = {0})";
