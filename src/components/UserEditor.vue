@@ -96,27 +96,33 @@ export default {
   methods: {
     async saveUser() {
       this.pendingRequests.saveUser = true;
+      let { idUser, username, password, email, isApproved, roles } = { ...this.user };
+
+      let result = null;
       if (this.user.idUser) {
-        console.warn("not implemented");
-      } else {
-        let { username, password, email, isApproved, roles } = { ...this.user };
-        let result = await Vue.prototype.post("users/userIU", {
+        result = await Vue.prototype.patch("users/userIU", {
+          idUser,
           username, 
           password,
           email,
           isApproved, 
           roles
         });
-
-        if (!result.error) {
-          this.$emit('onUserIU', result.data)
-        } else {
-          console.warn(
-            `Error occured when saving user error code: ${result.error}`
-          );
-        }
+      } else {
+        result = await Vue.prototype.post("users/userIU", {
+          username, 
+          password,
+          email,
+          isApproved, 
+          roles
+        });
       }
-      this.$store.commit("setEditedUser", null);
+      if (!result.error) {
+        this.$emit('onUserIU', result.data)
+        this.$store.commit("setEditedUser", null);
+      } else {
+        this.showErrorTooltip(result.error);
+      }
       this.pendingRequests.saveUser = false;
     },
   },

@@ -18,7 +18,7 @@ class RequestHelper {
 
     public function setHeader(){
         header("Access-Control-Allow-Origin: http://localhost:8080");
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH');
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
         header('Content-Type: application/json; charset=utf-8');
     }

@@ -48,7 +48,7 @@ class Database {
         $result = $this->conn->query($sql);
 
         if($result === FALSE)
-            throw new Exception("Failed Query: ".$sql);
+            $this->throwSQLException($sql);
 
         $resultArray = [];
         if ($result->num_rows > 0) {
@@ -61,27 +61,35 @@ class Database {
 
     function insertQuery($sql, $parameters = []){
         $sql = $this->renderSQL($sql, $parameters);
-        $result = $this->conn->query($sql);
+        try{
+            $result = $this->conn->query($sql);
 
-        if($result === FALSE)
-            throw new Exception("Failed Insert Query: ".$sql);
+            if($result === FALSE)
+                $this->throwSQLException($sql);
 
-        if ($result === TRUE) {
-            return $this->conn->insert_id;
-        } else {
-            return FALSE;
+            if ($result === TRUE) {
+                return $this->conn->insert_id;
+            } else {
+                return FALSE;
+            }
+        }catch (Exception $e){
+            $this->throwSQLException($sql);
         }
     }
 
     function normalQuery($sql, $parameters = []){
         $sql = $this->renderSQL($sql, $parameters);
-        
-        $result = $this->conn->query($sql);
-        
-        if($result === FALSE)
-            throw new Exception("Failed Insert Query: ".$sql);
+        try{
+            $result = $this->conn->query($sql);
 
-        return $result;
+            return $result;
+        }catch (Exception $e){
+            $this->throwSQLException($sql);
+        }
+    }
+
+    function throwSQLException($sql){
+        throw new Exception("Failed Query: ".preg_replace('!\s+!', ' ',$sql));
     }
 
     function beginTransaction(){
@@ -112,12 +120,12 @@ class Database {
                 return $role["idUser"] == $user["idUser"];
             });
 
-            $user["roles"] = array_map(function ($role){
+            $user["roles"] = array_values(array_map(function ($role){
                 return [
                     "idRole" => $role["idRole"],
                     "name" => $role["name"]
                 ];
-            }, $user["roles"]);
+            }, $user["roles"]));
         }
 
         return $users;

@@ -18,6 +18,12 @@
           {{ role.name }}
         </v-chip>
       </template>
+      <template v-slot:item.edit="{ item }">
+        <v-btn @click="editUser(item)">Edit</v-btn>
+      </template>
+      <!-- <template v-slot:item.delete="{ item }">
+        <v-btn @click="deleteUser(item)">Delete</v-btn>
+      </template> -->
     </v-data-table>
     <UserEditor @onUserIU="onUserIU"/>
   </div>
@@ -39,6 +45,8 @@ export default {
         { text: "isApproved", value: "isApproved" },
         { text: "createdAt", value: "createdAt" },
         { text: "Roles", value: "roles" },
+        { text: "", value: "edit", width: "1px" },
+        //{ text: "", value: "delete", width: "1px" },
       ],
       users: [],
     };
@@ -51,8 +59,9 @@ export default {
   },
   methods: {
     onUserIU(user){
+      let index = this.users.findIndex(x => x.idUser == user.idUser)
       this.users = this.users.filter(x => x.idUser != user.idUser);
-      this.users.push(user);
+      this.users.splice(index, 0, user);
     },
     createUser() {
       this.$store.commit("setEditedUser", {
@@ -63,6 +72,14 @@ export default {
         isApproved: true,
       });
     },
+    editUser(user){
+      user = {...user};
+      user.roles = user.roles?.map(x => x.idRole) ?? [];
+      this.$store.commit("setEditedUser", user);
+    },
+    // deleteUser(){
+
+    // }
   },
 };
 </script>

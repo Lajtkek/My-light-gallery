@@ -66,6 +66,10 @@ const MyPlugin = {
       return `${process.env.VUE_APP_IMAGE_ROOT}/${fileName}`;
     }
 
+    Vue.prototype.patch = async (url, data = null, options = {}) => {
+      return Vue.prototype.wm(url, data, options, 'PATCH')
+    }
+
     Vue.prototype.put = async (url, data = null, options = {}) => {
       return Vue.prototype.wm(url, data, options, 'PUT')
     }
