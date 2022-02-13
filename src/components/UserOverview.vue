@@ -59,7 +59,8 @@ export default {
   },
   methods: {
     onUserIU(user){
-      let index = this.users.findIndex(x => x.idUser == user.idUser)
+      let index = this.users.findIndex(x => x.idUser == user.idUser);
+      if(index === -1) index = this.users.length;
       this.users = this.users.filter(x => x.idUser != user.idUser);
       this.users.splice(index, 0, user);
     },
