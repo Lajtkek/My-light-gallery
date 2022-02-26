@@ -21,12 +21,12 @@
     $tag_array = count($tags) > 0 ? implode(",",$tags) : -1;
 
     $allowed_orders = [
-        "DATE_ASC" => "ORDER BY f.uploadedAt ASC", 
-        "DATE_DESC" => "ORDER BY f.uploadedAt DESC", 
-        "NAME_ASC" => "ORDER BY f.filename ASC", 
-        "NAME_DESC" => "ORDER BY f.filename DESC", 
-        "RATING_ASC" => "ORDER BY f.rating ASC", 
-        "RATING_DESC" => "ORDER BY f.rating DESC", 
+        "DATE_ASC" => "ORDER BY f.uploadedAt ASC, f.idFile ASC", 
+        "DATE_DESC" => "ORDER BY f.uploadedAt DESC, f.idFile ASC", 
+        "NAME_ASC" => "ORDER BY f.filename ASC, f.idFile ASC", 
+        "NAME_DESC" => "ORDER BY f.filename DESC, f.idFile ASC", 
+        "RATING_ASC" => "ORDER BY f.rating ASC, f.idFile ASC", 
+        "RATING_DESC" => "ORDER BY f.rating DESC, f.idFile ASC", 
     ];
 
     if(!in_array($order_by, array_keys($allowed_orders)))
