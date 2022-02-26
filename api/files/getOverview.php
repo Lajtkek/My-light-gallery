@@ -17,9 +17,9 @@
 
     RequestHelper::getInstance()->resolve([
         "totalFileSize" =>  (double) $total_filesize["totalFileSize"],
-        "maxFilesize" => ConfigHelper::getInstance()->getConfigValue("max_file_size"),
+        "maxFilesize" => ConfigHelper::getInstance()->getConfigValue("max_file_size") / 1024,
         "totalDatabaseSize" => (double) $db_size["totalDatabaseSize"],
-        "maxDatabaseSize" => ConfigHelper::getInstance()->getConfigValue("max_database_size"),
+        "maxDatabaseSize" => ConfigHelper::getInstance()->getConfigValue("max_database_size") / 1024,
     ]);
 
 ?>
