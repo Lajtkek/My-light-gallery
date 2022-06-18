@@ -62,6 +62,11 @@ class RequestHelper {
                 "error" => $error
             ]));
         }
+        if(get_class($error) == "Exception"){
+            die($this->encodeJson([
+                "error" => $error->getMessage()
+            ]));
+        }
         die($this->encodeJson([
             "error" => $error
         ]));

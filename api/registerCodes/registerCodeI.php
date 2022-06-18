@@ -19,7 +19,7 @@
         RequestHelper::getInstance()->resolve($code_id);
 
     }catch(Exception $e){
-        RequestHelper::getInstance()->reject();
+        RequestHelper::getInstance()->reject($e);
         Database::getInstance()->rollbackTransaction();
     }
     
