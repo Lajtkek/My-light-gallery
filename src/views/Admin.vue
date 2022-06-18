@@ -13,6 +13,9 @@
           <v-tab key="users">
             Users
           </v-tab>
+          <v-tab key="registerCodes">
+            Register codes
+          </v-tab>
         </v-tabs>
         <v-tabs-items v-model="tab" class="edit-wrapper">
           <v-tab-item key="overview">
@@ -30,6 +33,11 @@
               <UserOverview/>
             </div>
           </v-tab-item>
+          <v-tab-item key="registerCodes">
+            <div class="tab-wrapper">
+              <RegisterCodesOverview/>
+            </div>
+          </v-tab-item>
         </v-tabs-items>
       </v-card>
     </div>
@@ -42,6 +50,7 @@ import Navbar from "../components/Navbar.vue";
 import AdminOverview from "../components/AdminOverview.vue";
 import TagOverview from "../components/TagOverview.vue";
 import UserOverview from "../components/UserOverview.vue";
+import RegisterCodesOverview from "../components/RegisterCodesOverview.vue";
 
 export default Vue.extend({
   name: "Admin",
@@ -50,7 +59,7 @@ export default Vue.extend({
       tab: "overview"
     };
   },
-  components: { Navbar, AdminOverview,TagOverview, UserOverview },
+  components: { Navbar, AdminOverview,TagOverview, UserOverview, RegisterCodesOverview },
   methods: {},
 });
 </script>

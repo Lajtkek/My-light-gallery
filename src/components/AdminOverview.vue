@@ -10,11 +10,11 @@
           :value="discFullness"
           color="red"
         >
-        <div class="center-text">
-          {{discFullness}}%
-          <br>
-          {{galleryData.totalFileSize}} MB
-        </div>
+          <div class="center-text">
+            {{ discFullness }}%
+            <br />
+            {{ galleryData.totalFileSize }} MB
+          </div>
         </v-progress-circular>
       </div>
       <div class="graph-wrapper">
@@ -26,11 +26,11 @@
           :value="databaseFullness"
           color="green"
         >
-        <div class="center-text">
-          {{databaseFullness}}%
-          <br>
-          {{galleryData.totalDatabaseSize}} MB
-        </div>
+          <div class="center-text">
+            {{ databaseFullness }}%
+            <br />
+            {{ galleryData.totalDatabaseSize }} MB
+          </div>
         </v-progress-circular>
       </div>
     </div>
@@ -79,10 +79,10 @@ export default {
   width: 100%;
   height: 90vh;
 
-  .graph-wrapper{
+  .graph-wrapper {
     margin: 60px;
 
-    .text{
+    .text {
       text-align: center;
       margin: 20px;
       font-size: 24px;
