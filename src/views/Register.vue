@@ -1,7 +1,7 @@
 <template>
 	<div class="login-wrapper">
 		<div>
-			<h1>Login</h1>
+			<h1>Register</h1>
 			<v-form ref="form" v-model="valid" lazy-validation>
 				<v-text-field
 					v-model="username"
@@ -13,13 +13,31 @@
 				<v-text-field
 					type="password"
 					v-model="password"
+					class="password"
 					label="Password"
 					:rules="passwordRules"
 					required
 					@keydown.enter="login"
 				></v-text-field>
+				<v-text-field
+					type="password"
+					v-model="passwordRepeat"
+					label="Password again :-)"
+					:rules="passwordRepeatRules"
+					required
+					@keydown.enter="login"
+				></v-text-field>
+				<v-text-field
+					type="code"
+					v-model="code"
+					class="code"
+					label="code"
+					:rules="codeRules"
+					required
+					@keydown.enter="login"
+				></v-text-field>
 				<v-col class="text-right">
-					<v-btn color="blue" @click="login" right> Login </v-btn>
+					<v-btn color="blue" @click="register" right> Register </v-btn>
 				</v-col>
 			</v-form>
 		</div>
@@ -30,39 +48,38 @@
 import Vue from "vue";
 
 export default Vue.extend({
-	name: "Login",
+	name: "Register",
 	data: function () {
 		return {
 			valid: true,
 			username: "",
 			password: "",
+			passwordRepeat: "",
 			//validation
 			usernameRules: [(v) => !!v || "Name is required"],
 			passwordRules: [(v) => !!v || "Password is required"],
+			//todo proper fix
+			passwordRepeatRules: [(v) => {
+				const value = document.querySelector(".password input").value
+				return value == v || "Passwords must match";
+			}],
+			
+			codeRules: [(v) => !!v || "Name is required"],
 		};
 	},
 	components: {},
 	methods: {
-		async login() {
+		async register() {
 			if (this.$refs.form.validate()) {
 				let result = await Vue.prototype.post(
-					"login",
-					{ username: this.username, password: this.password },
-					{}
+					"register",
+					{ username: this.username, password: this.password, code: this.code }
 				);
 
 				if (result.error) {
-					this.showErrorTooltip("Wrong username or password.");
+					this.showErrorTooltip(result.error);
 				} else {
-					try {
-						let parsed = this.parseJwt(result.data.token);
-						if (parsed != null) {
-							localStorage.token = result.data.token;
-							location.reload();
-						}
-					} catch (e) {
-						console.error(e);
-					}
+					this.showMainTooltip(result.data);
 				}
 			}
 		},

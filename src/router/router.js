@@ -56,6 +56,14 @@ const routes = [
       requiresGuest: true
     },
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    meta: {
+      requiresGuest: true
+    },
+    component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
   }
 ]
 
