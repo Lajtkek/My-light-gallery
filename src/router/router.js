@@ -36,7 +36,7 @@ const routes = [
     name: 'Upload',
     meta: {
       requiresAuth: true,
-      requiredRoles: ['admin']
+    //   requiredRoles: ['admin']
     },
     component: Upload
   },

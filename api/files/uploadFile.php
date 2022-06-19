@@ -9,7 +9,7 @@
 
     RequestHelper::getInstance()->setHeader();
     RequestHelper::getInstance()->checkMethod("POST");
-    $userData = AuthHelper::getInstance()->auth(["admin"]);
+    $userData = AuthHelper::getInstance()->auth();
 
     $filename = RequestHelper::getInstance()->getParam("filename", true);
     $extension = RequestHelper::getInstance()->getParam("extension", true);
@@ -46,7 +46,9 @@
         $size_in_kB = FileHelper::getInstance()->getFileSize($file_path); //kB;
 
         Database::getInstance()->beginTransaction();
-        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, size, description) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", [$userData->idUser, $filename, $permalink, $mimeType, $extension, $size_in_kB, $description]);
+		$is_temporary = in_array("admin",$userData->roles) == true ? 0 : 1;
+
+        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, size, description, isTemporary) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', {7})", [$userData->idUser, $filename, $permalink, $mimeType, $extension, $size_in_kB, $description, $is_temporary]);
 
         foreach ($tags as &$tag) {
             Database::getInstance()->insertQuery("INSERT INTO FileTags (idFile, idTag) VALUES ({0}, {1})", [$idFile, $tag->idTag]);

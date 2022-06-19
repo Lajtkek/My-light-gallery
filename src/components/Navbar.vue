@@ -6,7 +6,6 @@
       >Overview</router-link>
       <router-link
       to="/upload"
-      v-if="hasRole('admin')"
       >Upload</router-link>
       <router-link
       to="/admin"

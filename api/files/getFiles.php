@@ -56,7 +56,9 @@
                                                     LEFT JOIN FileTags ft ON(ft.idFile = f.idFile)
                                                     LEFT JOIN Tags t ON(t.idTag = ft.idTag AND (t.isPublic = 0))
                                                     ".$ratingQuery."
-                                                    WHERE 
+                                                    WHERE
+														f.isTemporary = 0
+														AND
                                                         f.filename LIKE '%{1}%'
                                                         AND 
                                                         (SELECT COUNT(rt.idTag) FROM FileTags rt WHERE rt.idFile = f.idFile AND rt.idTag IN ({2})) = {3}
