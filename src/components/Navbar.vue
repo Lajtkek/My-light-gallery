@@ -34,7 +34,6 @@
   export default {
     name: 'Navbar',
     mounted(){
-      //console.log(store.state.token)
     },
     methods: {
       logout(){

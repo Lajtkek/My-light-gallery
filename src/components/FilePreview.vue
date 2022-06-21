@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <img v-if="fileType == 'image'" :src="file.base64 ? file.base64 : getFile(file.permalink)" :class="file.public == 0 ? 'nsfw' : ''"/>
+    <img v-if="fileType == 'image'" :src="file.base64 ? file.base64 : getFile(file.permalink)" :class="file.public == 0 ? 'nsfw' : ''" loading="lazy"/>
     <video controls  v-else-if="fileType == 'video'">
       <source :src="file.base64 ? file.base64 : getFile(file.permalink)" :type="file.filyType" />
       Your browser does not support the video tag.
@@ -29,9 +29,7 @@ export default {
     },
   },
   mounted() {
-		console.log(this.file.public);
 		this.file.public = this.file.public ?? 1
-		console.log(this.file.public);
   },
   methods: {},
 };
