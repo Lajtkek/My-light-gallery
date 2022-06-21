@@ -16,6 +16,7 @@
     $tags = RequestHelper::getInstance()->getParam("tags") ?? "";
     $file_name = RequestHelper::getInstance()->getParam("filename") ?? "";
     $order_by = RequestHelper::getInstance()->getParam("orderBy") ?? "DATE_ASC";
+	$only_temporary = RequestHelper::getInstance()->getParam("onlyTemporary") ?? 0;
     $tags = $tags == "" ? [] : explode(",", $tags);
     
     $tag_array = count($tags) > 0 ? implode(",",$tags) : -1;
@@ -57,7 +58,7 @@
                                                     LEFT JOIN Tags t ON(t.idTag = ft.idTag AND (t.isPublic = 0))
                                                     ".$ratingQuery."
                                                     WHERE
-														f.isTemporary = 0
+														f.isTemporary = {7}
 														AND
                                                         f.filename LIKE '%{1}%'
                                                         AND 
@@ -68,7 +69,7 @@
                                                         OR
                                                         1 = {4}
                                                     ".$order_by_sql."
-                                                    LIMIT {5} OFFSET {6}", [$identifier, $file_name, $tag_array, count($tags), $private_enabled, $limit, $offset]);
+                                                    LIMIT {5} OFFSET {6}", [$identifier, $file_name, $tag_array, count($tags), $private_enabled, $limit, $offset,$only_temporary]);
 
     RequestHelper::getInstance()->resolve([
         "limit" => $limit,

@@ -13,7 +13,8 @@
     $code = RequestHelper::getInstance()->getParam("code", true);
     $color = RequestHelper::getInstance()->getParam("color", true);
     $is_public = (int) RequestHelper::getInstance()->getParam("isPublic", true);
-
+	$userData = AuthHelper::getInstance()->auth();
+	
     switch ($method) {
         case "POST":
             $action = "CREATE";
@@ -36,7 +37,9 @@
             RequestHelper::getInstance()->reject("not_unique");
         }
 
-        $tag_id = Database::getInstance()->insertQuery("INSERT INTO Tags (name, code, color, isPublic) VALUES ('{0}', '{1}', '{2}', {3})", [$name, $code, $color, $is_public]);
+		$is_temporary = in_array("admin",$userData->roles) == true ? 0 : 1;
+
+        $tag_id = Database::getInstance()->insertQuery("INSERT INTO Tags (name, code, color, isPublic, isTemporary) VALUES ('{0}', '{1}', '{2}', {3}, {4})", [$name, $code, $color, $is_public, $is_temporary]);
         if(is_numeric($tag_id)){
             foreach ($tags as &$tag_to_add) {
                 Database::getInstance()->insertQuery("INSERT INTO TagTags (idTag, idChildTag) VALUES ({0}, {1})", [$tag_id, $tag_to_add]);
@@ -49,6 +52,7 @@
     }
 
     if($action == "UPDATE"){
+		AuthHelper::getInstance()->auth(["admin"]);
         try{
             Database::getInstance()->beginTransaction();
             $db_tags = Database::getInstance()->assocQuery("SELECT idTag FROM Tags WHERE idTag = {0}", [$idTag]);
