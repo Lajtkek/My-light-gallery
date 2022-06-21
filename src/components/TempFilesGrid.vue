@@ -48,8 +48,16 @@ export default {
 		},
 		async acceptFile(file){
 			file.loading = true;
+			let request = await this.post("files/acceptFile", {
+				idFile: file.idFile
+			});
 
-			
+			if(!request.error){
+				this.files = this.files.filter(x => x.idFile != file.idFile);
+			}else{
+				this.showErrorTooltip("něco se nepovedlo :D")
+			}
+			file.loading = false;
 		},
 		async rejectFile(file){
 			file.loading = true;
@@ -59,6 +67,8 @@ export default {
 
 			if(!request.error){
 				this.files = this.files.filter(x => x.idFile != file.idFile);
+			}else{
+				this.showErrorTooltip("něco se nepovedlo :D")
 			}
 			file.loading = false;
 		}
