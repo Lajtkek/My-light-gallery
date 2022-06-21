@@ -52,7 +52,7 @@
             $ratingQuery = "LEFT JOIN Rating r ON (r.idFile = f.idFile AND r.ipAddress = '{0}')";
     }
 
-    $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, concat(f.permalink,'.', f.extension) as permalink, f.mimetype as mimeType, f.extension as extension, IFNULL(r.rating, 0) as rating, f.rating as globalRating
+    $files = Database::getInstance()->assocQuery("SELECT f.idFile as idFile, f.filename as filename, concat(f.permalink,'.', f.extension) as permalink, f.mimetype as mimeType, f.extension as extension, IFNULL(r.rating, 0) as rating, f.rating as globalRating, COUNT(t.idTag) = 0 as public
                                                     FROM Files f
                                                     LEFT JOIN FileTags ft ON(ft.idFile = f.idFile)
                                                     LEFT JOIN Tags t ON(t.idTag = ft.idTag AND (t.isPublic = 0))

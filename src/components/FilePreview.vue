@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <img v-if="fileType == 'image'" :src="file.base64 ? file.base64 : getFile(file.permalink)" />
+    <img v-if="fileType == 'image'" :src="file.base64 ? file.base64 : getFile(file.permalink)" :class="!file.public ? 'nsfw' : ''"/>
     <video controls  v-else-if="fileType == 'video'">
       <source :src="file.base64 ? file.base64 : getFile(file.permalink)" :type="file.filyType" />
       Your browser does not support the video tag.
@@ -28,7 +28,9 @@ export default {
       return mimeType.split("/")[0];
     },
   },
-  mounted() {},
+  mounted() {
+		console.log(this.file)
+  },
   methods: {},
 };
 </script>
@@ -45,5 +47,13 @@ export default {
 img, video { 
   max-width: calc(100% - 20px);
   max-height: calc(100% - 20px);
+}
+
+.nsfw{
+  filter: blur(12px);
+}
+
+.nsfw:hover{
+  filter: blur(0);
 }
 </style>
