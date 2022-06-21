@@ -78,9 +78,13 @@ export default {
 
 <style lang="less" scoped>
 .super-flex{
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	flex: 1 1 0px;
+	
+    display: flex;
+    justify-content: center;
+	flex-direction: column;
+    width: 100%;
+    height: 100%;
 }
 .btn-wrapper{
 	padding: 20px;
@@ -91,5 +95,8 @@ export default {
 	button:first-child{
 		margin-right: 10px;
 	}
+}
+.file{
+	margin-top: 30px;
 }
 </style>
