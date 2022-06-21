@@ -35,6 +35,10 @@
                                                     LEFT JOIN FileTags ft ON(ft.idTag = t.idTag)
                                                     WHERE ft.idFile = '{0}'", [$idFile]);
 
+	if(count($file) == 0){
+		RequestHelper::getInstance()->reject("Nenalezen");
+	}
+
     foreach ($tags as &$tag) {
         if($tag["isPublic"] == 0){
             AuthHelper::getInstance()->auth(["admin"]);
