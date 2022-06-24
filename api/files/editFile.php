@@ -13,6 +13,12 @@
 
     $file_id = RequestHelper::getInstance()->getParam("idFile", true);
     $filename = RequestHelper::getInstance()->getParam("filename", true);
+    RequestHelper::getInstance()->validateParam($filename, "filename", [
+        [
+            "name" => "minLength",
+            "value" => 3
+        ]
+    ]);
     $description = RequestHelper::getInstance()->getParam("description", true);
     $tags = RequestHelper::getInstance()->getParam("tags", true);
     
@@ -21,7 +27,6 @@
     try {
         Database::getInstance()->beginTransaction();
 
-        //TODO dont update extension redundency
         Database::getInstance()->normalQuery("UPDATE Files SET filename = '{0}', description = '{1}' WHERE idFile = {2}", [$filename, $description, $file_id]);
 
         Database::getInstance()->normalQuery("DELETE FROM FileTags WHERE idFile = {0}", [$file_id]);

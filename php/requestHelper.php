@@ -51,6 +51,36 @@ class RequestHelper {
         }
     }
 
+    public function validateParam($var_value, $param_name, $rules){
+        foreach ($rules as &$rule) {
+            $name = $rule["name"];
+            $value = $rule["value"];
+
+            switch ($name) {
+                case 'minLength':
+                    if(strlen($var_value) < $value)
+                        $this->reject("Param named ". $param_name ." must be at least ".$value." long ");
+                    break;
+                case 'maxLength':
+                    if(strlen($var_value) > $value)
+                        $this->reject("Param named ". $param_name ." must be at most ".$value." long");
+                    break;
+                case 'inArray':
+                    if(!in_array($var_value, $value))
+                        $this->reject("UNSUPPORTED_EXTENSION");
+                    break;
+                case 'byteSize':
+                    $byte_size = strlen($var_value);
+                    if($byte_size > $value)
+                        $this->reject("TOO_LARGE");
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
+    }
+
     public function reject($error = null){
         if(is_null($error)){   
             die($this->encodeJson([

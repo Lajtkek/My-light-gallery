@@ -18,7 +18,7 @@
     try {
         Database::getInstance()->beginTransaction();
 		
-		$file_tags = Database::getInstance()->assocQuery("SELECT idTag FROM filetags WHERE idFile = {0}", [$file_id]);
+		$file_tags = Database::getInstance()->assocQuery("SELECT idTag FROM FileTags WHERE idFile = {0}", [$file_id]);
 		foreach ($file_tags as &$tag) {
 			Database::getInstance()->normalQuery("UPDATE Tags SET isTemporary = 0 WHERE idTag = {0}", [$tag["idTag"]]);
 			

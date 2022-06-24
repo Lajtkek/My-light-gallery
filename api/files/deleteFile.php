@@ -16,8 +16,8 @@
     try {
         Database::getInstance()->beginTransaction();
         
-        Database::getInstance()->normalQuery("DELETE FROM filetags WHERE idFile = {0}", [$idFile]);
-        Database::getInstance()->normalQuery("DELETE FROM rating WHERE idFile = {0}", [$idFile]);
+        Database::getInstance()->normalQuery("DELETE FROM FileTags WHERE idFile = {0}", [$idFile]);
+        Database::getInstance()->normalQuery("DELETE FROM Rating WHERE idFile = {0}", [$idFile]);
         Database::getInstance()->normalQuery("DELETE FROM Files WHERE idFile = {0}", [$idFile]);
         
         Database::getInstance()->commitTransaction();

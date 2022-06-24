@@ -65,6 +65,11 @@ export default Vue.extend({
       this.uploadData.files = this.uploadData.files.filter(x => x != fileData);
 
       if(result.error){
+        if(result.error == "TOO_LARGE")
+          this.showErrorTooltip("Soubor je moc velký");
+        else if(result.error =="UNSUPPORTED_EXTENSION")
+          this.showErrorTooltip("Soubor s toto příponou je zakázáno nahrávat");
+        else
         this.editData.files.push(fileData);
       }
 

@@ -79,7 +79,8 @@ export default Vue.extend({
 				if (result.error) {
 					this.showErrorTooltip(result.error);
 				} else {
-					this.showMainTooltip(result.data);
+					this.showMainTooltip("Regstered");
+					this.$router.push('/login');
 				}
 			}
 		},

@@ -12,10 +12,29 @@
     $userData = AuthHelper::getInstance()->auth();
 
     $filename = RequestHelper::getInstance()->getParam("filename", true);
+    RequestHelper::getInstance()->validateParam($filename, "filename", [
+        [
+            "name" => "minLength",
+            "value" => 3
+        ]
+    ]);
     $extension = RequestHelper::getInstance()->getParam("extension", true);
+    
     $mimeType = RequestHelper::getInstance()->getParam("mimeType", true);
     $description = RequestHelper::getInstance()->getParam("description", true);
     $base64 = RequestHelper::getInstance()->getParam("base64", true);
+    RequestHelper::getInstance()->validateParam($base64, "base64", [
+        [
+            "name" => "byteSize",
+            "value" => 1000000
+        ]
+    ]);
+    RequestHelper::getInstance()->validateParam($extension, "extension", [
+        [
+            "name" => "inArray",
+            "value" => ["png","gif","mp4","webp", "webm"]
+        ]
+    ]);
     $tags = RequestHelper::getInstance()->getParam("tags", true);
 
     $log_data = RequestHelper::getInstance()->getRequestData();
