@@ -23,10 +23,10 @@
         <div v-if="action == 'edit'">
             <div v-if="!editingImage">
                 <div class="edit-text">
-                    <span class="md">Files left {{ editData.files.length }}</span>
+                    <span class="md">Files left {{ filesToDo }}</span>
                     <span class="sm">Uploading {{ uploadData.files.length }} files</span>
                 </div>
-                <div class="edit-block" v-if="currentFile">
+                <div class="edit-block" v-if="currentFileData">
                     <v-card class="edit-image-wrapper">
                         <div class="edit-image-card">
                             <FilePreview :file="currentFileData" class="edit-image"></FilePreview>
@@ -78,6 +78,9 @@
                         </div>
                     </div>
                 </div>
+				<div v-else-if="editData.files.length > 0">
+					Soubor se připravuje
+				</div>
             </div>
 			<div class="file-edit" v-else>
 				<tui-image-editor ref="editor" :include-ui="editorOptions.useDefaultUI" :options="editorOptions.options"></tui-image-editor>

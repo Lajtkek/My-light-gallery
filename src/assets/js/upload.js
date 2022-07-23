@@ -19,8 +19,8 @@ export default Vue.extend({
         fileState() {
             return `${this.editData.files.length}|${this.uploadData.files.length}`;
         },
-        currentFile() {
-            return this.files?.[0];
+		filesToDo() {
+            return this.files?.length ?? 0 + this.editData.length ?? 0;
         },
         currentFileData() {
             return this.editData?.files?.[0];
@@ -31,7 +31,7 @@ export default Vue.extend({
             this.editData.tags = this.$store.state.fileTags;
         },
         fileState: function () {
-            if (this.editData.files.length == 0 && this.uploadData.files.length == 0) this.reload();
+            //if (this.editData.files.length == 0 && this.uploadData.files.length == 0) this.reload();
         },
 		'editingImage': async function(newVal){
 			if(!newVal) return 
@@ -39,8 +39,7 @@ export default Vue.extend({
 			this.$refs.editor.invoke('loadImageFromFile', this.files[0]).then((result) => {
 				this.$refs.editor.invoke('ui.resizeEditor', {imageSize: result});
 			})
-            
-		}
+		},
     },
     data: function () {
         return {
@@ -73,6 +72,7 @@ export default Vue.extend({
                     cssMaxHeight: 500,
                 },
             },
+			preloadCount: 2
         };
     },
     methods: {
@@ -85,9 +85,8 @@ export default Vue.extend({
 		},
         async uploadFirst() {
             let fileData = this.editData.files.shift();
-            this.$nextTick(() => {
-                this.editData.tab = 0;
-            });
+			this.fetchNextFileData(this.files.pop());
+
             this.uploadData.files.push(fileData);
 
             let result = await Vue.prototype.post('files/uploadFile', {
@@ -105,16 +104,12 @@ export default Vue.extend({
             if (result.error) {
                 if (result.error == 'TOO_LARGE') this.showErrorTooltip('Soubor je moc velký');
                 else if (result.error == 'UNSUPPORTED_EXTENSION') this.showErrorTooltip('Soubor s toto příponou je zakázáno nahrávat');
-                else this.editData.files.push(fileData);
+                this.editData.files.push(fileData);
             }
-
-            this.uploadData.filesUploaded++;
+			this.uploadData.files = this.uploadData.filter(x => x.pseudoId != fileData.pseudoId)
         },
         async deleteFirst() {
             this.editData.files.shift();
-            this.$nextTick(() => {
-                this.editData.tab = 0;
-            });
         },
         reload() {
             window.location.reload();
@@ -129,26 +124,8 @@ export default Vue.extend({
             });
         },
         async edit() {
-            for (const file of this.files) {
-                let splitName = file.name.split('.');
-                let extension = splitName[splitName.length - 1];
-
-                if (!file.type.includes('video') && !file.type.includes('image')) {
-                    console.warn(`${file.name} is not image or video. Support for other filetypes will be soon™`);
-                    continue;
-                }
-
-                let base64 = await this.getBase64(file);
-                this.editData.files.push({
-                    name: file.name,
-                    extension,
-                    mimeType: file.type,
-                    newName: this.editData.renameFiles ? randomHash(32) : file.name.replace(`.${extension}`, ''),
-                    description: '',
-                    tags: this.editData.tagsToAdd ?? [],
-                    file,
-                    base64,
-                });
+            for (let i = 0; i < this.preloadCount; i++) {
+                this.fetchNextFileData(this.files.pop());
             }
             this.action = 'edit';
 			
@@ -157,6 +134,32 @@ export default Vue.extend({
                 this.editData.files = [...this.editData.files];
             });
         },
+		async fetchNextFileData(file){
+			if(!file) return null;
+
+			let splitName = file.name.split('.');
+			let extension = splitName[splitName.length - 1];
+
+			if (!file.type.includes('video') && !file.type.includes('image')) {
+				console.warn(`${file.name} is not image or video. Support for other filetypes will be soon™`);
+
+				return null;
+			}
+
+			let base64 = await this.getBase64(file);
+			
+			this.editData.files.push({
+				pseudoId: randomHash(30),
+				name: file.name,
+				extension,
+				mimeType: file.type,
+				newName: this.editData.renameFiles ? randomHash(12) : file.name.replace(`.${extension}`, ''),
+				description: '',
+				tags: this.editData.tagsToAdd ?? [],
+				file,
+				base64,
+			})
+		},
         //TODO: try to do it in css? propably not it will fuck up the compoennt
         trimString(string, length) {
             return string.length > length ? string.substring(0, length) + '...' : string;
