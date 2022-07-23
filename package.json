@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@toast-ui/vue-image-editor": "^3.15.2",
     "core-js": "^3.6.5",
     "less-loader": "^5.0.0",
     "vue": "^2.6.11",

@@ -10,6 +10,14 @@ export function toFormData(data){
     return formData;
 }
 
+export function sleep(ms){
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, ms)
+    }) 
+}
+
 export function copyToClipboard(text) {
     var input = document.createElement('input');
     input.setAttribute('value', text);
