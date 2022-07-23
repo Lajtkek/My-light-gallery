@@ -81,6 +81,10 @@
             </div>
 			<div class="file-edit" v-else>
 				<tui-image-editor ref="editor" :include-ui="editorOptions.useDefaultUI" :options="editorOptions.options"></tui-image-editor>
+				<div class="edit-action-buttons-wrapper">
+					<v-btn @click="editingImage = false">Back</v-btn>
+					<v-btn @click="applyImageEdit">Save</v-btn>
+				</div>
 			</div>
         </div>
         <div class="upload-progress-container" v-if="action == 'upload-progress'">

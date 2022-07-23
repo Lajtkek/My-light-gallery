@@ -76,6 +76,13 @@ export default Vue.extend({
         };
     },
     methods: {
+		applyImageEdit(){
+			let data = this.$refs.editor.invoke('toDataURL', {
+				format: "png",
+			})
+			this.editData.files[0].base64 = data;
+			this.editingImage=false;
+		},
         async uploadFirst() {
             let fileData = this.editData.files.shift();
             this.$nextTick(() => {
