@@ -26,13 +26,13 @@
     RequestHelper::getInstance()->validateParam($base64, "base64", [
         [
             "name" => "byteSize",
-            "value" => 1000000
+            "value" => (int) ConfigHelper::getInstance()->getConfigValue("max_file_size")
         ]
     ]);
     RequestHelper::getInstance()->validateParam($extension, "extension", [
         [
             "name" => "inArray",
-            "value" => ["png","gif","mp4","webp", "webm"]
+            "value" => explode(",",ConfigHelper::getInstance()->getConfigValue("allowed_filetypes"))
         ]
     ]);
     $tags = RequestHelper::getInstance()->getParam("tags", true);

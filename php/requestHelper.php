@@ -71,7 +71,7 @@ class RequestHelper {
                     break;
                 case 'byteSize':
                     $byte_size = strlen($var_value);
-                    if($byte_size > $value)
+                    if($value != -1 && $byte_size > $value)
                         $this->reject("TOO_LARGE");
                     break;
                 default:
