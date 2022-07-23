@@ -7,8 +7,6 @@
 					<v-tab key="overview"> Overview </v-tab>
 					<v-tab key="tags"> Tags </v-tab>
 					<v-tab key="users"> Users </v-tab>
-					<v-tab key="registerCodes"> Register codes </v-tab>
-					<v-tab key="tempFilesGrid"> Temp files </v-tab>
 				</v-tabs>
 				<v-tabs-items v-model="tab" class="edit-wrapper">
 					<v-tab-item key="overview">

@@ -19,11 +19,11 @@
         Database::getInstance()->beginTransaction();
 
         
-        $tags_uses = Database::getInstance()->assocQuery("SELECT (ft.idTag) as idTag, COUNT(ft.idFile) as fileCount FROM FileTags ft
-		LEFT JOIN Tags t ON(ft.idTag = t.idTag)
+        $tags_uses = Database::getInstance()->assocQuery("SELECT (ft.idTag) as idTag, COUNT(ft.idFile) as fileCount FROM filetags ft
+		LEFT JOIN tags t ON(ft.idTag = t.idTag)
 		GROUP BY ft.idTag");
 
-		$file_tags = Database::getInstance()->assocQuery("SELECT idTag FROM FileTags WHERE idFile = {0}", [$file_id]);
+		$file_tags = Database::getInstance()->assocQuery("SELECT idTag FROM filetags WHERE idFile = {0}", [$file_id]);
 
         Database::getInstance()->normalQuery("DELETE FROM FileTags WHERE idFile = {0}", [$file_id]);
 		
