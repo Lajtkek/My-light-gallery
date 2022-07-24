@@ -48,6 +48,7 @@
                                     <v-row>
                                         <v-col cols="12" sm="6" md="6">
                                             <v-textarea v-model="currentFileData.description" placeholder="Description" background-color="grey lighten-2" solo></v-textarea>
+                                            <v-btn @click="loadText()" :loading="loadingText">Načíst text</v-btn>
                                         </v-col>
                                         <v-col cols="12" sm="6" md="6" v-if="$refs.tagSelect">
                                             <v-chip
@@ -70,10 +71,10 @@
                         </div>
                     </v-card>
                     <div class="action-buttons-wrapper">
-                        <div class="action-btn" @click="uploadFirst()">
+                        <div class="action-btn" @click="uploadFirst()" v-show="!loadingText">
                             <v-icon>mdi-arrow-right</v-icon>
                         </div>
-                        <div class="action-btn error" @click="deleteFirst()">
+                        <div class="action-btn error" @click="deleteFirst()" v-show="!loadingText">
                             <v-icon>mdi-delete</v-icon>
                         </div>
                     </div>

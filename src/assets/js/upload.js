@@ -5,6 +5,7 @@ import Navbar from '../../components/Navbar.vue';
 import TagEditor from '../../components/TagEditor.vue';
 import TagSelect from '../../components/TagSelect.vue';
 import { ImageEditor } from '@toast-ui/vue-image-editor';
+import Tesseract from 'tesseract.js';
 
 export default Vue.extend({
     name: 'Upload',
@@ -49,6 +50,7 @@ export default Vue.extend({
     },
     data: function () {
         return {
+            loadingText: false,
             action: 'upload',
             files: [],
 			editingImage: false,
@@ -83,6 +85,19 @@ export default Vue.extend({
         };
     },
     methods: {
+        async loadText(){
+            this.loadingText = true;
+            
+
+            Tesseract.recognize(
+                this.editData.files[0].base64,
+              'eng',
+              { logger: m => console.log(m) }
+            ).then(({ data: { text } }) => {
+                this.editData.files[0].description = text;
+                this.loadingText = false;
+            })
+        },
 		applyImageEdit(){
 			let data = this.$refs.editor.invoke('toDataURL', {
 				format: "png",

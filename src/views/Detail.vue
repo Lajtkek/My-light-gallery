@@ -35,9 +35,9 @@
 						>{{ tag.name }}</v-chip
 					>
 				</div>
-				<div class="description" v-if="file.description">
+				<pre class="description" v-if="file.description">
 					{{ file.description }}
-				</div>
+				</pre>
 			</div>
 			<div v-else class="error-wrapper">
 				File not found :-( or its private file >:-)
