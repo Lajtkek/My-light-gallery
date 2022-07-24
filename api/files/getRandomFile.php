@@ -13,29 +13,34 @@
 
     LogHelper::getInstance()->log();
 
-    $seed = RequestHelper::getInstance()->getParam("seed", false) ?? 0;
+    $seed = RequestHelper::getInstance()->getParam("seed", false) ?? -1;
     $tag = RequestHelper::getInstance()->getParam("tag", false) ?? '';
 
     $private_enabled = (int) 0;
 
-    $files = Database::getInstance()->assocQuery("SELECT f.idFile, f.filename, concat(f.permalink,'.', f.extension) as permalink, f.mimeType, f.extension, f.description, f.rating as globalRating  FROM FILES f
-        LEFT JOIN filetags ft ON(ft.idFile = f.idFile)
-        LEFT JOIN tags t ON(t.idTag = ft.idTag AND (t.code = '{0}' OR '{0}' = ''))
-        WHERE t.idTag IS NOT NULL", [$tag]);
+    $files = Database::getInstance()->assocQuery("SELECT f.idFile, f.filename, concat(f.permalink,'.', f.extension) as permalink, f.mimeType, f.extension, f.description, f.rating as globalRating  FROM Files f
+        LEFT JOIN FileTags ft ON(ft.idFile = f.idFile)
+        LEFT JOIN Tags t ON(t.idTag = ft.idTag AND (t.code = '{0}' OR '{0}' = ''))
+        LEFT JOIN Tags pt ON(t.idTag = pt.idTag AND pt.isPublic = 0)
+        WHERE t.idTag IS NOT NULL AND f.idFile IS NOT NULL
+        GROUP BY f.idFile
+        HAVING  COUNT(pt.idTag) = 0", [$tag]);
 
-	if(count($files) == 0){
-		RequestHelper::getInstance()->reject("Nenalezen");
-	}
 
-    $count = count($files);
+    $_filename = "public/not_found.png";
+	if(count($files) > 0){
+        $count = count($files);
 
-    $index = $seed%$count;
+        $index = $seed != -1 ? $seed%$count : rand(0, $count-1);
 
-    $file = $files[$index];
+        $file = $files[$index];
 
-    $_filename = "resources".DIRECTORY_SEPARATOR.$file["permalink"];
+        $_filename = "resources".DIRECTORY_SEPARATOR.$file["permalink"];
+    }
+
     $filename = basename($_filename);
     $file_extension = strtolower(substr(strrchr($filename,"."),1));
+    $ctype = "";
 
     switch( $file_extension ) {
         case "gif": $ctype="image/gif"; break;
