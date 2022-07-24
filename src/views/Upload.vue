@@ -100,7 +100,7 @@
                 </div>
             </div>
             <div v-else>
-                <h1 class="center-text">Upload complete</h1>
+                <h1 class="center-text">Upload complete (total {{uploadedFiles.length}})</h1>
                 <br />
                 <div class="file-wrapper">
                 <FilePreview v-for="file in uploadedFiles" :key="file.idFile" :file="file" class="file"/>

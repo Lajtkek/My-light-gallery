@@ -58,7 +58,7 @@
             $result = Database::getInstance()->assocQuery("SELECT permalink FROM TempFiles WHERE permalink = '{0}'", [$permalink]);
         } while (count($result) !== 0);
 
-        $file_path = "temp".DIRECTORY_SEPARATOR.$permalink.".temp";
+        $file_path = "tempFiles".DIRECTORY_SEPARATOR.$permalink.".temp";
         Database::getInstance()->insertQuery("INSERT INTO TempFiles (idUser, permalink) VALUES ({0}, '{1}')", [$userData->idUser, $permalink]);
         FileHelper::getInstance()->uploadFile($file_path, "");
     }
@@ -72,7 +72,7 @@
         if(is_null($result))
             RequestHelper::getInstance()->reject("file with this permalink doesnt exist");
 
-        $temp_path = "temp/".DIRECTORY_SEPARATOR.$permalink.".temp";
+        $temp_path = "tempFiles/".DIRECTORY_SEPARATOR.$permalink.".temp";
         FileHelper::getInstance()->appendToFile($temp_path, $base64);
 
         $size = FileHelper::getInstance()->getFileSize($temp_path);
@@ -103,7 +103,7 @@
             $file_path = $permalink.".".$extension;
 
             //move file
-            FileHelper::getInstance()->renameFile("temp".DIRECTORY_SEPARATOR.$old_permalink.".temp", "resources".DIRECTORY_SEPARATOR.$file_path);
+            FileHelper::getInstance()->renameFile("tempFiles".DIRECTORY_SEPARATOR.$old_permalink.".temp", "resources".DIRECTORY_SEPARATOR.$file_path);
 
             $size_in_kB = FileHelper::getInstance()->getFileSize("resources".DIRECTORY_SEPARATOR.$file_path); //kB;
 
