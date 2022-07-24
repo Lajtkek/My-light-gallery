@@ -42,7 +42,7 @@ export default Vue.extend({
 		'editingImage': async function(newVal){
 			if(!newVal) return 
 			await sleep(100)
-			this.$refs.editor.invoke('loadImageFromFile', this.files[0]).then((result) => {
+			this.$refs.editor.invoke('loadImageFromFile', this.editData.files[0].file).then((result) => {
 				this.$refs.editor.invoke('ui.resizeEditor', {imageSize: result});
 			})
 		},
@@ -165,11 +165,11 @@ export default Vue.extend({
             this.uploadData.files.push(fileData);
 
             await this.uploadFile(fileData);
-
-        
         },
         async deleteFirst() {
             this.editData.files.shift();
+            
+            await this.fetchNextFileData(this.files.pop());
         },
         reload() {
             window.location.reload();
