@@ -40,16 +40,7 @@
 
     $filename = basename($_filename);
     $file_extension = strtolower(substr(strrchr($filename,"."),1));
-    $ctype = "";
-
-    switch( $file_extension ) {
-        case "gif": $ctype="image/gif"; break;
-        case "png": $ctype="image/png"; break;
-        case "jpeg":
-        case "jpg": $ctype="image/jpeg"; break;
-        case "svg": $ctype="image/svg+xml"; break;
-        default:
-    }
+    $ctype = FileHelper::getInstance()->getCType($_filename);
 
     header('Content-type: ' . $ctype);
     header("Content-Length: " . FileHelper::getInstance()->getFileSize($_filename));

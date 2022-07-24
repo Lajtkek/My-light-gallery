@@ -50,6 +50,11 @@ class FileHelper {
         return fopen($file_path, 'rb');
     }
 
+    public function getCType($file_path){
+        $file_path = $this->root_path.$file_path;
+        return mime_content_type($file_path);
+    }
+
     public function renameFile($oldname, $newname){
         $oldname = $this->root_path.$oldname;
         $newname = $this->root_path.$newname;
