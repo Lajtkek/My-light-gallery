@@ -41,6 +41,15 @@ class FileHelper {
         return $size;
     }
 
+    public function getFileResource($file_path){
+        $file_path = $this->root_path.$file_path;
+        // $type = pathinfo($file_path, PATHINFO_EXTENSION);
+        // $data = file_get_contents($file_path);
+
+        //return 'data:image/' . $type . ';base64,' . base64_encode($data);
+        return fopen($file_path, 'rb');
+    }
+
     public function renameFile($oldname, $newname){
         $oldname = $this->root_path.$oldname;
         $newname = $this->root_path.$newname;
