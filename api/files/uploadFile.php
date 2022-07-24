@@ -23,65 +23,112 @@
     $mimeType = RequestHelper::getInstance()->getParam("mimeType", true);
     $description = RequestHelper::getInstance()->getParam("description", true);
     $base64 = RequestHelper::getInstance()->getParam("base64", true);
-    RequestHelper::getInstance()->validateParam($base64, "base64", [
-        [
-            "name" => "byteSize",
-            "value" => (int) ConfigHelper::getInstance()->getConfigValue("max_file_size")
-        ]
-    ]);
+
     RequestHelper::getInstance()->validateParam($extension, "extension", [
         [
             "name" => "inArray",
             "value" => explode(",",ConfigHelper::getInstance()->getConfigValue("allowed_filetypes"))
         ]
     ]);
+
+    $chunk = RequestHelper::getInstance()->getParam("chunk", true);
+    $totalChunks = RequestHelper::getInstance()->getParam("totalChunks", true);
+
+
+    // RequestHelper::getInstance()->validateParam($base64, "base64", [
+    //     [
+    //         "name" => "byteSize",
+    //         "value" => (int) ConfigHelper::getInstance()->getConfigValue("max_file_size")
+    //     ]
+    // ]);
+
+
+
     $tags = RequestHelper::getInstance()->getParam("tags", true);
 
     $log_data = RequestHelper::getInstance()->getRequestData();
     $log_data->base64 = "Big File :-)";
     LogHelper::getInstance()->log($log_data);
 
-    try {
-        $timestamp = (new DateTime())->getTimestamp();
-        $permalink;
-        $hash_size = (int) ConfigHelper::getInstance()->getConfigValue("hash_size");
-        
+    
+    $permalink = RequestHelper::getInstance()->getParam("permalink", false);
+    if($chunk == 0){
         do {
-            $permalink = randomHash($hash_size);
-            $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
+            $permalink = randomHash(24);
+            $result = Database::getInstance()->assocQuery("SELECT permalink FROM TempFiles WHERE permalink = '{0}'", [$permalink]);
         } while (count($result) !== 0);
 
-        $filename = $filename.".".$extension;
-        $file_path = $permalink.".".$extension;
-        
-
-        $filename_chunks = explode(".", $file_path);
-
-        if(strtolower($filename_chunks[count($filename_chunks)-1]) == "php"){
-            RequestHelper::getInstance()->reject("forbiden_file_type");
-        }
-        
-        FileHelper::getInstance()->uploadFile($file_path, $base64);
-        $size_in_kB = FileHelper::getInstance()->getFileSize($file_path); //kB;
-
-        Database::getInstance()->beginTransaction();
-		$is_temporary = in_array("admin",$userData->roles) == true ? 0 : 1;
-
-        $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, size, description, isTemporary) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', {7})", [$userData->idUser, $filename, $permalink, $mimeType, $extension, $size_in_kB, $description, $is_temporary]);
-
-        foreach ($tags as &$tag) {
-            Database::getInstance()->insertQuery("INSERT INTO FileTags (idFile, idTag) VALUES ({0}, {1})", [$idFile, $tag->idTag]);
-        }
-
-        Database::getInstance()->commitTransaction();
-
-        RequestHelper::getInstance()->resolve([
-            "result" => true
-        ]);
-    } catch (Exception $e) {
-        Database::getInstance()->rollbackTransaction();
-        RequestHelper::getInstance()->reject([
-            "error" => $e->getMessage()
-        ]);
+        $file_path = "temp".DIRECTORY_SEPARATOR.$permalink.".temp";
+        Database::getInstance()->insertQuery("INSERT INTO TempFiles (idUser, permalink) VALUES ({0}, '{1}')", [$userData->idUser, $permalink]);
+        FileHelper::getInstance()->uploadFile($file_path, "");
     }
+
+    if(is_null($permalink))
+    RequestHelper::getInstance()->reject("PERMALINK_REQUIRED");
+
+    if($chunk < $totalChunks){
+        $result = Database::getInstance()->assocQuery("SELECT permalink FROM TempFiles WHERE permalink = '{0}'", [$permalink]);
+
+        if(is_null($result))
+            RequestHelper::getInstance()->reject("file with this permalink doesnt exist");
+
+        $temp_path = "temp/".DIRECTORY_SEPARATOR.$permalink.".temp";
+        FileHelper::getInstance()->appendToFile($temp_path, $base64);
+
+        $size = FileHelper::getInstance()->getFileSize($temp_path);
+        $max_size = (int) ConfigHelper::getInstance()->getConfigValue("max_file_size");
+        if($max_size != -1 && $size > $max_size){
+            FileHelper::getInstance()->deleteFile($file_path);
+            Database::getInstance()->normalQuery("DELETE FROM TempFiles WHERE permalink = '{0}'", [$permalink]);
+            RequestHelper::getInstance()->reject("FILE_SIZE_EXCEEDED");
+        }
+    }
+    
+    if($chunk == $totalChunks-1){
+        try {
+            Database::getInstance()->beginTransaction();
+            Database::getInstance()->normalQuery("DELETE FROM TempFiles WHERE permalink = '{0}'", [$permalink]);
+            $old_permalink = $permalink;
+
+            $timestamp = (new DateTime())->getTimestamp();
+            $permalink;
+            $hash_size = (int) ConfigHelper::getInstance()->getConfigValue("hash_size");
+            
+            do {
+                $permalink = randomHash($hash_size);
+                $result = Database::getInstance()->assocQuery("SELECT permalink FROM Files WHERE permalink = '{0}'", [$permalink]);
+            } while (count($result) !== 0);
+
+            $filename = $filename.".".$extension;
+            $file_path = $permalink.".".$extension;
+
+            //move file
+            FileHelper::getInstance()->renameFile("temp".DIRECTORY_SEPARATOR.$old_permalink.".temp", "resources".DIRECTORY_SEPARATOR.$file_path);
+
+            $size_in_kB = FileHelper::getInstance()->getFileSize("resources".DIRECTORY_SEPARATOR.$file_path); //kB;
+
+            $is_temporary = in_array("admin",$userData->roles) == true ? 0 : 1;
+
+            $idFile = Database::getInstance()->insertQuery("INSERT INTO Files (idUser, filename, permalink, mimeType, extension, size, description, isTemporary) VALUES ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', {7})", [$userData->idUser, $filename, $permalink, $mimeType, $extension, $size_in_kB, $description, $is_temporary]);
+
+            foreach ($tags as &$tag) {
+                Database::getInstance()->insertQuery("INSERT INTO FileTags (idFile, idTag) VALUES ({0}, {1})", [$idFile, $tag->idTag]);
+            }
+
+            Database::getInstance()->commitTransaction();
+
+            RequestHelper::getInstance()->resolve([
+                "idFile" => $idFile
+            ]);
+        } catch (Exception $e) {
+            Database::getInstance()->rollbackTransaction();
+            RequestHelper::getInstance()->reject([
+                "error" => $e->getMessage()
+            ]);
+        }
+    }
+
+    RequestHelper::getInstance()->resolve([
+        "permalink" => $permalink
+    ]);
  ?>

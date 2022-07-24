@@ -2,7 +2,7 @@
   <div class="wrapper">
     <img v-if="fileType == 'image'" :src="file.base64 ? file.base64 : getFile(file.permalink)" :class="file.public == 0 ? 'nsfw' : ''" loading="lazy"/>
     <video controls  v-else-if="fileType == 'video'">
-      <source :src="file.base64 ? file.base64 : getFile(file.permalink)" :type="file.filyType" />
+      <source :src="file.base64 ? file.base64 : getFile(file.permalink)" :type="file.fileType" />
       Your browser does not support the video tag.
     </video>
     <div v-else>Unsuported</div>

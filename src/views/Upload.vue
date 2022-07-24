@@ -102,6 +102,9 @@
             <div v-else>
                 <h1 class="center-text">Upload complete</h1>
                 <br />
+                <div class="file-wrapper">
+                <FilePreview v-for="file in uploadedFiles" :key="file.idFile" :file="file" class="file"/>
+                </div>
                 <!-- Lazy, but it wont cause any bugs and it is cost efficient -->
                 <v-btn color="green" @click="reload" right class="upload-more-btn"> Upload more </v-btn>
             </div>

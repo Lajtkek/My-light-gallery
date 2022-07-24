@@ -1,13 +1,13 @@
 <?php 
 include_once("phpHelper.php");
 class FileHelper {
-    private $root_file_path;
+    private $root_path;
     private static $instance;
 
 	private function __construct()
 	{
         // Only temporary (endora routes)
-        $this->root_file_path = "../../resources/";
+        $this->root_path = "..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR;
     }
 
 	public static function getInstance()
@@ -23,29 +23,34 @@ class FileHelper {
     }
 
     public function uploadFile($file_path, $file_base64){
-        $temp = getcwd();
-        // combine but not nessesary
-        chdir($this->root_file_path);
-        $myfile = fopen($file_path, 'wb'); 
-        $data = explode(',', $file_base64);
+        $file_path = $this->root_path.$file_path;
+        $myfile = @fopen($file_path, 'wb'); 
 
-        fwrite($myfile, base64_decode($data[1]));
+        fwrite($myfile, base64_decode($file_base64));
         fclose($myfile); 
-        chdir($temp);
+    }
+
+    public function appendToFile($file_path, $file_base64){
+        $file_path = $this->root_path.$file_path;
+        file_put_contents($file_path, base64_decode($file_base64), FILE_APPEND);
     }
 
     public function getFileSize($file_path){
-        $temp = getcwd();
-        chdir($this->root_file_path);
-        //todo more precise
+        $file_path = $this->root_path.$file_path;
         $size = filesize($file_path);
-        chdir($temp);
         return $size;
     }
 
+    public function renameFile($oldname, $newname){
+        $oldname = $this->root_path.$oldname;
+        $newname = $this->root_path.$newname;
+        rename($oldname, $newname);
+    }
+
     //TODO: check for security
-    public function deleteFile($path){
-        //unlink($path);
+    public function deleteFile($file_path){
+        $file_path = $this->root_path.$file_path;
+        unlink($file_path);
     }
 }
 

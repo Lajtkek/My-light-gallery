@@ -30,6 +30,12 @@ export default Vue.extend({
         '$store.state.fileTags': function () {
             this.editData.tags = this.$store.state.fileTags;
         },
+        "editData.files": function(value){
+            if(this.action == "upload")return;
+            if(value.length == 0) this.action = 'upload-progress';
+            else
+            this.action = "edit";
+        },
         fileState: function () {
             //if (this.editData.files.length == 0 && this.uploadData.files.length == 0) this.reload();
         },
@@ -72,6 +78,7 @@ export default Vue.extend({
                     cssMaxHeight: 500,
                 },
             },
+            uploadedFiles: [],
 			preloadCount: 2
         };
     },
@@ -83,30 +90,83 @@ export default Vue.extend({
 			this.editData.files[0].base64 = data;
 			this.editingImage=false;
 		},
+        async uploadFile(fileData){
+            const bites = process.env.CHUNK_SIZE ?? 500000;
+            const chunks = fileData.base64.split(",")[1].match(new RegExp(`.{1,${bites}}`, 'g'));
+            const totalChunks = chunks.length;
+            
+            const fistResult = await Vue.prototype.post('files/uploadFile', {
+                name: fileData.name,
+                base64: chunks.shift(),
+                extension: fileData.extension,
+                mimeType: fileData.file.type,
+                filename: fileData.newName,
+                tags: this.$store.state.fileTags.filter((x) => fileData.tags.includes(x.idTag)),
+                description: fileData.description,
+                chunk: 0,
+                totalChunks,
+            });
+
+            if (fistResult.error) {
+                if (fistResult.error == 'TOO_LARGE') this.showErrorTooltip('Soubor je moc velký');
+                else if (fistResult.error == 'UNSUPPORTED_EXTENSION') this.showErrorTooltip('Soubor s toto příponou je zakázáno nahrávat');
+                else this.showErrorTooltip('Unknown error');
+                this.uploadData.files = this.uploadData.files.filter(x => x.pseudoId != fileData.pseudoId)
+                this.editData.files.push(fileData);
+                return;
+            }
+
+            if(totalChunks == 1){
+                await this.addFile(fistResult.data.idFile);
+                return;
+            }
+
+            const permalink = fistResult.data.permalink;
+            let index = 1;
+            for (const base64 of chunks){
+                const result = await Vue.prototype.post('files/uploadFile', {
+                    name: fileData.name,
+                    base64,
+                    extension: fileData.extension,
+                    mimeType: fileData.file.type,
+                    filename: fileData.newName,
+                    tags: this.$store.state.fileTags.filter((x) => fileData.tags.includes(x.idTag)),
+                    description: fileData.description,
+                    chunk: index,
+                    totalChunks,
+                    permalink
+                });
+                index++;
+                if(result.error) {
+                    this.showErrorTooltip('Unknown error');
+                    this.uploadData.files = this.uploadData.files.filter(x => x.pseudoId != fileData.pseudoId)
+                    this.editData.files.push(fileData);
+                    return;
+                }
+                if(result.data.idFile){
+                    this.addFile(result.data.idFile);
+                }
+            }
+        },
+        async addFile(idFile){
+            let request = await this.get("files/getFile", {
+                idFile,
+            });
+            if (!request.error) {
+                this.uploadedFiles.push(request.data)
+            } else {
+                this.error = request.error;
+            }
+        },
         async uploadFirst() {
             let fileData = this.editData.files.shift();
 			this.fetchNextFileData(this.files.pop());
 
             this.uploadData.files.push(fileData);
 
-            let result = await Vue.prototype.post('files/uploadFile', {
-                name: fileData.name,
-                base64: fileData.base64,
-                extension: fileData.extension,
-                mimeType: fileData.file.type,
-                filename: fileData.newName,
-                tags: this.$store.state.fileTags.filter((x) => fileData.tags.includes(x.idTag)),
-                description: fileData.description,
-            });
+            await this.uploadFile(fileData);
 
-            this.uploadData.files = this.uploadData.files.filter((x) => x != fileData);
-
-            if (result.error) {
-                if (result.error == 'TOO_LARGE') this.showErrorTooltip('Soubor je moc velký');
-                else if (result.error == 'UNSUPPORTED_EXTENSION') this.showErrorTooltip('Soubor s toto příponou je zakázáno nahrávat');
-                this.editData.files.push(fileData);
-            }
-			this.uploadData.files = this.uploadData.filter(x => x.pseudoId != fileData.pseudoId)
+        
         },
         async deleteFirst() {
             this.editData.files.shift();
@@ -125,10 +185,11 @@ export default Vue.extend({
         },
         async edit() {
             for (let i = 0; i < this.preloadCount; i++) {
-                this.fetchNextFileData(this.files.pop());
+                await this.fetchNextFileData(this.files.pop());
             }
-            this.action = 'edit';
 			
+            this.action = 'edit';
+            
             //Todo find if better fix
             this.$nextTick(() => {
                 this.editData.files = [...this.editData.files];
