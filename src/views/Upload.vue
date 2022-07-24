@@ -58,7 +58,7 @@
                                                 close-icon="mdi-delete"
                                                 class="tag"
                                                 :color="tag.color"
-                                                @click:close="$refs.tagSelect[index].remove(tag)"
+                                                @click:close="$refs.tagSelect.remove(tag)"
                                                 >{{ tag.name }}</v-chip
                                             >
                                         </v-col>
