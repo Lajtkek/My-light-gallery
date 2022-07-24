@@ -22,7 +22,7 @@
         LEFT JOIN FileTags ft ON(ft.idFile = f.idFile)
         LEFT JOIN Tags t ON(t.idTag = ft.idTag AND (t.code = '{0}' OR '{0}' = ''))
         LEFT JOIN Tags pt ON(t.idTag = pt.idTag AND pt.isPublic = 0)
-        WHERE t.idTag IS NOT NULL AND f.idFile IS NOT NULL
+        WHERE t.idTag IS NOT NULL AND f.idFile IS NOT NULL AND f.mimeType LIKE '%IMAGE%'
         GROUP BY f.idFile
         HAVING  COUNT(pt.idTag) = 0", [$tag]);
 
